@@ -54,7 +54,7 @@ export type FarcasterApp = {
 // Chat Types
 // ============================================================================
 
-type ChatProfile = 'farcaster' | 'clanker' | 'icebreaker' | 'bountycaster'
+export type ChatProfileId = 'farcaster' | 'clanker' | 'bountycaster'
 
 // ============================================================================
 // ENS Data Types

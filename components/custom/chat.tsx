@@ -6,11 +6,11 @@ import { useState, useEffect, useRef } from 'react';
 
 import { Message as PreviewMessage } from '@/components/custom/message';
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
+import { ChatProfileId } from '@/lib/types';
 
 import { ChatHeader } from './chat-header';
 import { ChatInput } from './chat-input';
 import { Overview } from './overview';
-import { SuggestedActions } from './suggested-actions';
 
 export function Chat({
   id,
@@ -23,9 +23,10 @@ export function Chat({
   user: User | undefined;
   selectedModelName: string;
 }) {
+  const [profile, setProfile] = useState<ChatProfileId>('farcaster');
   const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
     useChat({
-      body: { id, model: selectedModelName },
+      body: { id, profile, model: selectedModelName },
       initialMessages,
       onFinish: () => {
         window.history.replaceState({}, '', `/chat/${id}`);
@@ -55,7 +56,7 @@ export function Chat({
       </main>
       <footer className="w-full md:!w-2/3 md:mx-auto bg-background">
         <div className="w-full">
-          {messages.length === 0 && (
+          {/* {messages.length === 0 && (
             <div className="pb-2">      
               <SuggestedActions 
                 onActionSelect={(action) => {
@@ -66,7 +67,7 @@ export function Chat({
                 }} 
               />
             </div>
-          )}
+          )} */}
           <div className="w-full bg-background p-3">
             <form onSubmit={handleSubmit}>
               <ChatInput
@@ -75,6 +76,8 @@ export function Chat({
                 isLoading={isLoading}
                 stop={stop}
                 messages={messages}
+                profile={profile}
+                setProfile={setProfile}
                 append={append}
                 handleSubmit={handleSubmit}
               />

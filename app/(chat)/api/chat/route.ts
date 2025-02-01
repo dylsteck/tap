@@ -5,23 +5,23 @@ import { z } from 'zod';
 import { auth } from '@/app/(auth)/auth';
 import { deleteChatById, getChatById, saveChat } from '@/db/queries';
 import { SYSTEM_PROMPT } from '@/lib/model';
-import { tools } from '@/lib/tools';
+import { profiles, tools } from '@/lib/tools';
 import { SessionData } from '@/lib/types';
 import { BASE_URL, cortexSDK } from '@/lib/utils';
 
 export async function POST(request: Request) {
-  const {
-    id,
-    messages,
-    model,
-  }: { id: string; messages: Array<Message>; model: string } =
-    await request.json();
+  const { id, messages, profile, model }: { id: string; messages: Array<Message>; profile: string; model: string } = await request.json();
 
   const session = await auth();
-
   if (!session) {
     return new Response('Unauthorized', { status: 401 });
   }
+
+  const profileRef = profiles.find((p) => p.id === profile);
+  if (!profileRef) {
+    return new Response('Invalid profile', { status: 400 });
+  }
+  const profileTools = Object.keys(profileRef.tools);
 
   const coreMessages = convertToCoreMessages(messages);
   const result = await streamText({
@@ -29,11 +29,13 @@ export async function POST(request: Request) {
     system: SYSTEM_PROMPT(session.user as SessionData),
     messages: coreMessages,
     maxSteps: 3,
-    tools: tools,
+    experimental_activeTools: profileTools,
+    tools: tools(),
     experimental_transform: smoothStream(),
     onFinish: async (stepResult) => {
       if (session.user && session.user.id) {
         try {
+          // note: should we save `profile` too and sync after every new message? will revisit
           await saveChat({
             id,
             messages: [...coreMessages, ...stepResult.response.messages],
