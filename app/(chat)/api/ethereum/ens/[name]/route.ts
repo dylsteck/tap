@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   try {
     const { pathname } = new URL(request.url);
     const name = pathname.split("/").pop();
-    const cacheKey = `ens:${name}`;
+    const cacheKey = `zapper:ens:${name}`;
 
     const cachedData = await redis.get(cacheKey);
     if (cachedData) {

@@ -25,13 +25,9 @@ AVAILABLE TOOLS:
 - castSearch: Search Farcaster content
 - getBounties: Retrieve Farcaster bounties
 - getChannelsCasts: Get casts from specific channels
-- getClankerTrendingTokens: Get trending crypto tokens
-- getEthAddressTimeline: Retrieve Ethereum wallet activity
+- getClanker: Get information on a particular Clanker protocol token
+- getTrendingClankers: Get trending Clanker protocol tokens
 - getEvents: List upcoming Farcaster events
-- getIcebreakerCredentialProfiles: Get profiles by credential
-- getIcebreakerEthProfile: Get Icebreaker profile for an Ethereum address
-- getIcebreakerFCUser: Get Icebreaker profile for a Farcaster username
-- getNounsBuilderProposals: Get proposals for a Nouns Builder contract
 - getUserCasts: Get latest casts for a specific user
 - getTrendingCasts: Get trending casts on Farcaster
 

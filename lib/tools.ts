@@ -34,7 +34,7 @@ export const profiles = [
           }
     
           const castData = await cortexSDK.getCast(matchType, matchValue);
-          return castData;
+          return castData.cast;
         },
       }),
       askNeynarDocs: tool({
@@ -176,14 +176,31 @@ export const profiles = [
   {
     id: 'clanker',
     name: 'Clanker',
-    description: 'View Clanker tokens',
+    description: 'Clanker is a protocol for launching tokens on Base and Farcaster',
     icon: ClankerIcon,
     tools: {
-      getClankerTrendingTokens: tool({
-        description: 'Gets trending crypto tokens from Clanker, a token launcher built on top of Farcaster',
+      getClanker: tool({
+        description: 'Gets information about a particular Clanker token based on a search string.',
+        parameters: z.object({
+          text: z.string(),
+        }),
+        execute: async ({ text }) => {
+          const searchResults = await cortexSDK.clankerSearch(text);
+          const searchItem = searchResults.data.find((item: any) => 
+            item.name.toLowerCase() === text.toLowerCase()
+          );
+          if (!searchItem) {
+            throw new Error('No Clanker found for the given text');
+          }
+          const tokenData = await cortexSDK.getEthToken(searchItem.contract_address, 'BASE_MAINNET', 'WEEK');
+          return tokenData.data.fungibleToken;
+        },
+      }),
+      getTrendingClankers: tool({
+        description: 'Gets information about trending Clanker tokens',
         parameters: z.object({}),
         execute: async ({}) => {
-          const trendingTokenData = await cortexSDK.getClankerTrendingTokens();
+          const trendingTokenData = await cortexSDK.getTrendingClankers();
           return trendingTokenData;
         },
       })
