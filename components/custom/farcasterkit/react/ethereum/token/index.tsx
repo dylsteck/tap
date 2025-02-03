@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable import/no-named-as-default-member */
 "use client"
 import React from "react"
@@ -7,39 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
 
-type ZapperFungibleToken = {
-  address: string;
-  decimals: number;
-  holders: {
-    edges: {
-      node: {
-        holderAddress: string;
-        percentileShare: number;
-        value: string;
-      };
-    }[];
-  };
-  imageUrl: string;
-  isVerified: boolean;
-  name: string;
-  onchainMarketData: {
-    marketCap: number;
-    price: number;
-    priceChange1h: number;
-    priceChange24h: number;
-    priceChange5m: number;
-    totalGasTokenLiquidity: number;
-    totalLiquidity: number;
-    priceTicks: {
-      open: number;
-      close: number;
-      timestamp: number;
-    }[];
-  };
-  totalSupply: string;
-  credibility: any;
-  securityRisk: any;
-};
+import { ZapperFungibleToken } from "../../../common/types/ethereum"
 
 const timeRanges = [
   { label: "1D", value: "1D", seconds: 86400 },
@@ -92,11 +61,14 @@ export function Token({ token }: { token: ZapperFungibleToken }) {
   const chartColor = rawChange >= 0 ? "rgb(34,197,94)" : "rgb(239,68,68)"
 
   return (
-    <Card className="w-full max-w-4xl bg-[#1C1C1C] border-zinc-800">
+    <Card className="w-full bg-[#1C1C1C] border-zinc-800">
       <CardHeader className="space-y-1.5 pb-0">
-        <div className="text-zinc-400 text-sm">{token.name}</div>
+        <div className="flex items-center gap-2">
+          <img src={token.imageUrl} alt={token.name} className="size-5 rounded-full" />
+          <div className="text-zinc-400 text-md">{token.name}</div>
+        </div>
         <div className="flex items-baseline gap-3">
-          <CardTitle className="text-5xl font-normal text-white">{formatPrice(currentPrice)}</CardTitle>
+          <CardTitle className="text-5xl font-normal text-white">${currentPrice.toFixed(6)}</CardTitle>
           <span className={cn(rawChange >= 0 ? "text-green-500" : "text-red-500")}>
             {formatPrice(rawChange)} ({percentChange.toFixed(2)}%)
           </span>
