@@ -1,7 +1,7 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
 
-import { ClankerIcon, FarcasterIcon } from "@/components/custom/icons";
+import { BountycasterIcon, ClankerIcon, FarcasterIcon } from "@/components/custom/icons";
 
 import { BASE_URL, CAST_HASH_LENGTH, cortexSDK } from "./utils"
 
@@ -9,7 +9,7 @@ export const profiles = [
   {
     id: 'farcaster',
     name: 'Farcaster',
-    description: 'Query the protocol',
+    description: 'A social protocol',
     icon: FarcasterIcon,
     tools: {
       analyzeCast: tool({
@@ -130,53 +130,53 @@ export const profiles = [
       })
     }
   },
-  // {
-  //   id: 'bountycaster',
-  //   name: 'Bountycaster',
-  //   description: 'See open bounties',
-  //   icon: FarcasterIcon,
-  //   tools: {
-  //     getBounties: tool({
-  //       description: 'Get Farcaster bounties with optional status and time filtering. Include the link to each bounty *on Bountcaster*, not on Farcaster/Warpcast, in your response.',
-  //       parameters: z.object({
-  //         status: z.string().optional(),
-  //         timeFrame: z.string().optional(),
-  //       }),
-  //       execute: async ({ status, timeFrame }) => {
-  //         let eventsSince: string | undefined;
+  {
+    id: 'bountycaster',
+    name: 'Bountycaster',
+    description: 'A bounties platform',
+    icon: BountycasterIcon,
+    tools: {
+      getBounties: tool({
+        description: 'Get Farcaster bounties with optional status and time filtering. Include the link to each bounty *on Bountcaster*, not on Farcaster/Warpcast, in your response.',
+        parameters: z.object({
+          status: z.string().optional(),
+          timeFrame: z.string().optional(),
+        }),
+        execute: async ({ status, timeFrame }) => {
+          let eventsSince: string | undefined;
           
-  //         if (timeFrame) {
-  //           const now = new Date(Date.now());
-  //           const lowerInput = timeFrame.toLowerCase();
-  //           let date = new Date(now);
+          if (timeFrame) {
+            const now = new Date(Date.now());
+            const lowerInput = timeFrame.toLowerCase();
+            let date = new Date(now);
     
-  //           if (lowerInput.includes('month')) {
-  //             date.setMonth(date.getMonth() - 1);
-  //           } else if (lowerInput.includes('week')) {
-  //             date.setDate(date.getDate() - 7);
-  //           } else if (lowerInput.includes('day')) {
-  //             date.setDate(date.getDate() - 1);
-  //           } else if (lowerInput.includes('hour')) {
-  //             date.setHours(date.getHours() - 1);
-  //           } else {
-  //             try {
-  //               date = new Date(timeFrame);
-  //             } catch {
-  //               date = now;
-  //             }
-  //           }
-  //           eventsSince = date.toISOString();
-  //         }
-  //         const res = await cortexSDK.getBounties(status, eventsSince);
-  //         return res.bounties;
-  //       },
-  //     })
-  //   }
-  // },
+            if (lowerInput.includes('month')) {
+              date.setMonth(date.getMonth() - 1);
+            } else if (lowerInput.includes('week')) {
+              date.setDate(date.getDate() - 7);
+            } else if (lowerInput.includes('day')) {
+              date.setDate(date.getDate() - 1);
+            } else if (lowerInput.includes('hour')) {
+              date.setHours(date.getHours() - 1);
+            } else {
+              try {
+                date = new Date(timeFrame);
+              } catch {
+                date = now;
+              }
+            }
+            eventsSince = date.toISOString();
+          }
+          const res = await cortexSDK.getBounties(status, eventsSince);
+          return res.bounties;
+        },
+      })
+    }
+  },
   {
     id: 'clanker',
     name: 'Clanker',
-    description: 'Clanker is a protocol for launching tokens on Base and Farcaster',
+    description: 'A token launchpad',
     icon: ClankerIcon,
     tools: {
       getClanker: tool({
