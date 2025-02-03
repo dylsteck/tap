@@ -1,16 +1,26 @@
 "server-only";
 
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import { SIWNResponseData } from "@/components/custom/farcasterkit/react/auth/sign-in-with-neynar";
 import { AuthData } from "@/lib/types";
 
-import { user, chat, User } from "./schema";
+import { user, chat, User, farcasterApps } from "./schema";
 
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
+
+// todo: Promise<FarcasterApp>
+export async function getFCAppByName(name: string): Promise<Array<any>> {
+  try {
+    return await db.select().from(farcasterApps).where(sql`LOWER(${farcasterApps.name}) = LOWER(${name})`);
+  } catch (error) {
+    console.error("Failed to get app from database");
+    throw error;
+  }
+}
 
 export async function getUserById(id: string): Promise<Array<User>> {
   try {

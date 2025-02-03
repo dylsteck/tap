@@ -26,6 +26,7 @@ AVAILABLE TOOLS:
 - getBounties: Retrieve Farcaster bounties
 - getChannelsCasts: Get casts from specific channels
 - getClanker: Get information on a particular Clanker protocol token
+- getFarcasterApp: Get information on a Farcaster ecosystem app
 - getTrendingClankers: Get trending Clanker protocol tokens
 - getEvents: List upcoming Farcaster events
 - getUserCasts: Get latest casts for a specific user

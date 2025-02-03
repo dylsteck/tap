@@ -106,6 +106,19 @@ export const profiles = [
           return eventsData;
         },
       }),
+      getFarcasterApp: tool({
+        description: `Gets information on a Farcaster ecosystem app given its name`,
+        parameters: z.object({
+          name: z.string()
+        }),
+        execute: async ({ name }) => {
+          const appData = await cortexSDK.getFarcasterApp(name);
+          if(appData.length === 0){
+            throw new Error(`No Farcaster apps found for name: ${name}`);
+          }
+          return appData[0];
+        },
+      }),
       getUserCasts: tool({
         description: 'Gets the latest casts per a particular username on Farcaster.',
         parameters: z.object({
