@@ -28,8 +28,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-import { CortexIcon } from './icons';
-
 export function AppSidebar({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
 
@@ -40,9 +38,8 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link className="flex flex-row gap-0 items-center" href="/" onClick={() => setOpenMobile(false)}>
-                <CortexIcon />
                 <span className="text-lg font-semibold tracking-tighter">
-                  Cortex
+                  tap
                 </span>
               </Link>
             </SidebarMenuButton>

@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import cortexImg from "@/public/images/app-icon.png";
 import bountycasterImg from "@/public/images/bountycaster-icon.png";
 import clankerImg from "@/public/images/clanker-icon.png";
 import icebreakerImg from "@/public/images/icebreaker-icon.png";
@@ -26,12 +25,6 @@ export const ArrowUpIcon = ({ size = 16 }: { size?: number }) => {
 export const BountycasterIcon = ({ size = 15 }) => {
   return (
     <img alt="Bountycaster Icon" src={bountycasterImg.src} style={{ width: `${size}px`, height: `${size}px` }} />
-  );
-};
-
-export const CortexIcon = ({ size = 30 }) => {
-  return (
-    <img alt="Cortex Icon" src={cortexImg.src} style={{ width: `${size}px`, height: `${size}px` }} />
   );
 };
 

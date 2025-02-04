@@ -9,7 +9,7 @@ export async function GET() {
     },
     frame: {
       version: "0.0.1",
-      name: "Cortex",
+      name: "tap",
       iconUrl: ICON_IMG_URL,
       splashImageUrl: ICON_IMG_URL,
       splashBackgroundColor: "#000000",

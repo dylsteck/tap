@@ -34,7 +34,9 @@ export async function getFarcasterApps(cursor: number = 0): Promise<{ apps: Arra
 // todo: Promise<FarcasterApp>
 export async function getFarcasterAppByName(name: string): Promise<Array<any>> {
   try {
-    return await db.select().from(farcasterApps).where(sql`LOWER(${farcasterApps.name}) = LOWER(${name})`);
+    return await db.select().from(farcasterApps).where(
+      sql`LOWER(${farcasterApps.name}) = LOWER(${name}) OR LOWER(${farcasterApps.slug}) = LOWER(${name})`
+    );
   } catch (error) {
     console.error("Failed to get app from database");
     throw error;

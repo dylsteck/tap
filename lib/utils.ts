@@ -12,7 +12,7 @@ import { twMerge } from "tailwind-merge";
 
 import { Chat } from "@/db/schema";
 
-import CortexSDK from './api';
+import TapSDK from './api';
 
 export const redis = Redis.fromEnv()
 
@@ -39,7 +39,7 @@ export const NOUNS_BUILDER_GOLDSKY_SUBGRAPH_URL = 'https://api.goldsky.com/api/p
 export const WARPCAST_API_URL = 'https://api.warpcast.com';
 export const ZAPPER_GQL_URL = 'https://public.zapper.xyz/graphql';
 
-export const cortexSDK = new CortexSDK();
+export const tapSDK = new TapSDK();
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

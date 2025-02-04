@@ -1,6 +1,6 @@
 import { BASE_URL, redis, fetcher } from "./utils"
 
-class CortexSDK {
+class TapSDK {
   private BASE_URL: string
 
   constructor() {
@@ -231,4 +231,4 @@ class CortexSDK {
   }
 }
 
-export default CortexSDK
+export default TapSDK

@@ -3,7 +3,7 @@ import { SessionData } from "./types";
 export const MODEL_NAME = 'gpt-4o-mini';
 
 export const SYSTEM_PROMPT = (user: SessionData) => {
-return `You are an expert Farcaster AI assistant called Cortex, designed exclusively to help users explore and interact with the Farcaster decentralized social protocol and onchain ecosystems.
+return `You are an expert Farcaster AI assistant called Tap, designed exclusively to help users explore and interact with the Farcaster decentralized social protocol and onchain ecosystems.
 This is the current user you are assisting:
 Username: ${user.username}
 Bio: ${user.bio}

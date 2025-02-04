@@ -3,7 +3,7 @@ import { z } from "zod"
 
 import { BountycasterIcon, ClankerIcon, FarcasterIcon } from "@/components/custom/icons";
 
-import { BASE_URL, CAST_HASH_LENGTH, cortexSDK } from "./utils"
+import { BASE_URL, CAST_HASH_LENGTH, tapSDK } from "./utils"
 
 export const profiles = [
   {
@@ -33,7 +33,7 @@ export const profiles = [
             matchValue = input;
           }
     
-          const castData = await cortexSDK.getCast(matchType, matchValue);
+          const castData = await tapSDK.getCast(matchType, matchValue);
           return castData.cast;
         },
       }),
@@ -44,7 +44,7 @@ export const profiles = [
         }),
         execute: async ({ question }) => {
           try {
-            return await cortexSDK.askNeynarDocs(question);
+            return await tapSDK.askNeynarDocs(question);
           } catch (error) {
             console.error('Error in askNeynarDocs tool:', error);
             return `Error querying Neynar: ${(error as Error).message}`;
@@ -57,7 +57,7 @@ export const profiles = [
           query: z.string(),
         }),
         execute: async ({ query }) => {
-          const castSearchData = await cortexSDK.castSearch(query)
+          const castSearchData = await tapSDK.castSearch(query)
           return castSearchData.result.casts
         },
       }),
@@ -81,7 +81,7 @@ export const profiles = [
           limit, 
           cursor 
         }) => {
-          const channelCasts = await cortexSDK.getChannelsCasts({
+          const channelCasts = await tapSDK.getChannelsCasts({
             channel_ids, 
             with_recasts, 
             viewer_fid, 
@@ -102,7 +102,7 @@ export const profiles = [
         [One to two sentence overview of the events given the context]`,
         parameters: z.object({}),
         execute: async ({}) => {
-          const eventsData = await cortexSDK.getEvents();
+          const eventsData = await tapSDK.getEvents();
           return eventsData;
         },
       }),
@@ -112,7 +112,7 @@ export const profiles = [
           name: z.string()
         }),
         execute: async ({ name }) => {
-          const appData = await cortexSDK.getFarcasterApp(name);
+          const appData = await tapSDK.getFarcasterApp(name);
           if(appData.length === 0){
             throw new Error(`No Farcaster apps found for name: ${name}`);
           }
@@ -125,7 +125,7 @@ export const profiles = [
           cursor: z.number().optional()
         }),
         execute: async ({ cursor }) => {
-          const appsData = await cortexSDK.getFarcasterApps(cursor ?? 0);
+          const appsData = await tapSDK.getFarcasterApps(cursor ?? 0);
           if(appsData.length === 0){
             throw new Error("No Farcaster apps found");
           }
@@ -138,11 +138,11 @@ export const profiles = [
             username: z.string(),
         }),
         execute: async ({ username }) => {
-            const user = await cortexSDK.getFarcasterUser(username);
+            const user = await tapSDK.getFarcasterUser(username);
             if(!user){
                 throw new Error('User data not available');
             }
-            const userCastsData = await cortexSDK.getFarcasterUserCasts(user.fid);
+            const userCastsData = await tapSDK.getFarcasterUserCasts(user.fid);
             return userCastsData.casts;
         },
       }),
@@ -150,7 +150,7 @@ export const profiles = [
         description: 'Get trending casts (posts) from Farcaster.',
         parameters: z.object({}),
         execute: async ({}) => {
-          const trendingCasts = await cortexSDK.getTrendingCasts()
+          const trendingCasts = await tapSDK.getTrendingCasts()
           return trendingCasts.casts
         },
       })
@@ -193,7 +193,7 @@ export const profiles = [
             }
             eventsSince = date.toISOString();
           }
-          const res = await cortexSDK.getBounties(status, eventsSince);
+          const res = await tapSDK.getBounties(status, eventsSince);
           return res.bounties;
         },
       })
@@ -211,14 +211,14 @@ export const profiles = [
           text: z.string(),
         }),
         execute: async ({ text }) => {
-          const searchResults = await cortexSDK.clankerSearch(text);
+          const searchResults = await tapSDK.clankerSearch(text);
           const searchItem = searchResults.data.find((item: any) => 
             item.name.toLowerCase() === text.toLowerCase()
           );
           if (!searchItem) {
             throw new Error('No Clanker found for the given text');
           }
-          const tokenData = await cortexSDK.getEthToken(searchItem.contract_address, 'BASE_MAINNET', 'WEEK');
+          const tokenData = await tapSDK.getEthToken(searchItem.contract_address, 'BASE_MAINNET', 'WEEK');
           return tokenData.data.fungibleToken;
         },
       }),
@@ -226,7 +226,7 @@ export const profiles = [
         description: 'Gets information about trending Clanker tokens',
         parameters: z.object({}),
         execute: async ({}) => {
-          const trendingTokenData = await cortexSDK.getTrendingClankers();
+          const trendingTokenData = await tapSDK.getTrendingClankers();
           return trendingTokenData;
         },
       })

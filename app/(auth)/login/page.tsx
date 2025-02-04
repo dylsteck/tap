@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import SignInWithNeynar, { SIWNResponseData } from "@/components/custom/farcasterkit/react/auth/sign-in-with-neynar";
-import { CortexIcon } from "@/components/custom/icons";
 import { AuthData } from "@/lib/types";
 
 import { login } from "../actions";
@@ -44,15 +43,12 @@ export default function Page() {
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-background">
       <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <div className="flex flex-col items-center justify-center gap-0">
-            <CortexIcon size={60} />
-            <h3 className="text-xl font-semibold dark:text-zinc-50">Cortex</h3>
-          </div>
+        <div className="flex flex-col items-start justify-center gap-1 px-4 text-center sm:px-16">
+          <h3 className="text-4xl font-semibold dark:text-zinc-50">tap</h3>
           <p className="text-md text-gray-500 dark:text-zinc-400">
-            An assistant for Farcaster/onchain data
+            it just takes one <span className="font-semibold">tap</span>
           </p>
-          <div className="pt-3">
+          <div className="pt-4">
             <SignInWithNeynar handleSignInSuccess={(siwnData) => handleSubmit(siwnData)} />
           </div>
         </div>
