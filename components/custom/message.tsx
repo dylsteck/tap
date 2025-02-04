@@ -36,7 +36,7 @@ export const Message = ({
       {role === 'user' && (
         <div className="flex flex-row gap-2 items-center mb-2">
           {user && (user as any).pfp_url ? 
-          <img alt={`PFP: ${(user as any).pfp_url}`} src={(user as any).pfp_url} className="rounded-full size-6" />
+          <img alt={`PFP: ${(user as any).pfp_url}`} src={(user as any).pfp_url} className="rounded-full size-6 border border-gray-300" />
           : null}
           <h2 className="text-lg font-medium break-words">{content}</h2>
         </div>

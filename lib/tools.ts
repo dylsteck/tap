@@ -119,6 +119,19 @@ export const profiles = [
           return appData[0];
         },
       }),
+      getFarcasterApps: tool({
+        description: `Gets information on Farcaster apps. Use the cursor to find more apps in the database and if you see "hasMore: false" in the response then there are not going to be additional apps to query for.`,
+        parameters: z.object({
+          cursor: z.number().optional()
+        }),
+        execute: async ({ cursor }) => {
+          const appsData = await cortexSDK.getFarcasterApps(cursor ?? 0);
+          if(appsData.length === 0){
+            throw new Error("No Farcaster apps found");
+          }
+          return appsData;
+        },
+      }),
       getUserCasts: tool({
         description: 'Gets the latest casts per a particular username on Farcaster.',
         parameters: z.object({

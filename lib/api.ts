@@ -126,12 +126,12 @@ class CortexSDK {
     return await fetcher(`${this.BASE_URL}/api/farcaster/events`)
   }
 
-  async getFarcasterApp(name: string): Promise<any> {
-    const response = await fetch(`${this.BASE_URL}/api/farcaster/app/${name}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Farcaster app: ${response.status}`);
-    }
-    return await response.json();
+  async getFarcasterApp(name: string): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/farcaster/app/${name}`)
+  }
+
+  async getFarcasterApps(cursor: number = 0): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/farcaster/app/list?cursor=${cursor}`)
   }
 
   async getFarcasterToken(name: string): Promise<any>{

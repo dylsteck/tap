@@ -1,5 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
-import { getFarcasterAppByName } from "@/db/queries";
+import { getFarcasterAppByName, getFarcasterApps } from "@/db/queries";
 import { authMiddleware, NEYNAR_API_URL, redis } from "@/lib/utils";
 
 export async function GET(request: Request) {
@@ -9,21 +9,17 @@ export async function GET(request: Request) {
     return authResponse;
   }
 
-  const { pathname } = new URL(request.url);
-  const name = pathname.split("/").pop();
+  const url = new URL(request.url);
+  const cursor = url.searchParams.get("cursor");
 
-  if (!name) {
-    return new Response(JSON.stringify("Query parameter 'name' is required!"), { status: 400 });
-  }
-
-  const cacheKey = `app:${name}`;
+  const cacheKey = cursor ? `app_list:${cursor}` : "app_list";
   const cachedData = await redis.get(cacheKey);
 
   if (cachedData && typeof cachedData === 'string') {
     return new Response(JSON.stringify(JSON.parse(cachedData)), { status: 200 });
   }
 
-  const data = await getFarcasterAppByName(name);
+  const data = await getFarcasterApps(cursor ? parseInt(cursor) : 0);
 
   // cache the data for 1 week
   await redis.set(cacheKey, JSON.stringify(data), { ex: 604800 });
