@@ -11,14 +11,14 @@ import { BANNER_IMG_URL, BASE_URL } from '@/lib/utils';
 export function generateMetadata() {
   return {
     metadataBase: new URL(BASE_URL),
-    title: 'Cortex',
-    description: 'An agent and actions built around your Farcaster profile',
+    title: 'tap',
+    description: 'it just takes one tap',
     openGraph: {
-      title: 'Cortex',
-      description: 'An agent and actions built around your Farcaster profile',
+      title: 'tap',
+      description: 'it just takes one tap',
       images: [BANNER_IMG_URL],
       url: BASE_URL,
-      siteName: 'Cortex',
+      siteName: 'tap',
       locale: 'en_US',
       type: 'website',
     },

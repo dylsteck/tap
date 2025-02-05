@@ -8,10 +8,14 @@ export async function GET(request: Request) {
     return authResponse;
   }
 
-  const cacheKey = "clanker:tokens:trending";
+  const cacheKey = "clanker:trending";
   let data = await redis.get(cacheKey);
   if (!data) {
-    const response = await fetch(`${CLANKER_API_URL}/tokens/trending`);
+    const response = await fetch(`${CLANKER_API_URL}/tokens/trending`, {
+        headers: {
+            'x-api-key': process.env.CLANKER_API_KEY ?? ''
+        }
+    });
     if (!response.ok) return new Response("Failed to fetch data from Clanker API!", { status: response.status });
     data = await response.json();
     await redis.set(cacheKey, JSON.stringify(data), { ex: 30 * 60 });

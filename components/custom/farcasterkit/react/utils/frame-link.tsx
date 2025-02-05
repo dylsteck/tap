@@ -38,7 +38,7 @@ export default function FrameLink({
         }
     }
     return(
-        <div onClick={() => handleOnClick()}>
+        <div className="w-auto" onClick={() => handleOnClick()}>
             {children}
         </div>
     )

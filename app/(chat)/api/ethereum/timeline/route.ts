@@ -14,7 +14,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const cacheKey = `timeline:${address}`;
+    const cacheKey = `zapper:timeline:${address}`;
 
     const cachedData = await redis.get(cacheKey);
     if (cachedData) {

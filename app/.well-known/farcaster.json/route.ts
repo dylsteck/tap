@@ -4,12 +4,12 @@ export async function GET() {
   const config = {
     "accountAssociation": {
       "header": "eyJmaWQiOjYxNiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDVFNzlGNjkwY2NENDIwMDdENUEwYUQ2NzhDRDQ3NDc0MzM5NDAwRTMifQ",
-      "payload": "eyJkb21haW4iOiJ3aXRoY29ydGV4LmNvbSJ9",
-      "signature": "MHhiNWQwM2EyMGFjM2I1NDJkYWY0M2I3Y2NiODkzMDJhMTZkMzM5YTQwMjRjYzdkNzYxN2Q5ZGIwYTQ5YzVmYTEyMGJmYTEwNjBlZTZmMDg3MWQ3OTM2YTI4ODZjMjM0MjViMDk4OGE1MjlkNzVlMDUwNWVkOTE4MDZlMDE1ZjNlYjFj"
+      "payload": "eyJkb21haW4iOiJ0YXAuY29tcHV0ZXIifQ",
+      "signature": "MHhiNDMxMzBmNTI5MjFjYTYwMWI0YzdlZWY3OWRiMWEzOWJiM2JhZDViZDFhOWI3NWFkM2VkMDkzZDU3NDU4NWZhN2FhMmM1NDRkYTViZDk5MWRkZWY4MDI3N2YwODZjNDAxMjdlODFiNTkxMDY1OWE0YmE5ZDIzNGM0MWMwZDIyODFj"
     },
     frame: {
       version: "0.0.1",
-      name: "Cortex",
+      name: "tap",
       iconUrl: ICON_IMG_URL,
       splashImageUrl: ICON_IMG_URL,
       splashBackgroundColor: "#000000",

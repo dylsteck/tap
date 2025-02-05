@@ -4,7 +4,9 @@ import CastsTool from './tools/casts';
 import EventsTool from './tools/events';
 import { SidebarProvider } from '../ui/sidebar';
 import { Skeleton } from '../ui/skeleton';
+import { FarcasterApp } from './farcasterkit/react/app';
 import { Cast } from './farcasterkit/react/cast';
+import { Token } from './farcasterkit/react/ethereum/token';
 import BountiesTool from './tools/bounties';
 import ClankerTrendingTool from './tools/clanker-trending';
 
@@ -21,10 +23,14 @@ export const Tool = ({ result, toolName }: {result: any, toolName: string}) => {
     const renderTool = () => {
       switch (toolName) {
         case 'analyzeCast':
-          return roundedElement(<Cast cast={result.cast} />);
+          return roundedElement(<Cast cast={result} />);
         case 'castSearch':
           return <CastsTool casts={result} />;
-        case 'getClankerTrendingTokens':
+        case 'getClanker': 
+          return <Token token={result} />
+        case 'getFarcasterApp':
+          return <FarcasterApp app ={result } />
+        case 'getTrendingClankers':
           return <ClankerTrendingTool clankers={result} />;
         case 'getUserCasts':
           return <CastsTool casts={result} />;

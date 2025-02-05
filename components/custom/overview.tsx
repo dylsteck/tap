@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-import { CortexIcon } from './icons';
-
 export const Overview = () => {
   return (
     <motion.div
@@ -15,8 +13,7 @@ export const Overview = () => {
     >
       <div className="rounded-xl p-6 flex flex-col gap-4 leading-relaxed text-center max-w-xl">
         <p className="flex flex-row justify-center gap-1 items-center">
-          <CortexIcon size={40} />
-          <span className="text-2xl font-semibold">Cortex</span>
+          <span className="text-2xl font-semibold">tap</span>
         </p>
       </div>
     </motion.div>

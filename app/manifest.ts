@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Cortex',
-    short_name: 'Cortex',
-    description: 'An agent and actions built around your Farcaster profile',
+    name: 'tap',
+    short_name: 'tap',
+    description: 'it just takes one tap',
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',

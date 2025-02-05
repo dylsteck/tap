@@ -23,7 +23,6 @@ export function NewChatToggle() {
       }}
     >
       <PlusIcon className="size-3" />
-      <span className="sr-only">Toggle Sidebar</span>
     </Button>
     </BetterTooltip>
   );

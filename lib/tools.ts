@@ -1,15 +1,15 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
 
-import { ClankerIcon, FarcasterIcon } from "@/components/custom/icons";
+import { BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
 
-import { BASE_URL, CAST_HASH_LENGTH, cortexSDK } from "./utils"
+import { BASE_URL, CAST_HASH_LENGTH, tapSDK } from "./utils"
 
 export const profiles = [
   {
     id: 'farcaster',
     name: 'Farcaster',
-    description: 'Query the protocol',
+    description: 'A social protocol',
     icon: FarcasterIcon,
     tools: {
       analyzeCast: tool({
@@ -33,8 +33,8 @@ export const profiles = [
             matchValue = input;
           }
     
-          const castData = await cortexSDK.getCast(matchType, matchValue);
-          return castData;
+          const castData = await tapSDK.getCast(matchType, matchValue);
+          return castData.cast;
         },
       }),
       askNeynarDocs: tool({
@@ -44,7 +44,7 @@ export const profiles = [
         }),
         execute: async ({ question }) => {
           try {
-            return await cortexSDK.askNeynarDocs(question);
+            return await tapSDK.askNeynarDocs(question);
           } catch (error) {
             console.error('Error in askNeynarDocs tool:', error);
             return `Error querying Neynar: ${(error as Error).message}`;
@@ -57,7 +57,7 @@ export const profiles = [
           query: z.string(),
         }),
         execute: async ({ query }) => {
-          const castSearchData = await cortexSDK.castSearch(query)
+          const castSearchData = await tapSDK.castSearch(query)
           return castSearchData.result.casts
         },
       }),
@@ -81,7 +81,7 @@ export const profiles = [
           limit, 
           cursor 
         }) => {
-          const channelCasts = await cortexSDK.getChannelsCasts({
+          const channelCasts = await tapSDK.getChannelsCasts({
             channel_ids, 
             with_recasts, 
             viewer_fid, 
@@ -102,8 +102,34 @@ export const profiles = [
         [One to two sentence overview of the events given the context]`,
         parameters: z.object({}),
         execute: async ({}) => {
-          const eventsData = await cortexSDK.getEvents();
+          const eventsData = await tapSDK.getEvents();
           return eventsData;
+        },
+      }),
+      getFarcasterApp: tool({
+        description: `Gets information on a Farcaster ecosystem app given its name`,
+        parameters: z.object({
+          name: z.string()
+        }),
+        execute: async ({ name }) => {
+          const appData = await tapSDK.getFarcasterApp(name);
+          if(appData.length === 0){
+            throw new Error(`No Farcaster apps found for name: ${name}`);
+          }
+          return appData[0];
+        },
+      }),
+      getFarcasterApps: tool({
+        description: `Gets information on Farcaster apps. Use the cursor to find more apps in the database and if you see "hasMore: false" in the response then there are not going to be additional apps to query for.`,
+        parameters: z.object({
+          cursor: z.number().optional()
+        }),
+        execute: async ({ cursor }) => {
+          const appsData = await tapSDK.getFarcasterApps(cursor ?? 0);
+          if(appsData.length === 0){
+            throw new Error("No Farcaster apps found");
+          }
+          return appsData;
         },
       }),
       getUserCasts: tool({
@@ -112,11 +138,11 @@ export const profiles = [
             username: z.string(),
         }),
         execute: async ({ username }) => {
-            const user = await cortexSDK.getFarcasterUser(username);
+            const user = await tapSDK.getFarcasterUser(username);
             if(!user){
                 throw new Error('User data not available');
             }
-            const userCastsData = await cortexSDK.getFarcasterUserCasts(user.fid);
+            const userCastsData = await tapSDK.getFarcasterUserCasts(user.fid);
             return userCastsData.casts;
         },
       }),
@@ -124,69 +150,169 @@ export const profiles = [
         description: 'Get trending casts (posts) from Farcaster.',
         parameters: z.object({}),
         execute: async ({}) => {
-          const trendingCasts = await cortexSDK.getTrendingCasts()
+          const trendingCasts = await tapSDK.getTrendingCasts()
           return trendingCasts.casts
         },
       })
     }
   },
-  // {
-  //   id: 'bountycaster',
-  //   name: 'Bountycaster',
-  //   description: 'See open bounties',
-  //   icon: FarcasterIcon,
-  //   tools: {
-  //     getBounties: tool({
-  //       description: 'Get Farcaster bounties with optional status and time filtering. Include the link to each bounty *on Bountcaster*, not on Farcaster/Warpcast, in your response.',
-  //       parameters: z.object({
-  //         status: z.string().optional(),
-  //         timeFrame: z.string().optional(),
-  //       }),
-  //       execute: async ({ status, timeFrame }) => {
-  //         let eventsSince: string | undefined;
+  {
+    id: 'bountycaster',
+    name: 'Bountycaster',
+    description: 'A bounties platform',
+    icon: BountycasterIcon,
+    tools: {
+      getBounties: tool({
+        description: 'Get Farcaster bounties with optional status and time filtering. Include the link to each bounty *on Bountcaster*, not on Farcaster/Warpcast, in your response.',
+        parameters: z.object({
+          status: z.string().optional(),
+          timeFrame: z.string().optional(),
+        }),
+        execute: async ({ status, timeFrame }) => {
+          let eventsSince: string | undefined;
           
-  //         if (timeFrame) {
-  //           const now = new Date(Date.now());
-  //           const lowerInput = timeFrame.toLowerCase();
-  //           let date = new Date(now);
+          if (timeFrame) {
+            const now = new Date(Date.now());
+            const lowerInput = timeFrame.toLowerCase();
+            let date = new Date(now);
     
-  //           if (lowerInput.includes('month')) {
-  //             date.setMonth(date.getMonth() - 1);
-  //           } else if (lowerInput.includes('week')) {
-  //             date.setDate(date.getDate() - 7);
-  //           } else if (lowerInput.includes('day')) {
-  //             date.setDate(date.getDate() - 1);
-  //           } else if (lowerInput.includes('hour')) {
-  //             date.setHours(date.getHours() - 1);
-  //           } else {
-  //             try {
-  //               date = new Date(timeFrame);
-  //             } catch {
-  //               date = now;
-  //             }
-  //           }
-  //           eventsSince = date.toISOString();
-  //         }
-  //         const res = await cortexSDK.getBounties(status, eventsSince);
-  //         return res.bounties;
-  //       },
-  //     })
-  //   }
-  // },
+            if (lowerInput.includes('month')) {
+              date.setMonth(date.getMonth() - 1);
+            } else if (lowerInput.includes('week')) {
+              date.setDate(date.getDate() - 7);
+            } else if (lowerInput.includes('day')) {
+              date.setDate(date.getDate() - 1);
+            } else if (lowerInput.includes('hour')) {
+              date.setHours(date.getHours() - 1);
+            } else {
+              try {
+                date = new Date(timeFrame);
+              } catch {
+                date = now;
+              }
+            }
+            eventsSince = date.toISOString();
+          }
+          const res = await tapSDK.getBounties(status, eventsSince);
+          return res.bounties;
+        },
+      })
+    }
+  },
   {
     id: 'clanker',
     name: 'Clanker',
-    description: 'View Clanker tokens',
+    description: 'A token launchpad',
     icon: ClankerIcon,
     tools: {
-      getClankerTrendingTokens: tool({
-        description: 'Gets trending crypto tokens from Clanker, a token launcher built on top of Farcaster',
+      getClanker: tool({
+        description: 'Gets information about a particular Clanker token based on a search string.',
+        parameters: z.object({
+          text: z.string(),
+        }),
+        execute: async ({ text }) => {
+          const searchResults = await tapSDK.clankerSearch(text);
+          const searchItem = searchResults.data.find((item: any) => 
+            item.name.toLowerCase() === text.toLowerCase()
+          );
+          if (!searchItem) {
+            throw new Error('No Clanker found for the given text');
+          }
+          const tokenData = await tapSDK.getEthToken(searchItem.contract_address, 'BASE_MAINNET', 'WEEK');
+          return tokenData.data.fungibleToken;
+        },
+      }),
+      getTrendingClankers: tool({
+        description: 'Gets information about trending Clanker tokens',
         parameters: z.object({}),
         execute: async ({}) => {
-          const trendingTokenData = await cortexSDK.getClankerTrendingTokens();
+          const trendingTokenData = await tapSDK.getTrendingClankers();
           return trendingTokenData;
         },
       })
+    }
+  },
+  {
+    id: 'icebreaker',
+    name: 'Icebreaker',
+    description: 'The open professional network',
+    icon: IcebreakerIcon,
+    tools: {
+      getIcebreakerCredentialProfiles: tool({
+        description: 'Gets Icebreaker credential profiles based on the credential name.',
+        parameters: z.object({
+          credentialName: z.string(),
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+        }),
+        execute: async ({ credentialName, limit, offset }) => {
+          return await tapSDK.getIcebreakerCredentialProfiles(credentialName, limit, offset);
+        },
+      }),
+      getIcebreakerEnsProfile: tool({
+        description: 'Gets Icebreaker profile based on ENS name.',
+        parameters: z.object({
+          ensName: z.string(),
+        }),
+        execute: async ({ ensName }) => {
+          return await tapSDK.getIcebreakerEnsProfile(ensName);
+        },
+      }),
+      getIcebreakerEthAddressProfile: tool({
+        description: 'Gets Icebreaker profile based on Ethereum wallet address.',
+        parameters: z.object({
+          walletAddress: z.string(),
+        }),
+        execute: async ({ walletAddress }) => {
+          return await tapSDK.getIcebreakerEthAddressProfile(walletAddress);
+        },
+      }),
+      getIcebreakerEthProfile: tool({
+        description: 'Gets Icebreaker profile based on either ENS name or Ethereum address.',
+        parameters: z.object({
+          identifier: z.string(),
+        }),
+        execute: async ({ identifier }) => {
+          return await tapSDK.getIcebreakerEthProfile(identifier);
+        },
+      }),
+      getIcebreakerFCUser: tool({
+        description: 'Gets Icebreaker user profile based on first name.',
+        parameters: z.object({
+          fname: z.string(),
+        }),
+        execute: async ({ fname }) => {
+          return await tapSDK.getIcebreakerFCUser(fname);
+        },
+      }),
+      getIcebreakerFidProfile: tool({
+        description: 'Gets Icebreaker profile based on FID.',
+        parameters: z.object({
+          fid: z.number(),
+        }),
+        execute: async ({ fid }) => {
+          return await tapSDK.getIcebreakerFidProfile(fid);
+        },
+      }),
+      getIcebreakerFnameProfile: tool({
+        description: 'Gets Icebreaker profile based on first name.',
+        parameters: z.object({
+          fname: z.string(),
+        }),
+        execute: async ({ fname }) => {
+          return await tapSDK.getIcebreakerFnameProfile(fname);
+        },
+      }),
+      getIcebreakerProfile: tool({
+        description: 'Gets Icebreaker profile based on first name or FID.',
+        parameters: z.object({
+          fname: z.string().optional(),
+          fid: z.string().optional(),
+        }),
+        execute: async ({ fname, fid }) => {
+          return await tapSDK.getIcebreakerProfile(fname, fid);
+        },
+      }),
     }
   }
 ]

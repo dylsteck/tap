@@ -1,6 +1,6 @@
 import { BASE_URL, redis, fetcher } from "./utils"
 
-class CortexSDK {
+class TapSDK {
   private BASE_URL: string
 
   constructor() {
@@ -40,6 +40,19 @@ class CortexSDK {
 
   async castSearch(query: string): Promise<any> {
     return await fetcher(`${this.BASE_URL}/api/farcaster/cast/search?q=${query}`)
+  }
+
+  async clankerSearch(q?: string, type?: string, fids?: string, page?: number): Promise<any> {
+    const url = new URL(`${this.BASE_URL}/api/clanker/search`)
+    if (q) {
+      url.searchParams.append("q", q)
+    }
+    url.searchParams.append("type", type ? type : "all")
+    if (fids) {
+      url.searchParams.append("fids", fids)
+    }
+    url.searchParams.append("page", page ? page.toString() : "1")
+    return await fetcher(url.toString())
   }
 
   async getBounties(status: string = "all", eventsSince: string = new Date(new Date(Date.now()).setDate(new Date(Date.now()).getDate() - 10)).toISOString()): Promise<any> {
@@ -89,12 +102,12 @@ class CortexSDK {
     return await fetcher(url.toString());
   }
 
-  async getClankerTokens(page?: number): Promise<any>{
-    return await fetcher(`${this.BASE_URL}/api/clanker/tokens${page ? `?page=${page}` : ''}`)
+  async getClankerByAddress(address: string): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/clanker/${address}`)
   }
 
-  async getClankerTrendingTokens(): Promise<any>{
-    return await fetcher(`${this.BASE_URL}/api/clanker/tokens/trending`)
+  async getTrendingClankers(): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/clanker/trending`)
   }
 
   async getEnsName(ensName: string): Promise<any> {
@@ -105,14 +118,23 @@ class CortexSDK {
     return await fetcher(`${this.BASE_URL}/api/ethereum/timeline?address=${address}`)
   }
 
+  async getEthToken(address: string, network: string, timeFrame: string = 'DAY'): Promise<any> {
+    return await fetcher(`${this.BASE_URL}/api/ethereum/token?address=${address}&network=${network}&timeFrame=${timeFrame}`)
+  }
+
   async getEvents(): Promise<any> {
     return await fetcher(`${this.BASE_URL}/api/farcaster/events`)
   }
 
+  async getFarcasterApp(name: string): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/farcaster/app/${name}`)
+  }
+
+  async getFarcasterApps(cursor: number = 0): Promise<any>{
+    return await fetcher(`${this.BASE_URL}/api/farcaster/app/list?cursor=${cursor}`)
+  }
+
   async getFarcasterToken(name: string): Promise<any>{
-    if (!name || name.length === 0) {
-      throw new Error("Token name is required");
-    }
     return await fetcher(`${this.BASE_URL}/api/farcaster/tokens/${name}`)
   }
 
@@ -207,24 +229,6 @@ class CortexSDK {
   async getTrendingCasts(): Promise<any> {
     return await fetcher(`${this.BASE_URL}/api/farcaster/feed/trending`)
   }
-
-  async webSearch(
-    query: string,
-    maxResults: number = 10,
-    searchDepth: 'basic' | 'advanced' = 'basic',
-    includeDomains: string[] = [],
-    excludeDomains: string[] = []
-  ): Promise<any> {
-    const url = new URL(`${this.BASE_URL}/api/web/search`);
-    url.searchParams.append('query', query);
-    url.searchParams.append('maxResults', maxResults.toString());
-    url.searchParams.append('searchDepth', searchDepth);
-    
-    includeDomains.forEach(domain => url.searchParams.append('includeDomains', domain));
-    excludeDomains.forEach(domain => url.searchParams.append('excludeDomains', domain));
-
-    return await fetcher(url.toString())
-  }
 }
 
-export default CortexSDK
+export default TapSDK

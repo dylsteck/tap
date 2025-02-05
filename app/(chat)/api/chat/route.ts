@@ -7,7 +7,7 @@ import { deleteChatById, getChatById, saveChat } from '@/db/queries';
 import { SYSTEM_PROMPT } from '@/lib/model';
 import { profiles, tools } from '@/lib/tools';
 import { SessionData } from '@/lib/types';
-import { BASE_URL, cortexSDK } from '@/lib/utils';
+import { BASE_URL, tapSDK } from '@/lib/utils';
 
 export async function POST(request: Request) {
   const { id, messages, profile, model }: { id: string; messages: Array<Message>; profile: string; model: string } = await request.json();

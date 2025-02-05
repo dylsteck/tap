@@ -8,7 +8,7 @@ export default async function Page() {
   
   return(
     <div>
-      <ChatHeader />
+      <ChatHeader user={session?.user} />
       {session && session.user ? 
       <div>
         <div className="p-3 pl-5 flex flex-row gap-2 items-center">
