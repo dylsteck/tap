@@ -1,7 +1,7 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
 
-import { BountycasterIcon, ClankerIcon, FarcasterIcon } from "@/components/custom/icons";
+import { BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
 
 import { BASE_URL, CAST_HASH_LENGTH, tapSDK } from "./utils"
 
@@ -230,6 +230,89 @@ export const profiles = [
           return trendingTokenData;
         },
       })
+    }
+  },
+  {
+    id: 'icebreaker',
+    name: 'Icebreaker',
+    description: 'The open professional network',
+    icon: IcebreakerIcon,
+    tools: {
+      getIcebreakerCredentialProfiles: tool({
+        description: 'Gets Icebreaker credential profiles based on the credential name.',
+        parameters: z.object({
+          credentialName: z.string(),
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+        }),
+        execute: async ({ credentialName, limit, offset }) => {
+          return await tapSDK.getIcebreakerCredentialProfiles(credentialName, limit, offset);
+        },
+      }),
+      getIcebreakerEnsProfile: tool({
+        description: 'Gets Icebreaker profile based on ENS name.',
+        parameters: z.object({
+          ensName: z.string(),
+        }),
+        execute: async ({ ensName }) => {
+          return await tapSDK.getIcebreakerEnsProfile(ensName);
+        },
+      }),
+      getIcebreakerEthAddressProfile: tool({
+        description: 'Gets Icebreaker profile based on Ethereum wallet address.',
+        parameters: z.object({
+          walletAddress: z.string(),
+        }),
+        execute: async ({ walletAddress }) => {
+          return await tapSDK.getIcebreakerEthAddressProfile(walletAddress);
+        },
+      }),
+      getIcebreakerEthProfile: tool({
+        description: 'Gets Icebreaker profile based on either ENS name or Ethereum address.',
+        parameters: z.object({
+          identifier: z.string(),
+        }),
+        execute: async ({ identifier }) => {
+          return await tapSDK.getIcebreakerEthProfile(identifier);
+        },
+      }),
+      getIcebreakerFCUser: tool({
+        description: 'Gets Icebreaker user profile based on first name.',
+        parameters: z.object({
+          fname: z.string(),
+        }),
+        execute: async ({ fname }) => {
+          return await tapSDK.getIcebreakerFCUser(fname);
+        },
+      }),
+      getIcebreakerFidProfile: tool({
+        description: 'Gets Icebreaker profile based on FID.',
+        parameters: z.object({
+          fid: z.number(),
+        }),
+        execute: async ({ fid }) => {
+          return await tapSDK.getIcebreakerFidProfile(fid);
+        },
+      }),
+      getIcebreakerFnameProfile: tool({
+        description: 'Gets Icebreaker profile based on first name.',
+        parameters: z.object({
+          fname: z.string(),
+        }),
+        execute: async ({ fname }) => {
+          return await tapSDK.getIcebreakerFnameProfile(fname);
+        },
+      }),
+      getIcebreakerProfile: tool({
+        description: 'Gets Icebreaker profile based on first name or FID.',
+        parameters: z.object({
+          fname: z.string().optional(),
+          fid: z.string().optional(),
+        }),
+        execute: async ({ fname, fid }) => {
+          return await tapSDK.getIcebreakerProfile(fname, fid);
+        },
+      }),
     }
   }
 ]
