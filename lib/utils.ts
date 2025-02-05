@@ -18,16 +18,15 @@ export const redis = Redis.fromEnv()
 
 export const CAST_HASH_LENGTH = 42;
 
-// TODO: create a new banner image
-export const BANNER_IMG_URL = 'https://i.imgur.com/hJKzrtx.png';
-export const ICON_IMG_URL = 'https://i.imgur.com/Pwf5x4V.png';
+export const BANNER_IMG_URL = 'https://i.imgur.com/IufIWER.png';
+export const ICON_IMG_URL = 'https://i.imgur.com/6VubK9B.png';
 export const USER_FALLBACK_IMG_URL = 'https://i.imgur.com/sosbyP2.png';
 
 const isDev = process.env.NODE_ENV === 'development';
 const port = process.env.PORT || 3000;
 const localUrl = `http://localhost:${port}`;
 
-export const BASE_URL = isDev ? localUrl : 'https://withcortex.com';
+export const BASE_URL = isDev ? localUrl : 'https://tap.computer';
 export const BOUNTYCASTER_API_URL = 'https://www.bountycaster.xyz/api/v1';
 export const CLANKER_API_URL = 'https://www.clanker.world/api';
 export const ENS_DATA_API_URL = 'https://api.ensdata.net';
