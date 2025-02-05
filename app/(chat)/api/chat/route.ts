@@ -35,10 +35,10 @@ export async function POST(request: Request) {
     onFinish: async (stepResult) => {
       if (session.user && session.user.id) {
         try {
-          // note: should we save `profile` too and sync after every new message? will revisit
           await saveChat({
             id,
             messages: [...coreMessages, ...stepResult.response.messages],
+            profile,
             userId: session.user.id,
           });
         } catch (error) {

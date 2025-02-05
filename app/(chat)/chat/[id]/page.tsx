@@ -2,10 +2,11 @@ import { CoreMessage } from 'ai';
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
-import { Chat as PreviewChat } from '@/components/custom/chat';
+import { Chat } from '@/components/custom/chat';
 import { getChatById } from '@/db/queries';
-import { Chat } from '@/db/schema';
+import { Chat as ChatSchema } from '@/db/schema';
 import { MODEL_NAME } from '@/lib/model';
+import { ChatProfileId } from '@/lib/types';
 import { convertToUIMessages } from '@/lib/utils';
 
 export default async function Page(props: { params: Promise<any> }) {
@@ -18,9 +19,9 @@ export default async function Page(props: { params: Promise<any> }) {
   }
 
   // type casting
-  const chat: Chat = {
+  const chat: ChatSchema = {
     ...chatFromDb,
-    messages: convertToUIMessages(chatFromDb.messages as Array<CoreMessage>),
+    messages: convertToUIMessages(chatFromDb.messages as Array<CoreMessage>)
   };
 
   const session = await auth();
@@ -34,10 +35,11 @@ export default async function Page(props: { params: Promise<any> }) {
   }
 
   return (
-    <PreviewChat
+    <Chat
       id={chat.id}
       user={session?.user}
       initialMessages={chat.messages}
+      initialProfile={chat.profile as ChatProfileId}
       selectedModelName={MODEL_NAME}
     />
   );

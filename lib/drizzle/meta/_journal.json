@@ -43,6 +43,13 @@
       "when": 1738203727431,
       "tag": "0005_lumpy_serpent_society",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1738783841133,
+      "tag": "0006_closed_bloodaxe",
+      "breakpoints": true
     }
   ]
 }

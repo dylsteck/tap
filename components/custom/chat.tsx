@@ -15,15 +15,17 @@ import { Overview } from './overview';
 export function Chat({
   id,
   initialMessages,
+  initialProfile,
   user,
   selectedModelName,
 }: {
   id: string;
   initialMessages: Array<Message>;
+  initialProfile?: ChatProfileId;
   user: User | undefined;
   selectedModelName: string;
 }) {
-  const [profile, setProfile] = useState<ChatProfileId>('farcaster');
+  const [profile, setProfile] = useState<ChatProfileId>(initialProfile && initialProfile.length > 0 ? initialProfile : 'farcaster');
   const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
     useChat({
       body: { id, profile, model: selectedModelName },
