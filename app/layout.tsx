@@ -1,4 +1,5 @@
 import './globals.css';
+import '@coinbase/onchainkit/styles.css';
 import { Metadata } from 'next';
 import Script from 'next/script';
 import { Toaster } from 'sonner';

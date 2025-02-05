@@ -1,3 +1,4 @@
+import { FundCard } from '@coinbase/onchainkit/fund';
 import { motion } from 'framer-motion';
 
 import CastsTool from './tools/casts';
@@ -42,6 +43,8 @@ export const Tool = ({ result, toolName }: {result: any, toolName: string}) => {
           return <EventsTool events={result} />;
         case 'getBounties':
           return <BountiesTool bounties={result} />
+        case 'fundEth': 
+          return <FundCard assetSymbol="ETH" country="US" currency="USD" />;
         default:
           return <Skeleton className="w-full h-auto" />;
       }

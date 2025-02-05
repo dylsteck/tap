@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import baseImg from "@/public/images/base-icon.png";
 import bountycasterImg from "@/public/images/bountycaster-icon.png";
 import clankerImg from "@/public/images/clanker-icon.png";
 import icebreakerImg from "@/public/images/icebreaker-icon.png";
@@ -19,6 +20,12 @@ export const ArrowUpIcon = ({ size = 16 }: { size?: number }) => {
         fill="currentColor"
       ></path>
     </svg>
+  );
+};
+
+export const BaseIcon = ({ size = 15 }) => {
+  return (
+    <img alt="base Icon" className="rounded-full" src={baseImg.src} style={{ width: `${size}px`, height: `${size}px` }} />
   );
 };
 

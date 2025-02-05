@@ -1,7 +1,7 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
 
-import { BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
+import { BaseIcon, BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
 
 import { BASE_URL, CAST_HASH_LENGTH, tapSDK } from "./utils"
 
@@ -311,6 +311,21 @@ export const profiles = [
         }),
         execute: async ({ fname, fid }) => {
           return await tapSDK.getIcebreakerProfile(fname, fid);
+        },
+      }),
+    }
+  },
+  {
+    id: 'base',
+    name: 'Base',
+    description: 'Query and act on Base',
+    icon: BaseIcon,
+    tools: {
+      fundEth: tool({
+        description: 'Prompts the user to be able to purchase some Ethereum via Coinbase',
+        parameters: z.object({}),
+        execute: async ({ }) => {
+          return true;
         },
       }),
     }
