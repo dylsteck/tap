@@ -47,7 +47,7 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
           const context = await sdk.context;
           if (context?.client.clientFid) {
             await handleSignIn(context.user);
-            router.push('/');
+            router.refresh();
           }
           setTimeout(() => {
             sdk.actions.ready()

@@ -1,18 +1,28 @@
-'use client';
-import Image from 'next/image';
-
 import { auth } from '@/app/(auth)/auth';
-import { ChatHeader } from '@/components/custom/chat-header';
-import CastVideos from '@/components/custom/farcasterkit/react/cast/videos';
-import { useIsMobile } from '@/hooks/use-mobile';
+import VideosPage from '@/components/custom/videos-page';
+import { createFrame } from '@/lib/frame';
+import { BASE_URL, VIDEOS_BANNER_IMG_URL } from '@/lib/utils';
 
-export default function Page() {
-  const isMobile = useIsMobile();
+export async function generateMetadata() {
+  return {
+    title: 'videos | tap',
+    description: 'it just takes one tap',
+    openGraph: {
+      title: 'videos | tap',
+      description: 'it just takes one tap',
+      images: [VIDEOS_BANNER_IMG_URL],
+      url: `${BASE_URL}/videos`,
+      siteName: 'tap',
+      locale: 'en_US',
+      type: 'website',
+    },
+    other: {
+      "fc:frame": JSON.stringify(createFrame("watch videos", VIDEOS_BANNER_IMG_URL, "/videos"))
+    }
+  }
+};
 
-  return(
-    <div>
-      {!isMobile && <ChatHeader />}
-      <CastVideos />
-    </div>
-  );
+export default async function VideosPageWrapper() {
+  const session = await auth();
+  return <VideosPage session={session} />
 }
