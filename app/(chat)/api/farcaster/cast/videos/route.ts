@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     return new Response("NEYNAR_API_KEY is not set in the environment variables", { status: 500 });
   }
 
-  const response = await fetch(`${NEYNAR_API_URL}/farcaster/feed?feed_type=filter&filter_type=embed_url&members_only=false&embed_url=.mp4&with_recasts=true&limit=100&viewer_fid=${(session?.user as any).fid ?? 616}`, {
+  const response = await fetch(`${NEYNAR_API_URL}/farcaster/feed?feed_type=filter&filter_type=embed_url&members_only=false&embed_url=.m3u8&with_recasts=false&limit=100&viewer_fid=${(session?.user as any).fid ?? 3}`, {
     method: "GET",
     headers: {
       'accept': 'application/json',
@@ -34,7 +34,11 @@ export async function GET(request: Request) {
   }
 
   const data = await response.json();
-  await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 });
+  const finalResp = {
+    ...data,
+    casts: data.casts.filter((cast: any) => cast.author.follower_count > 10000)
+  }
+  await redis.set(cacheKey, JSON.stringify(finalResp), { ex: 3600 });
 
-  return new Response(JSON.stringify(data), { status: 200 });
+  return new Response(JSON.stringify(finalResp), { status: 200 });
 }

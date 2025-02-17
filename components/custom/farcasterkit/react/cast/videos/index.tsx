@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Hls from "hls.js"
 import { DollarSign, MoreVertical, Volume2, VolumeX, Loader2 } from "lucide-react"
 import Image from "next/image"
 import React, { useState, useEffect, useRef } from "react"
@@ -62,17 +63,6 @@ export default function CastVideos() {
     }
   }, [feed])
 
-  const handleVideoClick = (hash: string) => {
-    const video = videoRefs.current[hash]
-    if (video) {
-      if (video.paused) {
-        video.play()
-      } else {
-        video.pause()
-      }
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -94,9 +84,8 @@ export default function CastVideos() {
       <div className="relative w-full max-w-[360px] h-screen">
         <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none">
           {feed.casts.map((cast: any, index: number) => {
-            const videoEmbed = cast.embeds?.find((embed: any) => embed.metadata?.content_type?.startsWith("video/"))
+            const videoEmbed = cast.embeds?.find((embed: any) => (embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith('.m3u8')))
             if (!videoEmbed) return null
-
             return (
               <div
                 key={cast.hash}
@@ -106,13 +95,25 @@ export default function CastVideos() {
               >
                 <div className="relative w-full max-w-[360px] aspect-[9/16] bg-black rounded-2xl overflow-hidden">
                   <video
-                    ref={(el) => { if (el) videoRefs.current[cast.hash] = el }}
-                    src={videoEmbed.url}
+                    ref={(el) => {
+                      if (el) {
+                        const videoUrl = videoEmbed.url
+                        videoRefs.current[cast.hash] = el
+                        if (Hls.isSupported() && videoUrl.includes(".m3u8")) {
+                          const hls = new Hls()
+                          hls.loadSource(videoUrl)
+                          hls.attachMedia(el)
+                        } else {
+                          el.src = videoUrl
+                          el.load()
+                        }
+                      }
+                    }}
                     className="absolute inset-0 size-full object-cover"
                     loop
                     playsInline
                     muted={isMuted}
-                    onClick={() => handleVideoClick(cast.hash)}
+                    autoPlay
                   />
                   <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
                     <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
