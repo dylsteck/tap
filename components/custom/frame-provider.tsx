@@ -3,24 +3,26 @@
 import { Context, sdk, SignIn } from "@farcaster/frame-sdk";
 import { FrameSDK } from "@farcaster/frame-sdk/dist/types";
 import { useRouter } from "next/navigation";
-import { getCsrfToken } from "next-auth/react";
 import { useCallback, useEffect } from "react";
 
 import { login } from "@/app/(auth)/actions";
 import { AuthData } from "@/lib/types";
 
+// import { getCsrfToken } from "next-auth/react";
+
 export default function FrameProvider({ children }: { children: React.ReactNode }){
   const router = useRouter(); 
-  const getNonce = useCallback(async () => {
-      const nonce = await getCsrfToken();
-      if (!nonce) throw new Error("Unable to generate nonce");
-      return nonce;
-    }, []);
+  // const getNonce = useCallback(async () => {
+  //     const nonce = await getCsrfToken();
+  //     if (!nonce) throw new Error("Unable to generate nonce");
+  //     return nonce;
+  //   }, []);
 
     const handleSignIn = useCallback(async (user: Context.FrameContext['user']) => {
       try {
-        const nonce = await getNonce();
-        const result = await sdk.actions.signIn({ nonce });
+        // note: temporarily commented signIn out because it triggers too much on mobile, will switch back
+        // const nonce = await getNonce();
+        // const result = await sdk.actions.signIn({ nonce });
         const loginData: AuthData = {
           fid: user.fid.toString(),
           username: user.username || "",
@@ -29,8 +31,6 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
           verified_address: '',
           signer_uuid: "",
           pfp_url: user.pfpUrl || "",
-          message: result.message,
-          signature: result.signature
         };
         await login(loginData);
       } catch (e) {
@@ -39,7 +39,8 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
           return;
         }
       }
-    }, [getNonce]);
+    // }, [getNonce]);
+    }, []);
 
     useEffect(() => {
         const init = async () => {

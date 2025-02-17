@@ -21,17 +21,29 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { MODEL_NAME } from '@/lib/model';
 
 export function SidebarSettingsDialog({
   username,
   isOpen,
+  selectedModelName,
   onClose,
 }: {
   username: string;
   isOpen: boolean;
+  selectedModelName: string;
   onClose: () => void;
 }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [localModelName, setLocalModelName] = useState(selectedModelName);
+
+  const handleSave = async () => {
+    onClose();
+  };
+
+  const handleCancel = async () => {
+    onClose();
+  };
 
   const handleDelete = async () => {
     try {
@@ -50,34 +62,46 @@ export function SidebarSettingsDialog({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="p-6 max-w-lg bg-white dark:bg-black text-black dark:text-white rounded-xl">
+      <Dialog open={isOpen} onOpenChange={handleCancel}>
+        <DialogContent className="p-6 max-w-lg bg-white dark:bg-black text-black dark:text-white">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-white">Settings</DialogTitle>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Manage your account settings</p>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Username</Label>
-              <p className="text-md text-black dark:text-white mt-1">
-                {username}
-              </p>
+              <Input
+                type="text"
+                value={username ?? "username"}
+                disabled
+                className="mt-1 w-full cursor-not-allowed bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:placeholder:text-gray-500"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Username cannot be edited at this time</p>
             </div>
+            {/* <div className="flex flex-col gap-2 items-start">
+              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Model</Label>
+              <ModelSelector
+                selectedModelName={localModelName}
+                className="mt-1 w-auto bg-white dark:bg-gray-800 text-black dark:text-gray-300"
+                onModelChange={(model) => setLocalModelName(model)}
+              />
+            </div> */}
             <div className="flex flex-col gap-2 items-start">
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">History</Label>
               <Button 
-                variant="destructive"
+                variant="destructive" 
                 onClick={() => setShowDeleteDialog(true)}
-                className="rounded-xl"
               >
-                Clear History
+                Delete Chat History
               </Button>
             </div>
             <div className="flex justify-end space-x-2 mt-6">
-              <Button variant="outline" className="text-gray-700 dark:text-gray-300 bg-white dark:bg-black rounded-xl" onClick={onClose}>Cancel</Button>
+              <Button variant="outline" className="text-gray-700 dark:text-gray-300 bg-white dark:bg-black" onClick={handleCancel}>Cancel</Button>
               <Button 
                 variant="default" 
-                className="text-white bg-gray-900 dark:bg-gray-600 rounded-xl" 
-                onClick={onClose}
+                className="text-white bg-gray-900 dark:bg-gray-600" 
+                onClick={handleSave}
               >
                 Save
               </Button>

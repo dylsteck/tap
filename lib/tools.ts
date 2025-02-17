@@ -238,8 +238,15 @@ export const profiles = [
     description: 'The open professional network',
     icon: IcebreakerIcon,
     tools: {
+      getIcebreakerCredentials: tool({
+        description: 'Returns a list of all Icebreaker credentials that users are able to query by',
+        parameters: z.object({}),
+        execute: async({ }) => {
+          return { credentials: tapSDK.getIcebreakerCredentials() };
+        }
+      }),
       getIcebreakerCredentialProfiles: tool({
-        description: 'Gets Icebreaker credential profiles based on the credential name.',
+        description: 'Gets Icebreaker credential profiles based on the credential name. Please note that some of the credentials are called `Skill: [Skill name]`, such as `Skill: Engineering`. Do not show images in your response and show as many links inline as you can.',
         parameters: z.object({
           credentialName: z.string(),
           limit: z.number().optional(),
@@ -321,13 +328,6 @@ export const profiles = [
     description: 'Query and act on Base',
     icon: BaseIcon,
     tools: {
-      fundEth: tool({
-        description: 'Prompts the user to be able to purchase some Ethereum via Coinbase',
-        parameters: z.object({}),
-        execute: async ({ }) => {
-          return true;
-        },
-      }),
     }
   }
 ]

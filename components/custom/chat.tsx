@@ -1,4 +1,5 @@
 'use client';
+
 import { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { User } from 'next-auth';
@@ -38,7 +39,7 @@ export function Chat({
   const [containerRef, endRef] = useScrollToBottom(messages);
   return (
     <div className="flex flex-col w-screen h-dvh bg-background overflow-hidden border-0">
-      <ChatHeader user={user} />
+      <ChatHeader />
       <main className="flex-1 w-full md:!w-2/3 md:mx-auto overflow-y-auto" ref={containerRef}>
         <div className="w-full md:mx-auto px-5 md:px-3">
           {messages.length === 0 && <Overview />}
