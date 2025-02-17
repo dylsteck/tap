@@ -322,14 +322,14 @@ export const profiles = [
       }),
     }
   },
-  {
-    id: 'base',
-    name: 'Base',
-    description: 'Query and act on Base',
-    icon: BaseIcon,
-    tools: {
-    }
-  }
+  // {
+  //   id: 'base',
+  //   name: 'Base',
+  //   description: 'Query and act on Base',
+  //   icon: BaseIcon,
+  //   tools: {
+  //   }
+  // }
 ]
 
 export const tools = () => {
