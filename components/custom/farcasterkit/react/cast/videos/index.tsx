@@ -4,7 +4,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
-import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause } from "lucide-react"
+import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
@@ -162,7 +162,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
             <img
               src={cast.author?.pfp_url || "/placeholder.svg"}
               alt={`@${cast.author.username}'s PFP`}
-              className="size-full object-cover"
+              className="size-full object-cover cursor-pointer"
             />
           </FrameLink>
         </div>
@@ -191,6 +191,12 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
               <DropdownMenuItem className="cursor-pointer">
                 <ExternalLink className="mr-2 size-4" />
                 View Cast
+              </DropdownMenuItem>
+            </FrameLink>
+            <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%40tapit!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
+              <DropdownMenuItem className="cursor-pointer">
+                <Share2 className="mr-2 size-4" />
+                Share
               </DropdownMenuItem>
             </FrameLink>
             <DropdownMenuItem className="cursor-pointer" onClick={() => handleExpand(cast.hash)}>
