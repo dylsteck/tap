@@ -8,7 +8,8 @@ import { ThemeProvider } from '@/components/custom/theme-provider';
 import { createFrame } from '@/lib/frame';
 import { BANNER_IMG_URL, BASE_URL } from '@/lib/utils';
 
-export async function generateMetadata() {
+export function generateMetadata() {
+  const frame = createFrame()
   return {
     metadataBase: new URL(BASE_URL),
     title: 'tap',
@@ -23,7 +24,7 @@ export async function generateMetadata() {
       type: 'website',
     },
     other: {
-      "fc:frame": JSON.stringify(createFrame())
+      "fc:frame": JSON.stringify(frame)
     }
   }
 };

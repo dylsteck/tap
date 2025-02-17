@@ -3,7 +3,8 @@ import VideosPage from '@/components/custom/videos-page';
 import { createFrame } from '@/lib/frame';
 import { BASE_URL, VIDEOS_BANNER_IMG_URL } from '@/lib/utils';
 
-export async function generateMetadata() {
+export function generateMetadata() {
+  const frame = createFrame("watch videos", VIDEOS_BANNER_IMG_URL, "/videos")
   return {
     title: 'videos | tap',
     description: 'it just takes one tap',
@@ -17,7 +18,7 @@ export async function generateMetadata() {
       type: 'website',
     },
     other: {
-      "fc:frame": JSON.stringify(createFrame("watch videos", VIDEOS_BANNER_IMG_URL, "/videos"))
+      "fc:frame": JSON.stringify(frame)
     }
   }
 };
