@@ -4,7 +4,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
-import { DollarSign, MoreVertical, Volume2, VolumeX, Loader2, ExternalLink, Maximize2, Play, Pause } from "lucide-react"
+import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause } from "lucide-react"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
@@ -15,6 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem
 } from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
 import { fetcher } from "@/lib/utils"
 
 import FrameLink from "../../utils/frame-link"
@@ -32,6 +33,7 @@ interface Cast {
     }
     url: string
   }>
+  reactions: any;
 }
 
 interface VideoPlayerProps {
@@ -160,7 +162,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
             <img
               src={cast.author?.pfp_url || "/placeholder.svg"}
               alt={`@${cast.author.username}'s PFP`}
-              className="object-cover rounded-full cursor-pointer"
+              className="size-full object-cover"
             />
           </FrameLink>
         </div>
@@ -216,11 +218,18 @@ export default function CastVideos() {
 
   const filteredCasts = useMemo(() => {
     if (!feed?.casts) return []
-    return feed.casts.filter((cast) => 
+    const filtered = feed.casts.filter((cast) => 
       cast.embeds?.some((embed) => 
         embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
       )
-    )
+    ).map(cast => ({
+      ...cast,
+      reactions: {
+        ...cast.reactions,
+        likes_count: cast.reactions?.likes_count || 0
+      }
+    }))
+    return filtered.sort((a, b) => (b.reactions?.likes_count || 0) - (a.reactions?.likes_count || 0))
   }, [feed])
 
   const rowVirtualizer = useVirtualizer({
@@ -263,9 +272,7 @@ export default function CastVideos() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>
-          <Loader2 className="size-8 text-white" />
-        </motion.div>
+        <Skeleton className="w-full max-w-[360px] aspect-[9/16]" />
       </div>
     )
   }

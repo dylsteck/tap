@@ -102,7 +102,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
             <Link href="/videos">
               <SidebarMenuButton>
                 <VideoIcon size={12} />
-                <span>Video</span>
+                <span>Videos</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -134,7 +134,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
             <Link href="/videos">
               <SidebarMenuButton>
                 <VideoIcon size={12} />
-                <span>Video</span>
+                <span>Videos</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -179,7 +179,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
             <Link href="/videos">
               <SidebarMenuButton>
                 <VideoIcon size={12} />
-                <span>Video</span>
+                <span>Videos</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -215,7 +215,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
             <Link href="/videos">
               <SidebarMenuButton>
                 <VideoIcon size={12} />
-                <span>Video</span>
+                <span>Videos</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
