@@ -234,13 +234,19 @@ export default function CastVideos() {
     if (!filteredCasts.length) return
     const newMutedStates: Record<string, boolean> = {}
     filteredCasts.forEach((cast) => {
-      newMutedStates[cast.hash] = true
+      newMutedStates[cast.hash] = false
     })
     setMutedStates(newMutedStates)
   }, [filteredCasts])
 
   const toggleMute = useCallback((hash: string) => {
-    setMutedStates(prev => ({ ...prev, [hash]: !prev[hash] }))
+    setMutedStates(prev => {
+      const newStates = { ...prev }
+      Object.keys(newStates).forEach(key => {
+        newStates[key] = key === hash ? !prev[key] : true
+      })
+      return newStates
+    })
   }, [])
 
   const handleExpand = useCallback((hash: string) => {
