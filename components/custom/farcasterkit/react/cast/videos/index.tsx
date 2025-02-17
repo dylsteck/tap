@@ -193,7 +193,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
                 View Cast
               </DropdownMenuItem>
             </FrameLink>
-            <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%40tapit!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
+            <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%2Ftap!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
               <DropdownMenuItem className="cursor-pointer">
                 <Share2 className="mr-2 size-4" />
                 Share
