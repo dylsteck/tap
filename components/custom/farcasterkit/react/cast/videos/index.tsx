@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { DollarSign, MoreVertical, Volume2, VolumeX, Loader2, ExternalLink, Maximize2, Play, Pause } from "lucide-react"
-import Image from "next/image"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
@@ -157,10 +157,9 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
       <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
           <FrameLink type="profile" identifier={cast.author.fid}>
-            <Image
+            <img
               src={cast.author?.pfp_url || "/placeholder.svg"}
-              alt=""
-              fill
+              alt={`@${cast.author.username}'s PFP`}
               className="object-cover rounded-full cursor-pointer"
             />
           </FrameLink>
