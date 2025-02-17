@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/custom/theme-provider';
 import { createFrame } from '@/lib/frame';
 import { BANNER_IMG_URL, BASE_URL } from '@/lib/utils';
 
-export function generateMetadata() {
+export async function generateMetadata() {
   return {
     metadataBase: new URL(BASE_URL),
     title: 'tap',

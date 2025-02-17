@@ -2,7 +2,7 @@
 
 import { Context, sdk, SignIn } from "@farcaster/frame-sdk";
 import { FrameSDK } from "@farcaster/frame-sdk/dist/types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 
 import { login } from "@/app/(auth)/actions";
@@ -12,6 +12,7 @@ import { AuthData } from "@/lib/types";
 
 export default function FrameProvider({ children }: { children: React.ReactNode }){
   const router = useRouter(); 
+  const pathname = usePathname();
   // const getNonce = useCallback(async () => {
   //     const nonce = await getCsrfToken();
   //     if (!nonce) throw new Error("Unable to generate nonce");
@@ -47,14 +48,14 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
           const context = await sdk.context;
           if (context?.client.clientFid) {
             await handleSignIn(context.user);
-            router.refresh();
+            router.push(pathname);
           }
           setTimeout(() => {
             sdk.actions.ready()
           }, 500)
         }
         init()
-      }, [handleSignIn, router])
+      }, [handleSignIn, pathname, router])
 
     return(
         <>
