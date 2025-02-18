@@ -1,4 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
+import { WarpcastCastsResponse } from "@/components/custom/farcasterkit/common/types/farcaster";
 import { authMiddleware, WARPCAST_API_URL, redis, NEYNAR_API_URL } from "@/lib/utils";
 
 export async function GET(request: Request) {
@@ -10,8 +11,9 @@ export async function GET(request: Request) {
 
   const cacheKey = `cast:videos:trending`;
   const cachedData = await redis.get(cacheKey);
-  if (cachedData) {
-    return new Response(cachedData as BodyInit, { status: 200 });
+
+  if (cachedData && typeof cachedData === 'string') {
+    return new Response(JSON.stringify(JSON.parse(cachedData)), { status: 200 });
   }
 
   const apiKey = process.env.NEYNAR_API_KEY;
@@ -36,7 +38,7 @@ export async function GET(request: Request) {
     casts: data.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
     next: data.result.next
   };
-  
+
   await redis.set(cacheKey, JSON.stringify(finalResp), { ex: 21600 });
 
   return new Response(JSON.stringify(finalResp), { status: 200 });
