@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   if (!apiKey) {
     return new Response("NEYNAR_API_KEY is not set in the environment variables", { status: 500 });
   }
-  const response = await fetch(`${NEYNAR_API_URL}/farcaster/cast/search?q=stream.warpcast.com&priority_mode=true&limit=25&author_fid=${fid}&viewer_fid=${(session?.user as any).fid ?? 3}`, {
+  const response = await fetch(`${NEYNAR_API_URL}/farcaster/cast/search?q=stream.warpcast.com&priority_mode=true&limit=25&author_fid=${fid}&viewer_fid=${session && session?.user ? (session?.user as any).fid : 3}`, {
     method: "GET",
     headers: {
       "accept": "application/json",

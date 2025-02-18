@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
@@ -36,7 +37,7 @@ interface Cast {
     }
     url: string
   }>
-  reactions: any;
+  reactions: any
 }
 
 interface VideoPlayerProps {
@@ -134,7 +135,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   if (!videoEmbed) return null
 
   return (
-    <div className="relative w-full max-w-[360px] aspect-[9/16] bg-black rounded-2xl overflow-hidden">
+    <div className="relative w-full max-w-[360px] aspect-[9/16] rounded-2xl overflow-hidden">
       <video
         ref={videoRef}
         className="absolute inset-0 size-full object-cover cursor-pointer"
@@ -154,11 +155,11 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         </div>
       )}
       <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
-        {(cast.author as any).verified_addresses.eth_addresses && (cast.author as any).verified_addresses.eth_addresses.length > 0 ? 
+        {(cast.author as any).verified_addresses?.eth_addresses && (cast.author as any).verified_addresses.eth_addresses.length > 0 ? 
           <TipDrawer recipientAddress={(cast.author as any).verified_addresses.eth_addresses[0]} recipientUsername={cast.author.username} recipientPfp={cast.author.pfp_url} />
         : null}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
-          <FrameLink identifier={(cast.author.fid)} type="profile">
+          <FrameLink identifier={cast.author.fid} type="profile">
             <img
               src={cast.author?.pfp_url ?? USER_FALLBACK_IMG_URL}
               alt={`@${cast.author.username}'s PFP`}
@@ -229,6 +230,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
   const { data: feed, error: isError, isLoading } = useSWR<{ casts: Cast[] }>(feedUrl, fetcher)
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({})
   const containerRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const handleResize = () => {
@@ -301,29 +303,32 @@ export default function CastVideos({ session }: { session: Session | null }) {
   }
 
   if (isError) {
-    return <div className="flex justify-center items-center h-screen">Error loading feed. Please try again later.</div>
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <div>Error loading feed</div>
+        <Button onClick={() => router.refresh()} className="mt-4">Refresh</Button>
+      </div>
+    )
   }
 
   if (!feed) return null
 
   return (
-    <div className="flex justify-center items-center w-full min-h-screen bg-transparent">
+    <div className="flex justify-center items-center w-full min-h-screen">
       <div className="relative w-full max-w-[360px] h-screen">
         <div
-          className="absolute flex flex-col items-start z-10"
+          className="fixed z-20 w-auto max-w-[360px] pt-4"
           style={{
-            top: isMobile ? "0px" : "0px",
-            left: isMobile ? "16px" : "0px",
-            width: isMobile ? "auto" : "360px",
-            paddingLeft: isMobile ? "0px" : "16px"
+            top: 0,
+            left: isMobile ? "55px" : "auto"
           }}
         >
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1">
             <button
               onClick={() => setSelectedTab("trending")}
               className={cn(
-                "text-white font-semibold px-2 py-1 rounded transition-colors cursor-pointer",
-                selectedTab === "trending" ? "underline" : "opacity-70 hover:opacity-100"
+                "text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
+                selectedTab === "trending" ? "font-medium" : "opacity-70 hover:opacity-100"
               )}
             >
               Trending
@@ -331,8 +336,8 @@ export default function CastVideos({ session }: { session: Session | null }) {
             <button
               onClick={() => setSelectedTab("you")}
               className={cn(
-                "text-white font-semibold px-2 py-1 rounded transition-colors cursor-pointer",
-                selectedTab === "you" ? "underline" : "opacity-70 hover:opacity-100"
+                "text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
+                selectedTab === "you" ? "font-medium" : "opacity-70 hover:opacity-100"
               )}
               disabled={!session}
             >
@@ -340,7 +345,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
             </button>
           </div>
         </div>
-        <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none">
+        <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none m-0 p-0">
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
@@ -357,7 +362,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
                   data-index={virtualRow.index}
                   className="video-container absolute top-0 left-0 w-full flex items-center justify-center h-screen snap-center snap-always"
                   style={{
-                    transform: `translateY(${virtualRow.start}px) translateY(${isMobile ? '-40px' : '-20px'})`
+                    transform: `translateY(${virtualRow.start}px)`
                   }}
                 >
                   <VideoPlayer
