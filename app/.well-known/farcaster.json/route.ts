@@ -13,7 +13,7 @@ export async function GET() {
       iconUrl: ICON_IMG_URL,
       splashImageUrl: ICON_IMG_URL,
       splashBackgroundColor: "#000000",
-      homeUrl: BASE_URL,
+      homeUrl: `${BASE_URL}/videos`,
     },
   };
   return Response.json(config);

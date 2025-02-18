@@ -4,7 +4,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
-import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
+import { MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Session } from "next-auth"

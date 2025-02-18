@@ -143,7 +143,7 @@ export default function TipDrawer({ recipientAddress, recipientUsername, recipie
     <Drawer onOpenChange={handleDrawerOpen}>
       <DrawerTrigger asChild>
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white flex items-center justify-center cursor-pointer">
-          <DollarSign className="size-5" />
+          <DollarSign className="size-5 text-white" />
         </div>
       </DrawerTrigger>
       <DrawerContent className="max-w-sm mx-auto">
