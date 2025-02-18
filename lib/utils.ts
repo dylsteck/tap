@@ -19,7 +19,8 @@ export const redis = Redis.fromEnv()
 export const CAST_HASH_LENGTH = 42;
 
 export const BANNER_IMG_URL = 'https://i.imgur.com/IufIWER.png';
-export const ICON_IMG_URL = 'https://i.imgur.com/6VubK9B.png';
+export const VIDEOS_BANNER_IMG_URL = 'https://i.imgur.com/KMvTZXI.png';
+export const ICON_IMG_URL = 'https://i.imgur.com/8Knijje.png';
 export const USER_FALLBACK_IMG_URL = 'https://i.imgur.com/sosbyP2.png';
 
 const isDev = process.env.NODE_ENV === 'development';

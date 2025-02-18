@@ -8,14 +8,13 @@ export async function GET() {
       "signature": "MHhiNDMxMzBmNTI5MjFjYTYwMWI0YzdlZWY3OWRiMWEzOWJiM2JhZDViZDFhOWI3NWFkM2VkMDkzZDU3NDU4NWZhN2FhMmM1NDRkYTViZDk5MWRkZWY4MDI3N2YwODZjNDAxMjdlODFiNTkxMDY1OWE0YmE5ZDIzNGM0MWMwZDIyODFj"
     },
     frame: {
-      version: "0.0.1",
+      version: "1",
       name: "tap",
       iconUrl: ICON_IMG_URL,
       splashImageUrl: ICON_IMG_URL,
       splashBackgroundColor: "#000000",
-      homeUrl: BASE_URL,
+      homeUrl: `${BASE_URL}/videos`,
     },
   };
-
   return Response.json(config);
 }

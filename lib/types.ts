@@ -25,8 +25,6 @@ export type AuthData = {
   verified_address?: string;
   signer_uuid: string;
   pfp_url: string;
-  message?: string;
-  signature?: string;
 };
 
 export type SessionData = {
@@ -54,7 +52,7 @@ export type FarcasterApp = {
 // Chat Types
 // ============================================================================
 
-export type ChatProfileId = 'farcaster' | 'clanker' | 'bountycaster'
+export type ChatProfileId = 'farcaster' | 'clanker' | 'bountycaster' | 'base';
 
 // ============================================================================
 // ENS Data Types

@@ -2,15 +2,17 @@
 import { farcasterFrame } from "@farcaster/frame-wagmi-connector";
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
-import { base } from 'wagmi/chains';
+import { mainnet, base, optimism } from 'wagmi/chains';
 
 export const wagmiConfig = createConfig({
-  chains: [base],
+  chains: [mainnet, base, optimism],
   // turn off injected provider discovery
   multiInjectedProviderDiscovery: false,
   connectors: [farcasterFrame()],
   ssr: true,
   transports: {
-    [base.id]: http()
+    [mainnet.id]: http(),
+    [base.id]: http(),
+    [optimism.id]: http()
   },
 });

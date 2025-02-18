@@ -5,10 +5,11 @@ import { Toaster } from 'sonner';
 
 import Providers from '@/components/custom/providers';
 import { ThemeProvider } from '@/components/custom/theme-provider';
-import { frame } from '@/lib/frame';
+import { createFrame } from '@/lib/frame';
 import { BANNER_IMG_URL, BASE_URL } from '@/lib/utils';
 
 export function generateMetadata() {
+  const frame = createFrame()
   return {
     metadataBase: new URL(BASE_URL),
     title: 'tap',

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import baseImg from "@/public/images/base-icon.png";
 import bountycasterImg from "@/public/images/bountycaster-icon.png";
 import clankerImg from "@/public/images/clanker-icon.png";
 import icebreakerImg from "@/public/images/icebreaker-icon.png";
@@ -19,6 +20,12 @@ export const ArrowUpIcon = ({ size = 16 }: { size?: number }) => {
         fill="currentColor"
       ></path>
     </svg>
+  );
+};
+
+export const BaseIcon = ({ size = 15 }) => {
+  return (
+    <img alt="base Icon" className="rounded-full" src={baseImg.src} style={{ width: `${size}px`, height: `${size}px` }} />
   );
 };
 
@@ -64,6 +71,25 @@ export const FarcasterIcon = ({ theme = "light" }: { theme?: "light" | "dark" })
 export const IcebreakerIcon = ({ size = 15 }) => {
   return (
     <img alt="Icebreaker Icon" className="rounded-full" src={icebreakerImg.src} style={{ width: `${size}px`, height: `${size}px` }} />
+  );
+};
+
+export const InfoIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: "currentcolor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM6.25002 7H7.00002H7.75C8.30229 7 8.75 7.44772 8.75 8V11.5V12.25H7.25V11.5V8.5H7.00002H6.25002V7ZM8 6C8.55229 6 9 5.55228 9 5C9 4.44772 8.55229 4 8 4C7.44772 4 7 4.44772 7 5C7 5.55228 7.44772 6 8 6Z"
+        fill="currentColor"
+      ></path>
+    </svg>
   );
 };
 
@@ -177,6 +203,25 @@ export const MessageIcon = ({ size = 16 }: { size?: number }) => {
   );
 };
 
+export const MoreHorizontalIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: "currentcolor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 8C4 8.82843 3.32843 9.5 2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8ZM9.5 8C9.5 8.82843 8.82843 9.5 8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8ZM13.5 9.5C14.3284 9.5 15 8.82843 15 8C15 7.17157 14.3284 6.5 13.5 6.5C12.6716 6.5 12 7.17157 12 8C12 8.82843 12.6716 9.5 13.5 9.5Z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  );
+};
+
 export const StopIcon = ({ size = 16 }: { size?: number }) => {
   return (
     <svg
@@ -189,6 +234,45 @@ export const StopIcon = ({ size = 16 }: { size?: number }) => {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M3 3H13V13H3V3Z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  );
+};
+
+export const TrashIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: "currentcolor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6.75 2.75C6.75 2.05964 7.30964 1.5 8 1.5C8.69036 1.5 9.25 2.05964 9.25 2.75V3H6.75V2.75ZM5.25 3V2.75C5.25 1.23122 6.48122 0 8 0C9.51878 0 10.75 1.23122 10.75 2.75V3H12.9201H14.25H15V4.5H14.25H13.8846L13.1776 13.6917C13.0774 14.9942 11.9913 16 10.6849 16H5.31508C4.00874 16 2.92263 14.9942 2.82244 13.6917L2.11538 4.5H1.75H1V3H1.75H3.07988H5.25ZM4.31802 13.5767L3.61982 4.5H12.3802L11.682 13.5767C11.6419 14.0977 11.2075 14.5 10.6849 14.5H5.31508C4.79254 14.5 4.3581 14.0977 4.31802 13.5767Z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  );
+};
+
+export const UserIcon = () => {
+  return (
+    <svg
+      data-testid="geist-icon"
+      height="16"
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width="16"
+      style={{ color: "currentcolor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.75 0C5.95507 0 4.5 1.45507 4.5 3.25V3.75C4.5 5.54493 5.95507 7 7.75 7H8.25C10.0449 7 11.5 5.54493 11.5 3.75V3.25C11.5 1.45507 10.0449 0 8.25 0H7.75ZM6 3.25C6 2.2835 6.7835 1.5 7.75 1.5H8.25C9.2165 1.5 10 2.2835 10 3.25V3.75C10 4.7165 9.2165 5.5 8.25 5.5H7.75C6.7835 5.5 6 4.7165 6 3.75V3.25ZM2.5 14.5V13.1709C3.31958 11.5377 4.99308 10.5 6.82945 10.5H9.17055C11.0069 10.5 12.6804 11.5377 13.5 13.1709V14.5H2.5ZM6.82945 9C4.35483 9 2.10604 10.4388 1.06903 12.6857L1 12.8353V13V15.25V16H1.75H14.25H15V15.25V13V12.8353L14.931 12.6857C13.894 10.4388 11.6452 9 9.17055 9H6.82945Z"
         fill="currentColor"
       ></path>
     </svg>

@@ -162,7 +162,11 @@ class TapSDK {
     }
   
     return await fetcher(url.toString())
-  }  
+  } 
+  
+  getIcebreakerCredentials(){
+    return ['qBuilder', 'Human', 'bro', 'Chones', 'Skill: Product', 'Skill: Design', 'Skill: Engineering', 'Skill: Marketing', 'Skill: Legal', 'Skill: Finance', 'Skill: Operations', 'Skill: Sales', 'Skill: Support', 'Skill: Talent', 'Skill: Data'];
+  }
 
   async getIcebreakerCredentialProfiles(credentialName: string, limit: number = 100, offset: number = 3): Promise<any> {
     if (!credentialName || credentialName.length === 0) {
