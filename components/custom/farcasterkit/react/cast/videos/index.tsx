@@ -360,7 +360,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
                   key={cast.hash}
                   data-hash={cast.hash}
                   data-index={virtualRow.index}
-                  className="video-container absolute top-0 left-0 w-full h-screen flex items-center justify-center snap-center snap-always -mt-12"
+                  className={`video-container absolute top-0 left-0 w-full h-screen flex ${!isMobile || (virtualRow.index === 0) ? 'items-center' : 'items-start'} justify-center snap-center snap-always -mt-12`}
                   style={{
                     transform: `translateY(${virtualRow.start}px)`
                   }}
