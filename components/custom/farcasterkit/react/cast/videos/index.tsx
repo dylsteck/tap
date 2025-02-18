@@ -219,10 +219,10 @@ interface VirtualItem {
 }
 
 export default function CastVideos({ session }: { session: Session | null }) {
-  const [selectedTab, setSelectedTab] = useState<"trending" | "you">("trending")
+  const [selectedTab, setSelectedTab] = useState<"trending" | "your profile">("trending")
   const [isMobile, setIsMobile] = useState(false)
   const feedUrl = useMemo(() => {
-    if (selectedTab === "you" && session?.user) {
+    if (selectedTab === "your profile" && session?.user) {
       return `/api/farcaster/cast/videos/${(session.user as any).fid}`
     }
     return "/api/farcaster/cast/videos"
@@ -334,14 +334,14 @@ export default function CastVideos({ session }: { session: Session | null }) {
               Trending
             </button>
             <button
-              onClick={() => setSelectedTab("you")}
+              onClick={() => setSelectedTab("your profile")}
               className={cn(
                 "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
-                selectedTab === "you" ? "font-medium" : "opacity-70 hover:opacity-100"
+                selectedTab === "your profile" ? "font-medium" : "opacity-70 hover:opacity-100"
               )}
               disabled={!session}
             >
-              You
+              Your Profile
             </button>
           </div>
         </div>
