@@ -312,7 +312,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
         <div
           className="absolute flex flex-col items-start z-10"
           style={{
-            top: isMobile ? "8px" : "8px",
+            top: isMobile ? "0px" : "0px",
             left: isMobile ? "16px" : "0px",
             width: isMobile ? "auto" : "360px",
             paddingLeft: isMobile ? "0px" : "16px"
@@ -340,7 +340,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
             </button>
           </div>
         </div>
-        <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none pt-2 md:pt-0">
+        <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none">
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
