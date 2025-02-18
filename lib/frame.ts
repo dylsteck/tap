@@ -1,6 +1,7 @@
 import { BANNER_IMG_URL, BASE_URL, ICON_IMG_URL } from "./utils";
 
-export const createFrame = (title = "message tap", imageUrl = BANNER_IMG_URL, urlSuffix = "") => {
+// note: think about when to cycle title between 'message tap', 'watch videos', and 'open tap'
+export const createFrame = (title = "watch videos", imageUrl = BANNER_IMG_URL, urlSuffix = "/videos") => {
   return {
     version: "next",
     imageUrl: imageUrl,

@@ -159,7 +159,9 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         </div>
       )}
       <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
-        {/* <TipDrawer /> */}
+        {(cast.author as any).verified_addresses.eth_addresses && (cast.author as any).verified_addresses.eth_addresses.length > 0 ? 
+          <TipDrawer recipientAddress={(cast.author as any).verified_addresses.eth_addresses[0]} recipientUsername={cast.author.username} recipientPfp={cast.author.pfp_url} />
+        : null}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
           <Link href={`/videos/${cast.author.username}`}>
             <img
@@ -310,9 +312,9 @@ export default function CastVideos({ user }: { user?: any }) {
                   key={cast.hash}
                   data-hash={cast.hash}
                   data-index={virtualRow.index}
-                  className="video-container absolute top-0 left-0 w-full flex items-center justify-center h-screen snap-start snap-always"
+                  className="video-container absolute top-0 left-0 w-full flex items-center justify-center h-screen snap-center snap-always"
                   style={{
-                    transform: `translateY(${virtualRow.start}px)`
+                    transform: `translateY(${virtualRow.start}px) translateY(-20px)`
                   }}
                 >
                   <VideoPlayer
