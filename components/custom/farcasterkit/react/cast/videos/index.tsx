@@ -135,7 +135,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   if (!videoEmbed) return null
 
   return (
-    <div className="relative w-full max-w-[360px] aspect-[9/16] rounded-2xl overflow-hidden">
+    <div className="relative w-full max-w-[340px] md:max-w-[360px] aspect-[9/16] rounded-2xl overflow-hidden">
       <video
         ref={videoRef}
         className="absolute inset-0 size-full object-cover cursor-pointer"
