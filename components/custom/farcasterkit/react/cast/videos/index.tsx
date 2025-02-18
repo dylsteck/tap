@@ -327,7 +327,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
             <button
               onClick={() => setSelectedTab("trending")}
               className={cn(
-                "text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
+                "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
                 selectedTab === "trending" ? "font-medium" : "opacity-70 hover:opacity-100"
               )}
             >
@@ -336,7 +336,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
             <button
               onClick={() => setSelectedTab("you")}
               className={cn(
-                "text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
+                "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
                 selectedTab === "you" ? "font-medium" : "opacity-70 hover:opacity-100"
               )}
               disabled={!session}
