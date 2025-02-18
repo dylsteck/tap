@@ -1,10 +1,11 @@
 'use client';
 
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ComponentProps } from 'react';
+
 import { BetterTooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { ArrowLeft } from 'lucide-react';
 
 export function BackToggle({
   className,
@@ -20,7 +21,7 @@ export function BackToggle({
           className
         )}
       >
-        <ArrowLeft className="h-5 w-5" />
+        <ArrowLeft className="size-5" />
       </button>
     </BetterTooltip>
   );
