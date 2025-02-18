@@ -5,6 +5,7 @@ import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { DollarSign, MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
+import Link from "next/link"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
@@ -18,6 +19,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { fetcher } from "@/lib/utils"
 
+import TipDrawer from "./tip"
 import FrameLink from "../../utils/frame-link"
 
 interface Cast {
@@ -157,14 +159,15 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         </div>
       )}
       <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
+        {/* <TipDrawer /> */}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
-          <FrameLink type="profile" identifier={cast.author.fid}>
+          <Link href={`/videos/${cast.author.username}`}>
             <img
               src={cast.author?.pfp_url || "/placeholder.svg"}
               alt={`@${cast.author.username}'s PFP`}
               className="size-full object-cover cursor-pointer"
             />
-          </FrameLink>
+          </Link>
         </div>
       </div>
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -217,8 +220,8 @@ interface VirtualItem {
   start: number
 }
 
-export default function CastVideos() {
-  const { data: feed, error: isError, isLoading } = useSWR<{ casts: Cast[] }>("/api/farcaster/cast/videos", fetcher)
+export default function CastVideos({ user }: { user?: any }) {
+  const { data: feed, error: isError, isLoading } = useSWR<{ casts: Cast[] }>(user ? `/api/farcaster/cast/videos/${user.fid}` : "/api/farcaster/cast/videos", fetcher)
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({})
   const containerRef = useRef<HTMLDivElement>(null)
 
