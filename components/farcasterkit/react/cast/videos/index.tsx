@@ -227,7 +227,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
     }
     return "/api/farcaster/cast/videos"
   }, [selectedTab, session])
-  const { data: feed, error: isError, isLoading } = useSWR<{ casts: Cast[] }>(feedUrl, fetcher)
+  const { data, error: isError, isLoading } = useSWR<{ result: { casts: Cast[], next: string } }>(feedUrl, fetcher)
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({})
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -242,8 +242,8 @@ export default function CastVideos({ session }: { session: Session | null }) {
   }, [])
 
   const filteredCasts = useMemo(() => {
-    if (!feed?.casts) return []
-    const filtered = feed.casts.filter((cast) => 
+    if (!data?.result?.casts) return []
+    const filtered = data.result.casts.filter((cast) => 
       cast.embeds?.some((embed) => 
         embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
       )
@@ -255,7 +255,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
       }
     }))
     return filtered.sort((a, b) => (b.reactions?.likes_count || 0) - (a.reactions?.likes_count || 0))
-  }, [feed])
+  }, [data])
 
   const rowVirtualizer = useVirtualizer({
     count: filteredCasts.length,
@@ -312,7 +312,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
       )
     }
   
-    if (!feed) return null
+    if (!data) return null
 
     return(
       <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none m-0 p-0">
