@@ -1,4 +1,4 @@
-import { BASE_URL, redis, fetcher } from "./utils"
+import { BASE_URL, fetcher } from "./utils"
 
 class TapSDK {
   private BASE_URL: string

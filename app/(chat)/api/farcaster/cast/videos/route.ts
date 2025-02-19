@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
-import { authMiddleware, WARPCAST_API_URL, redis, NEYNAR_API_URL } from "@/lib/utils";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware, WARPCAST_API_URL, NEYNAR_API_URL } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -10,15 +11,12 @@ export async function GET(request: Request) {
 
   const cacheKey = "cast:videos:trending";
   const cacheEx = 21600;
-  const serverCacheHeaders = {
+  const cacheServerHeaders = {
     "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
     "x-cache-tags": cacheKey
   };
-
-  const cachedData = await redis.get(cacheKey);
-  if (cachedData && typeof cachedData === "string") {
-    return new Response(JSON.stringify(JSON.parse(cachedData)), { status: 200, headers: serverCacheHeaders });
-  }
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  await checkKey(cacheKey, cacheRespInit);
 
   const apiKey = process.env.NEYNAR_API_KEY;
   if (!apiKey) {
@@ -44,6 +42,6 @@ export async function GET(request: Request) {
     }
   };
 
-  await redis.set(cacheKey, JSON.stringify(finalResp), { ex: cacheEx });
-  return new Response(JSON.stringify(finalResp), { status: 200, headers: serverCacheHeaders });
+  const setKeyResp = await setKey(cacheKey, JSON.stringify(finalResp), cacheEx, cacheRespInit);
+  return setKeyResp;
 }

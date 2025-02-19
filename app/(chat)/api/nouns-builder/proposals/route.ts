@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
-import { authMiddleware, NOUNS_BUILDER_GOLDSKY_SUBGRAPH_URL, redis } from "@/lib/utils";
+import { redis } from "@/lib/redis";
+import { authMiddleware, NOUNS_BUILDER_GOLDSKY_SUBGRAPH_URL } from "@/lib/utils";
 
 interface Proposal {
   abstainVotes: number;

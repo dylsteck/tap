@@ -3,7 +3,8 @@ import { z } from 'zod';
 
 import { auth } from "@/app/(auth)/auth";
 import { Bounty } from '@/components/farcasterkit/common/types';
-import { authMiddleware, BOUNTYCASTER_API_URL, redis } from '@/lib/utils';
+import { redis } from '@/lib/redis';
+import { authMiddleware, BOUNTYCASTER_API_URL } from '@/lib/utils';
 
 const statusSchema = z.enum(['all', 'open', 'open-above-1-dollar', 'in-progress', 'completed', 'expired']);
 const querySchema = z.object({

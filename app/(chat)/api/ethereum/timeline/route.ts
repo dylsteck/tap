@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import { redis, ZAPPER_GQL_URL } from '@/lib/utils';
+import { redis } from '@/lib/redis';
+import { ZAPPER_GQL_URL } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {

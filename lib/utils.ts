@@ -1,4 +1,3 @@
-import { Redis } from '@upstash/redis';
 import {
   CoreMessage,
   CoreToolMessage,
@@ -13,8 +12,6 @@ import { twMerge } from "tailwind-merge";
 import { Chat } from "@/db/schema";
 
 import TapSDK from './api';
-
-export const redis = Redis.fromEnv()
 
 export const CAST_HASH_LENGTH = 42;
 

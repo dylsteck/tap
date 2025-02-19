@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
-import { authMiddleware, ICEBREAKER_API_URL, redis } from "@/lib/utils";
+import { redis } from "@/lib/redis";
+import { authMiddleware, ICEBREAKER_API_URL } from "@/lib/utils";
 
 interface IcebreakerProfile {
   profileID: string;

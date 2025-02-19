@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
+import { redis } from '@/lib/redis';
 import { ENSData } from '@/lib/types';
-import { ENS_DATA_API_URL, redis } from '@/lib/utils';
+import { ENS_DATA_API_URL } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {

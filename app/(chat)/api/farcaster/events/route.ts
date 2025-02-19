@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
-import { authMiddleware, EVENTS_API_URL, redis } from "@/lib/utils";
+import { redis } from "@/lib/redis";
+import { authMiddleware, EVENTS_API_URL } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
