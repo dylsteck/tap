@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import SignInWithNeynar, { SIWNResponseData } from "@/components/custom/farcasterkit/react/auth/sign-in-with-neynar";
+import SignInWithNeynar, { SIWNResponseData } from "@/farcasterkit/react/auth/sign-in-with-neynar";
 import { AuthData } from "@/lib/types";
 
 import { login } from "../actions";

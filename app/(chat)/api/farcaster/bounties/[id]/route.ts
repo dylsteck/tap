@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { auth } from "@/app/(auth)/auth";
-import { Bounty } from '@/components/custom/farcasterkit/common/types';
+import { Bounty } from '@/farcasterkit/common/types';
 import { authMiddleware, BOUNTYCASTER_API_URL, redis } from '@/lib/utils';
 
 export async function GET(request: Request) {

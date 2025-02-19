@@ -1,4 +1,5 @@
-import { Bounty } from "../farcasterkit/react/bounty";
+import { Bounty } from "@/farcasterkit/react/bounty";
+
 import { ToolResponse } from "../tool-response";
 
 export default function BountiesTool({ bounties }: { bounties: any }){

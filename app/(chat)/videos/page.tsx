@@ -1,6 +1,6 @@
 import { auth } from '@/app/(auth)/auth';
-import CastVideos from '@/components/custom/farcasterkit/react/cast/videos';
 import { VideoHeader } from '@/components/custom/video-header';
+import CastVideos from '@/farcasterkit/react/cast/videos';
 import { createFrame } from '@/lib/frame';
 import { BASE_URL, VIDEOS_BANNER_IMG_URL } from '@/lib/utils';
 

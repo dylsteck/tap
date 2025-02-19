@@ -4,7 +4,7 @@ import { asc, desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import { SIWNResponseData } from "@/components/custom/farcasterkit/react/auth/sign-in-with-neynar";
+import { SIWNResponseData } from "@/farcasterkit/react/auth/sign-in-with-neynar";
 import { AuthData } from "@/lib/types";
 
 import { user, chat, User, farcasterApps } from "./schema";

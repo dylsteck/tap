@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 
+import { FarcasterApp } from '@/farcasterkit/react/app';
+import { Cast } from '@/farcasterkit/react/cast';
+import { Token } from '@/farcasterkit/react/ethereum/token';
+
 import CastsTool from './tools/casts';
 import EventsTool from './tools/events';
 import { SidebarProvider } from '../ui/sidebar';
 import { Skeleton } from '../ui/skeleton';
-import { FarcasterApp } from './farcasterkit/react/app';
-import { Cast } from './farcasterkit/react/cast';
-import { Token } from './farcasterkit/react/ethereum/token';
 import BountiesTool from './tools/bounties';
 import ClankerTrendingTool from './tools/clanker-trending';
 

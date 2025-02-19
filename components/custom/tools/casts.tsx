@@ -1,4 +1,5 @@
-import { Cast } from "../farcasterkit/react/cast";
+import { Cast } from "@/farcasterkit/react/cast";
+
 import { ToolResponse } from "../tool-response";
 
 export default function CastsTool({ casts }: { casts: any }){

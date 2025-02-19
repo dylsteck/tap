@@ -1,5 +1,6 @@
-import { Cast } from "../farcasterkit/react/cast";
-import { Event } from '../farcasterkit/react/event';
+import { Cast } from "@/farcasterkit/react/cast";
+import { Event } from '@/farcasterkit/react/event';
+
 import { ToolResponse } from "../tool-response";
 
 export default function EventsTool({ events }: { events: any }){
