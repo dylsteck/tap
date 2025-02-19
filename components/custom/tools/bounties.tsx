@@ -1,4 +1,4 @@
-import { Bounty } from "@/farcasterkit/react/bounty";
+import { Bounty } from "@/components/farcasterkit/react/bounty";
 
 import { ToolResponse } from "../tool-response";
 

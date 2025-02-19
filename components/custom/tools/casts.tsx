@@ -1,4 +1,4 @@
-import { Cast } from "@/farcasterkit/react/cast";
+import { Cast } from "@/components/farcasterkit/react/cast";
 
 import { ToolResponse } from "../tool-response";
 

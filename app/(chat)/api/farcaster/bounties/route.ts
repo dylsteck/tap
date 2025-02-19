@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { auth } from "@/app/(auth)/auth";
-import { Bounty } from '@/farcasterkit/common/types';
+import { Bounty } from '@/components/farcasterkit/common/types';
 import { authMiddleware, BOUNTYCASTER_API_URL, redis } from '@/lib/utils';
 
 const statusSchema = z.enum(['all', 'open', 'open-above-1-dollar', 'in-progress', 'completed', 'expired']);

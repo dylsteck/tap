@@ -1,5 +1,5 @@
-import { Cast } from "@/farcasterkit/react/cast";
-import { Event } from '@/farcasterkit/react/event';
+import { Cast } from "@/components/farcasterkit/react/cast";
+import { Event } from '@/components/farcasterkit/react/event';
 
 import { ToolResponse } from "../tool-response";
 

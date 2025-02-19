@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 
-import { FarcasterApp } from '@/farcasterkit/react/app';
-import { Cast } from '@/farcasterkit/react/cast';
-import { Token } from '@/farcasterkit/react/ethereum/token';
+import { FarcasterApp } from '@/components/farcasterkit/react/app';
+import { Cast } from '@/components/farcasterkit/react/cast';
+import { Token } from '@/components/farcasterkit/react/ethereum/token';
 
 import CastsTool from './tools/casts';
 import EventsTool from './tools/events';
