@@ -294,24 +294,60 @@ export default function CastVideos({ session }: { session: Session | null }) {
     }
   }, [])
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Skeleton className="w-full max-w-[360px] aspect-[9/16]" />
+  const renderBody = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-start mt-[10%] h-full">
+          <Skeleton className="w-full max-w-[360px] aspect-[9/16]" />
+        </div>
+      )
+    }
+  
+    if (isError) {
+      return (
+        <div className="flex flex-col justify-center items-center h-screen">
+          <div>Error loading feed</div>
+          <Button onClick={() => router.refresh()} className="mt-4">Refresh</Button>
+        </div>
+      )
+    }
+  
+    if (!feed) return null
+
+    return(
+      <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none m-0 p-0">
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative"
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
+          const cast = filteredCasts[virtualRow.index]
+          return (
+            <div
+              key={cast.hash}
+              data-hash={cast.hash}
+              data-index={virtualRow.index}
+              className={`video-container absolute top-0 left-0 w-full h-screen flex ${!isMobile || (virtualRow.index === 0) ? 'items-center' : 'items-start'} justify-center snap-center snap-always -mt-12`}
+              style={{
+                transform: `translateY(${virtualRow.start}px)`
+              }}
+            >
+              <VideoPlayer
+                cast={cast}
+                isMuted={mutedStates[cast.hash]}
+                toggleMute={toggleMute}
+                handleExpand={handleExpand}
+              />
+            </div>
+          )
+        })}
       </div>
+    </div>
     )
   }
-
-  if (isError) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <div>Error loading feed</div>
-        <Button onClick={() => router.refresh()} className="mt-4">Refresh</Button>
-      </div>
-    )
-  }
-
-  if (!feed) return null
 
   return (
     <div className="flex justify-center items-center w-full min-h-screen">
@@ -333,49 +369,20 @@ export default function CastVideos({ session }: { session: Session | null }) {
             >
               Trending
             </button>
-            <button
-              onClick={() => setSelectedTab("your profile")}
-              className={cn(
-                "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
-                selectedTab === "your profile" ? "font-medium" : "opacity-70 hover:opacity-100"
-              )}
-              disabled={!session}
-            >
-              Your Profile
-            </button>
+            {session ? 
+              <button
+                onClick={() => setSelectedTab("your profile")}
+                className={cn(
+                  "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
+                  selectedTab === "your profile" ? "font-medium" : "opacity-70 hover:opacity-100"
+                )}
+              >
+                Your Profile
+              </button>
+            : null}
           </div>
         </div>
-        <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none m-0 p-0">
-          <div
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative"
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
-              const cast = filteredCasts[virtualRow.index]
-              return (
-                <div
-                  key={cast.hash}
-                  data-hash={cast.hash}
-                  data-index={virtualRow.index}
-                  className={`video-container absolute top-0 left-0 w-full h-screen flex ${!isMobile || (virtualRow.index === 0) ? 'items-center' : 'items-start'} justify-center snap-center snap-always -mt-12`}
-                  style={{
-                    transform: `translateY(${virtualRow.start}px)`
-                  }}
-                >
-                  <VideoPlayer
-                    cast={cast}
-                    isMuted={mutedStates[cast.hash]}
-                    toggleMute={toggleMute}
-                    handleExpand={handleExpand}
-                  />
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        {renderBody()}
       </div>
     </div>
   )
