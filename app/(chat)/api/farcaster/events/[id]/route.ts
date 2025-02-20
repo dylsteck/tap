@@ -1,6 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
-import { redis } from "@/lib/redis";
-import { authMiddleware, EVENTS_API_URL } from "@/lib/utils";
+import { eventcaster } from "@/components/farcasterkit/services/eventcaster";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -16,16 +17,16 @@ export async function GET(request: Request) {
     return new Response(JSON.stringify("Query parameter 'id' is required!"), { status: 400 });
   }
 
-  const cacheKey = `event:${id}`
-  let data = await redis.get(cacheKey);
-  if (!data) {
-    const response = await fetch(`${EVENTS_API_URL}/events/${id}`);
-    if (!response.ok) return new Response("Failed to fetch data from Events.xyz API!", { status: response.status });
-    data = await response.json();
-    await redis.set(cacheKey, JSON.stringify(data), { ex: 60 * 60 });
-  } else if (typeof data === "string") {
-    data = JSON.parse(data);
-  }
+  const cacheKey = `event:${id}`;
+  const cacheEx = 3600;
+  const cacheServerHeaders = {
+    "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+    "x-cache-tags": cacheKey
+  };
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  await checkKey(cacheKey, cacheRespInit);
 
-  return new Response(JSON.stringify(data), { status: 200 });
+  const data = await eventcaster.getEventById(id);
+  const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
+  return setKeyResp;
 }

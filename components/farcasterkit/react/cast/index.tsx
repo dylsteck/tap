@@ -4,7 +4,7 @@ import React from 'react';
 
 import { HeartIcon, MessageIcon } from '@/components/custom/icons';
 
-import { NeynarCastV2 } from '../../common/types/farcaster';
+import { NeynarCastV2 } from '../../common/types/neynar';
 import FrameLink from '../utils/frame-link';
 
 export const Cast = ({ cast }: { cast: NeynarCastV2 }) => {

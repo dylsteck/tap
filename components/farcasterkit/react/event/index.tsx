@@ -4,7 +4,7 @@ import React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { EventData } from "../../common/types/events";
+import { EventcasterEvent } from "../../common/types/events";
 
 function formatDate(
   startTimestamp: number,
@@ -38,7 +38,7 @@ function formatDate(
   return `${startDate} at ${startTime}`;
 }
 
-export function Event({ event }: { event: EventData }) {
+export function Event({ event }: { event: EventcasterEvent }) {
   return (
     <div className="flex flex-col w-full h-auto rounded-lg shadow-md overflow-hidden cursor-pointer" onClick={() => window.open(`https://events.xyz/events/${event.id}`, '_blank')}>
       {event.image_url ? 

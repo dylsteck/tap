@@ -23,7 +23,6 @@ export const BOUNTYCASTER_API_URL = 'https://www.bountycaster.xyz/api/v1';
 export const ENS_DATA_API_URL = 'https://api.ensdata.net';
 export const EVENTS_API_URL = 'https://events.xyz/api';
 export const ICEBREAKER_API_URL = 'https://app.icebreaker.xyz/api/v1';
-export const WARPCAST_API_URL = 'https://api.warpcast.com';
 export const ZAPPER_GQL_URL = 'https://public.zapper.xyz/graphql';
 
 export const tapSDK = new TapSDK();
@@ -38,14 +37,14 @@ interface ApplicationError extends Error {
 }
 
 export const authMiddleware = (session: Session | null, url: Request['url'], headers: Request['headers']): Response | void => {
-  // TODO: fix
-  if (!session?.user) {
-    const hostHeader = headers.get("host");
-    const expectedHost = new URL(BASE_URL).host;
-    if (hostHeader !== expectedHost) {
-      return Response.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(url)}`, url));
-    }
-  }
+  // TODO: fix!! also the Response might need to be handled differently in the API routes
+  // if (!session?.user) {
+  //   const hostHeader = headers.get("host");
+  //   const expectedHost = new URL(BASE_URL).host;
+  //   if (hostHeader !== expectedHost) {
+  //     return Response.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(url)}`, url));
+  //   }
+  // }
 }
 
 export const fetcher = async (url: string, options?: RequestInit) => {

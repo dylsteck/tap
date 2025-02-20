@@ -1,46 +1,44 @@
-export type Host = {
-  fid: number;
-  username: string;
-  display_name: string;
-  pfp_url: string;
-  custody_address?: string;
-  follower_count?: number;
-  following_count?: number;
-  verified_addresses?: {
-    eth_addresses: string[];
-    sol_addresses: string[];
-  };
-  verified_accounts?: {
-    platform: string;
-    username: string;
-  }[];
-  power_badge?: boolean;
-  location?: {
-    latitude: number;
-    longitude: number;
-    address: {
-      city: string;
-      state: string;
-      state_code: string;
-      country: string;
-      country_code: string;
-    };
-  };
-  profile?: {
-    bio: {
-      text: string;
-    };
-  };
-}
-
-export type EventData = {
+export type EventcasterEvent = {
   id: string;
   title: string;
   start_date: number;
   end_date: number;
   display_tz: string;
   frame_display_time?: string;
-  hosts: Host[];
+  hosts: {
+    fid: number;
+    username: string;
+    display_name: string;
+    pfp_url: string;
+    custody_address?: string;
+    follower_count?: number;
+    following_count?: number;
+    verified_addresses?: {
+      eth_addresses: string[];
+      sol_addresses: string[];
+    };
+    verified_accounts?: {
+      platform: string;
+      username: string;
+    }[];
+    power_badge?: boolean;
+    location?: {
+      latitude: number;
+      longitude: number;
+      address: {
+        city: string;
+        state: string;
+        state_code: string;
+        country: string;
+        country_code: string;
+      };
+    };
+    profile?: {
+      bio: {
+        text: string;
+      };
+    };
+  }[];
   image_url?: string;
   description?: string;
   time_zone?: string;
@@ -88,7 +86,40 @@ export type EventData = {
     created_at?: number;
     parent_url?: string;
     moderator_fids?: number[];
-    lead?: Host;
+    lead?: {
+      fid: number;
+      username: string;
+      display_name: string;
+      pfp_url: string;
+      custody_address?: string;
+      follower_count?: number;
+      following_count?: number;
+      verified_addresses?: {
+        eth_addresses: string[];
+        sol_addresses: string[];
+      };
+      verified_accounts?: {
+        platform: string;
+        username: string;
+      }[];
+      power_badge?: boolean;
+      location?: {
+        latitude: number;
+        longitude: number;
+        address: {
+          city: string;
+          state: string;
+          state_code: string;
+          country: string;
+          country_code: string;
+        };
+      };
+      profile?: {
+        bio: {
+          text: string;
+        };
+      };
+    };
   };
   context?: {
     is_online?: boolean;
