@@ -1,6 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
-import { redis } from "@/lib/redis";
-import { authMiddleware, NEYNAR_API_URL } from "@/lib/utils";
+import { neynar } from "@/components/farcasterkit/services/neynar";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -9,31 +10,24 @@ export async function GET(request: Request) {
     return authResponse;
   }
 
-  const cacheKey = 'trending_casts';
-  const cachedData = await redis.get(cacheKey);
+  const cacheKey = "trending_casts";
+  const cacheEx = 3600;
+  const cacheServerHeaders = {
+    "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+    "x-cache-tags": cacheKey
+  };
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  const cachedData = await checkKey(cacheKey, cacheRespInit);
 
-  if (cachedData && typeof cachedData === 'string') {
-    return new Response(JSON.stringify(JSON.parse(cachedData)), { status: 200 });
+  if (cachedData) {
+    return cachedData;
   }
 
-  const apiKey = process.env.NEYNAR_API_KEY
-  if (!apiKey) {
-    return new Response("NEYNAR_API_KEY is not set in the environment variables", { status: 500 })
+  try {
+    const data = await neynar.getTrendingCasts();
+    const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
+    return setKeyResp;
+  } catch {
+    return new Response(JSON.stringify("Failed to fetch trending feed from Neynar API!"), { status: 500 });
   }
-
-  const response = await fetch(`${NEYNAR_API_URL}/farcaster/feed/trending`, {
-    method: "GET",
-    headers: {
-      'accept': 'application/json',
-      'x-api-key': apiKey
-    }
-  });
-  if (!response.ok) {
-    return new Response(JSON.stringify("Failed to fetch trending feed from Neynar API!"), { status: response.status });
-  }
-
-  const data = await response.json();
-  await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 });
-
-  return new Response(JSON.stringify(data), { status: 200 });
 }

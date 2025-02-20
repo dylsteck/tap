@@ -1,6 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
-import { redis } from "@/lib/redis";
-import { authMiddleware, NEYNAR_API_URL } from "@/lib/utils";
+import { neynar } from "@/components/farcasterkit/services/neynar";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -21,32 +22,25 @@ export async function GET(request: Request) {
     return new Response(JSON.stringify("Cast type parameter is required and must be either 'url' or 'hash'!"), { status: 400 });
   }
 
-  const apiKey = process.env.NEYNAR_API_KEY
-  if (!apiKey) {
-    return new Response("NEYNAR_API_KEY is not set in the environment variables", { status: 500 })
-  }
-
   const cacheKey = `cast:${identifier}`;
-  const cachedData = await redis.get(cacheKey);
+  const cacheEx = 43200;
+  const cacheServerHeaders = {
+    "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+    "x-cache-tags": cacheKey
+  };
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  const cachedData = await checkKey(cacheKey, cacheRespInit);
 
-  if (cachedData && typeof cachedData === 'string') {
-    return new Response(JSON.stringify(JSON.parse(cachedData)), { status: 200 });
+  if (cachedData) {
+    return cachedData;
   }
 
-  const response = await fetch(`${NEYNAR_API_URL}/farcaster/cast?type=${type}&identifier=${identifier}`, {
-    method: "GET",
-    headers: {
-      'accept': 'application/json',
-      'x-api-key': apiKey
-    }
-  });
+  try {
+    const data = await neynar.getCast({ identifier, type });
 
-  if (!response.ok) {
-    return new Response(JSON.stringify("Failed to fetch data from NEYNAR API!"), { status: response.status });
+    const finalResp = new Response(JSON.stringify(data), cacheRespInit);
+    return await setKey(cacheKey, JSON.stringify(data), cacheEx, finalResp);
+  } catch {
+    return new Response(JSON.stringify("Failed to fetch data from NEYNAR API!"), { status: 500 });
   }
-
-  const data = await response.json();
-  await redis.set(cacheKey, JSON.stringify(data), { ex: 43200 });
-
-  return new Response(JSON.stringify(data), { status: 200 });
 }

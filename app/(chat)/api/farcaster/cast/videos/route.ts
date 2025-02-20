@@ -1,7 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
 import { neynar } from "@/components/farcasterkit/services/neynar";
 import { checkKey, setKey } from "@/lib/redis";
-import { authMiddleware, WARPCAST_API_URL, NEYNAR_API_URL } from "@/lib/utils";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -18,11 +18,6 @@ export async function GET(request: Request) {
   };
   const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
   await checkKey(cacheKey, cacheRespInit);
-
-  const apiKey = process.env.NEYNAR_API_KEY;
-  if (!apiKey) {
-    return new Response("NEYNAR_API_KEY is not set in the environment variables", { status: 500 });
-  }
 
   const data = await neynar.castSearch({
     q: "stream.warpcast.com",

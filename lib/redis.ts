@@ -13,6 +13,7 @@ export const redis = Redis.fromEnv()
  * @returns {Promise<Response | null>} - A promise that resolves to a Response object or null.
  */
 export async function checkKey(key: string, init?: ResponseInit): Promise<Response | null>{
+    // TODO: fix, for some reason either being skipped/passed over or just not working
     const data = await redis.get(key);
     if(data && typeof data === "string"){
         return new Response(JSON.stringify(JSON.parse(data)), init ? init : undefined);

@@ -76,13 +76,6 @@ class TapSDK {
     return await fetcher(`${this.BASE_URL}/api/farcaster/cast/conversation?hash=${hash}`);
   }
 
-  async getCastConversationSummary(hash: string): Promise<any> {
-    if (!hash || hash.length === 0) {
-      throw new Error("Cast hash is required");
-    }
-    return await fetcher(`${this.BASE_URL}/api/farcaster/cast/conversation/summary?hash=${hash}`);
-  }
-
   async getChannelsCasts(params: {
     channel_ids: string,
     with_recasts?: boolean,
