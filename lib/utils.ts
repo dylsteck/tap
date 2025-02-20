@@ -26,12 +26,9 @@ const localUrl = `http://localhost:${port}`;
 
 export const BASE_URL = isDev ? localUrl : 'https://tap.computer';
 export const BOUNTYCASTER_API_URL = 'https://www.bountycaster.xyz/api/v1';
-export const CLANKER_API_URL = 'https://www.clanker.world/api';
 export const ENS_DATA_API_URL = 'https://api.ensdata.net';
 export const EVENTS_API_URL = 'https://events.xyz/api';
-export const FARCASTER_INDEX_API_URL = 'https://www.farcaster.in/api';
 export const ICEBREAKER_API_URL = 'https://app.icebreaker.xyz/api/v1';
-export const NEYNAR_API_URL = 'https://api.neynar.com/v2';
 export const WARPCAST_API_URL = 'https://api.warpcast.com';
 export const ZAPPER_GQL_URL = 'https://public.zapper.xyz/graphql';
 

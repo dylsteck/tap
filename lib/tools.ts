@@ -37,20 +37,6 @@ export const profiles = [
           return castData.cast;
         },
       }),
-      askNeynarDocs: tool({
-        description: 'Ask a question to Neynar\'s AI assistant for insights on how to use Neynar to build on top of Farcaster. The assistant can also answer general questions about building on Farcaster',
-        parameters: z.object({
-          question: z.string(),
-        }),
-        execute: async ({ question }) => {
-          try {
-            return await tapSDK.askNeynarDocs(question);
-          } catch (error) {
-            console.error('Error in askNeynarDocs tool:', error);
-            return `Error querying Neynar: ${(error as Error).message}`;
-          }
-        },
-      }),
       castSearch: tool({
         description: 'Search over content(posts, casts as Farcaster calls them) on Farcaster per a given query.',
         parameters: z.object({

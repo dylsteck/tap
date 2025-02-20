@@ -1,6 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
-import { redis } from "@/lib/redis";
-import { authMiddleware, CLANKER_API_URL } from "@/lib/utils";
+import { clanker } from "@/components/farcasterkit/services/clanker";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -17,18 +18,15 @@ export async function GET(request: Request) {
   }
 
   const cacheKey = `clanker:${address}`;
-  let data = await redis.get(cacheKey);
-  if (!data) {
-    const response = await fetch(`${CLANKER_API_URL}/get-clanker-by-address?address=${address}`, {
-        headers: {
-            'x-api-key': process.env.CLANKER_API_KEY ?? ''
-        }
-    });
-    if (!response.ok) return new Response("Failed to fetch data from Clanker API!", { status: response.status });
-    data = await response.json();
-    await redis.set(cacheKey, JSON.stringify(data), { ex: 30 * 60 });
-  } else if (typeof data === "string") {
-    data = JSON.parse(data);
-  }
-  return new Response(JSON.stringify(data), { status: 200 });
+  const cacheEx = 1800;
+  const cacheServerHeaders = {
+    "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+    "x-cache-tags": cacheKey
+  };
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  await checkKey(cacheKey, cacheRespInit);
+
+  const data = await clanker.getClankerByAddress(address);
+  const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
+  return setKeyResp;
 }

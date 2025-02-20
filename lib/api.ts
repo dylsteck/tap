@@ -7,37 +7,6 @@ class TapSDK {
     this.BASE_URL = BASE_URL
   }
 
-  async askNeynarDocs(question: string): Promise<string> {
-    try {
-      const response = await fetch(`${this.BASE_URL}/api/docs/neynar`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Neynar API request failed with status ${response.status}`);
-      }
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let result = '';
-
-      while (true) {
-        const { done, value } = await reader?.read() || {};
-        if (done) break;
-        result += decoder.decode(value, { stream: true });
-      }
-
-      return result.trim() || 'No response from Neynar';
-    } catch (error) {
-      console.error('Error in askNeynarDocs:', error);
-      return `Error querying Neynar: ${error instanceof Error ? error.message : 'Unknown error'}`;
-    }
-  }
-
   async castSearch(query: string): Promise<any> {
     return await fetcher(`${this.BASE_URL}/api/farcaster/cast/search?q=${query}`)
   }

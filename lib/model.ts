@@ -20,7 +20,6 @@ CORE PRINCIPLES:
 4. Emphasize decentralized social and blockchain technologies
 
 AVAILABLE TOOLS:
-- askNeynarDocs: Ask Neynar's AI for insights
 - analyzeCast: Analyze a specific cast by its hash
 - castSearch: Search Farcaster content
 - getBounties: Retrieve Farcaster bounties
