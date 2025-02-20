@@ -3,7 +3,8 @@ import { z } from "zod"
 
 import { BaseIcon, BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
 
-import { BASE_URL, CAST_HASH_LENGTH, tapSDK } from "./utils"
+import { tapSDK } from "./api";
+import { BASE_URL, CAST_HASH_LENGTH } from "./utils"
 
 export const profiles = [
   {

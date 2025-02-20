@@ -1,39 +1,38 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-import { redis } from '@/lib/redis';
-import { ENSData } from '@/lib/types';
-import { ENS_DATA_API_URL } from '@/lib/utils';
+import { checkKey, setKey } from "@/lib/redis";
+import { ENSData } from "@/lib/types";
+
+const ENS_DATA_API_URL = "https://api.ensdata.net";
 
 export async function GET(request: Request) {
   try {
     const { pathname } = new URL(request.url);
     const name = pathname.split("/").pop();
-    const cacheKey = `zapper:ens:${name}`;
 
-    const cachedData = await redis.get(cacheKey);
-    if (cachedData) {
-      try {
-        const parsedData = typeof cachedData === 'string' ? JSON.parse(cachedData) : cachedData;
-        return NextResponse.json(parsedData);
-      } catch (parseError) {
-        console.error('Error parsing cached ENS data:', parseError);
-      }
+    if (!name) {
+      return NextResponse.json({ error: "Missing ENS name" }, { status: 400 });
     }
 
+    const cacheKey = `ensdata:ens:${name}`;
+    const cacheEx = 3600;
+    const cacheServerHeaders = {
+      "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+      "x-cache-tags": cacheKey,
+    };
+    const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+    await checkKey(cacheKey, cacheRespInit);
+
     const response = await fetch(`${ENS_DATA_API_URL}/${name}?expiry=true`);
-    
     if (!response.ok) {
       throw new Error(`Failed to fetch ENS data: ${response.status}`);
     }
 
     const ensData: ENSData = await response.json();
-    await redis.set(cacheKey, JSON.stringify(ensData), { ex: 60 * 60 });
-    return NextResponse.json(ensData);
+    const setKeyResp = await setKey(cacheKey, JSON.stringify(ensData), cacheEx, cacheRespInit);
+    return setKeyResp;
   } catch (error) {
-    console.error('Error fetching ENS data:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch ENS data' },
-      { status: 500 }
-    );
+    console.error("Error fetching ENS data:", error);
+    return NextResponse.json({ error: "Failed to fetch ENS data" }, { status: 500 });
   }
 }

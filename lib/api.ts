@@ -2,9 +2,17 @@ import { BASE_URL, fetcher } from "./utils"
 
 class TapSDK {
   private BASE_URL: string
+  private static instance: TapSDK
 
   constructor() {
     this.BASE_URL = BASE_URL
+  }
+
+  static getInstance(): TapSDK {
+    if (!TapSDK.instance) {
+      TapSDK.instance = new TapSDK()
+    }
+    return TapSDK.instance
   }
 
   async castSearch(query: string): Promise<any> {
@@ -197,4 +205,4 @@ class TapSDK {
   }
 }
 
-export default TapSDK
+export const tapSDK = TapSDK.getInstance()

@@ -5,8 +5,6 @@ import { twMerge } from "tailwind-merge";
 
 import { Chat } from "@/db/schema";
 
-import TapSDK from './api';
-
 export const CAST_HASH_LENGTH = 42;
 
 export const BANNER_IMG_URL = 'https://i.imgur.com/IufIWER.png';
@@ -19,13 +17,6 @@ const port = process.env.PORT || 3000;
 const localUrl = `http://localhost:${port}`;
 
 export const BASE_URL = isDev ? localUrl : 'https://tap.computer';
-export const BOUNTYCASTER_API_URL = 'https://www.bountycaster.xyz/api/v1';
-export const ENS_DATA_API_URL = 'https://api.ensdata.net';
-export const EVENTS_API_URL = 'https://events.xyz/api';
-export const ICEBREAKER_API_URL = 'https://app.icebreaker.xyz/api/v1';
-export const ZAPPER_GQL_URL = 'https://public.zapper.xyz/graphql';
-
-export const tapSDK = new TapSDK();
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 import { auth } from "@/app/(auth)/auth";
-import { Bounty } from '@/components/farcasterkit/common/types';
-import { redis } from '@/lib/redis';
-import { authMiddleware, BOUNTYCASTER_API_URL } from '@/lib/utils';
+import { bountycaster } from "@/components/farcasterkit/services/bountycaster";
+import { checkKey, setKey } from "@/lib/redis";
+import { authMiddleware } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -12,47 +12,23 @@ export async function GET(request: Request) {
     return authResponse;
   }
 
-  try {
-    const { pathname } = new URL(request.url);
-    const id = pathname.split("/").pop();
-    
-    if (!id) {
-      return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
-    }
-    
-    const cacheKey = `bounty:${id}`;
-    const cachedBounty = await redis.get(cacheKey);
+  const { pathname } = new URL(request.url);
+  const id = pathname.split("/").pop();
 
-    if (cachedBounty) {
-      try {
-        const parsedBounty = typeof cachedBounty === 'string' ? JSON.parse(cachedBounty) : cachedBounty;
-        return NextResponse.json(parsedBounty);
-      } catch (parseError) {
-        console.error('Error parsing cached bounty:', parseError);
-        const response = await fetch(`${BOUNTYCASTER_API_URL}/bounty/${id}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch bounty: ${response.status}`);
-        }
-        const bounty: Bounty = await response.json();
-        await redis.set(cacheKey, JSON.stringify(bounty), { ex: 60 * 60 });
-        return NextResponse.json(bounty);
-      }
-    }
-
-    const response = await fetch(`${BOUNTYCASTER_API_URL}/bounty/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch bounty: ${response.status}`);
-    }
-
-    const bounty: Bounty = await response.json();
-    await redis.set(cacheKey, JSON.stringify(bounty), { ex: 60 * 60 });
-
-    return NextResponse.json(bounty);
-  } catch (error) {
-    console.error('Error fetching bounty:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch bounty' },
-      { status: 500 }
-    );
+  if (!id) {
+    return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
   }
+
+  const cacheKey = `bounty:${id}`;
+  const cacheEx = 3600;
+  const cacheServerHeaders = {
+    "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
+    "x-cache-tags": cacheKey
+  };
+  const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
+  await checkKey(cacheKey, cacheRespInit);
+
+  const data = await bountycaster.getBountyById(id);
+  const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
+  return setKeyResp;
 }
