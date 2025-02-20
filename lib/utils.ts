@@ -48,14 +48,14 @@ interface ApplicationError extends Error {
 }
 
 export const authMiddleware = (session: Session | null, url: Request['url'], headers: Request['headers']): Response | void => {
-  // TODO: fix authMiddleware and add the commented out logic below back in
-  // if (!session?.user) {
-  //   const hostHeader = headers.get("host");
-  //   const expectedHost = new URL(BASE_URL).host;
-  //   if (hostHeader !== expectedHost) {
-  //     return Response.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(url)}`, url));
-  //   }
-  // }
+  // TODO: fix
+  if (!session?.user) {
+    const hostHeader = headers.get("host");
+    const expectedHost = new URL(BASE_URL).host;
+    if (hostHeader !== expectedHost) {
+      return Response.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(url)}`, url));
+    }
+  }
 }
 
 export const fetcher = async (url: string, options?: RequestInit) => {
