@@ -11,6 +11,7 @@ import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
+import { NeynarCastV2 } from "@/components/farcasterkit/common/types/neynar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,24 +25,8 @@ import { cn, fetcher, USER_FALLBACK_IMG_URL } from "@/lib/utils"
 import TipDrawer from "./tip"
 import FrameLink from "../../utils/frame-link"
 
-interface Cast {
-  hash: string
-  author: {
-    fid: string
-    username: string
-    pfp_url: string
-  }
-  embeds: Array<{
-    metadata?: {
-      content_type?: string
-    }
-    url: string
-  }>
-  reactions: any
-}
-
 interface VideoPlayerProps {
-  cast: Cast
+  cast: NeynarCastV2
   isMuted: boolean
   toggleMute: (hash: string) => void
   handleExpand: (hash: string) => void
@@ -159,7 +144,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
           <TipDrawer recipientAddress={(cast.author as any).verified_addresses.eth_addresses[0]} recipientUsername={cast.author.username} recipientPfp={cast.author.pfp_url} />
         : null}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
-          <FrameLink identifier={cast.author.fid} type="profile">
+          <FrameLink identifier={`${cast.author.fid}`} type="profile">
             <img
               src={cast.author?.pfp_url ?? USER_FALLBACK_IMG_URL}
               alt={`@${cast.author.username}'s PFP`}
@@ -227,7 +212,7 @@ export default function CastVideos({ session }: { session: Session | null }) {
     }
     return "/api/farcaster/cast/videos"
   }, [selectedTab, session])
-  const { data, error: isError, isLoading } = useSWR<{ result: { casts: Cast[], next: string } }>(feedUrl, fetcher)
+  const { data, error: isError, isLoading } = useSWR<{ result: { casts: NeynarCastV2[], next: string } }>(feedUrl, fetcher)
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({})
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
