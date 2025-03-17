@@ -11,19 +11,16 @@ import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
+import { VideoHeader } from "@/components/custom/video-header"
 import { NeynarCastV2 } from "@/components/farcasterkit/common/types/neynar"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem
-} from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { cn, fetcher, USER_FALLBACK_IMG_URL } from "@/lib/utils"
 
 import TipDrawer from "./tip"
 import FrameLink from "../../utils/frame-link"
+
 
 interface VideoPlayerProps {
   cast: NeynarCastV2
@@ -162,35 +159,15 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         >
           {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full bg-black/40 hover:bg-black/75 transition-colors"
-            >
-              <MoreVertical className="size-6 text-white" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-black/80 p-1 w-24 space-y-1">
-            <FrameLink type="url" identifier={`https://warpcast.com/${cast.author.username}/${cast.hash}`}>
-              <DropdownMenuItem className="cursor-pointer">
-                <ExternalLink className="mr-2 size-4" />
-                View Cast
-              </DropdownMenuItem>
-            </FrameLink>
-            <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%2Ftap!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
-              <DropdownMenuItem className="cursor-pointer">
-                <Share2 className="mr-2 size-4" />
-                Share
-              </DropdownMenuItem>
-            </FrameLink>
-            <DropdownMenuItem className="cursor-pointer" onClick={() => handleExpand(cast.hash)}>
-              <Maximize2 className="mr-2 size-4" />
-              Expand
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%2Ftap!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="flex items-center justify-center rounded-full bg-black/40 hover:bg-black/75 transition-colors p-2"
+          >
+            <Share2 className="size-4" />
+          </Button>
+          </FrameLink>
       </div>
     </div>
   )
@@ -203,7 +180,7 @@ interface VirtualItem {
   start: number
 }
 
-export default function CastVideos({ session }: { session: Session | null }) {
+export function CastVideos({ session }: { session: Session | null }) {
   const [selectedTab, setSelectedTab] = useState<"trending" | "your profile">("trending")
   const [isMobile, setIsMobile] = useState(false)
   const feedUrl = useMemo(() => {
@@ -338,13 +315,13 @@ export default function CastVideos({ session }: { session: Session | null }) {
     <div className="flex justify-center items-center w-full min-h-screen">
       <div className="relative w-full max-w-[360px] h-screen">
         <div
-          className="fixed z-20 w-auto max-w-[360px] pt-4"
+          className="fixed z-20 w-auto max-w-[360px] pt-2"
           style={{
             top: 0,
             left: isMobile ? "55px" : "auto"
           }}
         >
-          <div className="flex items-center space-x-1">
+          {/* <div className="flex items-center space-x-1">
             <button
               onClick={() => setSelectedTab("trending")}
               className={cn(
@@ -365,10 +342,20 @@ export default function CastVideos({ session }: { session: Session | null }) {
                 Your Profile
               </button>
             : null}
-          </div>
+          </div> */}
         </div>
         {renderBody()}
       </div>
+    </div>
+  )
+}
+
+export function CastVideosPageWrapper({ session }: { session: Session | null }){
+  const isMobile = useIsMobile()
+  return(
+    <div className="mt-12 md:mt-0 message-container">
+      {!isMobile && <VideoHeader />}
+      <CastVideos session={session} />
     </div>
   )
 }

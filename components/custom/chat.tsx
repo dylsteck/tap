@@ -6,6 +6,7 @@ import { User } from 'next-auth';
 import { useState, useEffect, useRef } from 'react';
 
 import { Message as PreviewMessage } from '@/components/custom/message';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 import { ChatProfileId } from '@/lib/types';
 
@@ -26,6 +27,7 @@ export function Chat({
   user: User | undefined;
   selectedModelName: string;
 }) {
+  const isMobile = useIsMobile();
   const [profile, setProfile] = useState<ChatProfileId>(initialProfile && initialProfile.length > 0 ? initialProfile : 'farcaster');
   const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
     useChat({
@@ -38,8 +40,8 @@ export function Chat({
 
   const [containerRef, endRef] = useScrollToBottom(messages);
   return (
-    <div className="flex flex-col w-screen h-dvh bg-background overflow-hidden border-0">
-      <ChatHeader />
+    <div className="flex flex-col w-screen h-dvh bg-background overflow-hidden border-0 mt-5 md:mt-0 chat-input-container">
+      {!isMobile && <ChatHeader />}
       <main className="flex-1 w-full md:!w-2/3 md:mx-auto overflow-y-auto" ref={containerRef}>
         <div className="w-full md:mx-auto px-5 md:px-3">
           {messages.length === 0 && <Overview />}
@@ -59,18 +61,6 @@ export function Chat({
       </main>
       <footer className="w-full md:!w-2/3 md:mx-auto bg-background">
         <div className="w-full">
-          {/* {messages.length === 0 && (
-            <div className="pb-2">      
-              <SuggestedActions 
-                onActionSelect={(action) => {
-                  append({
-                    role: 'user',
-                    content: action,
-                  });
-                }} 
-              />
-            </div>
-          )} */}
           <div className="w-full bg-background p-3">
             <form onSubmit={handleSubmit}>
               <ChatInput

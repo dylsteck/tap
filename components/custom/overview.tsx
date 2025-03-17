@@ -1,8 +1,4 @@
 import { motion } from 'framer-motion';
-import { Film } from 'lucide-react';
-import Link from 'next/link';
-
-import { Button } from '@/components/ui/button';
 
 export const Overview = () => {
   return (
@@ -18,12 +14,6 @@ export const Overview = () => {
         <p className="flex flex-row justify-center gap-1 items-center">
           <span className="text-2xl font-semibold">tap</span>
         </p>
-        <Link href="/videos">
-          <Button className="rounded-xl flex flex-row gap-2 items-center" variant="default">
-            <Film className="size-5" />
-            Watch Videos
-          </Button>
-        </Link>
       </div>
     </motion.div>
   )

@@ -1,6 +1,5 @@
 import { auth } from '@/app/(auth)/auth';
-import { VideoHeader } from '@/components/custom/video-header';
-import CastVideos from '@/components/farcasterkit/react/cast/videos';
+import { CastVideosPageWrapper } from '@/components/farcasterkit/react/cast/videos';
 import { createFrame } from '@/lib/frame';
 import { BASE_URL, VIDEOS_BANNER_IMG_URL } from '@/lib/utils';
 
@@ -26,10 +25,5 @@ export function generateMetadata() {
 
 export default async function VideosPage() {
   const session = await auth();
-  return(
-    <div>
-      <VideoHeader />
-      <CastVideos session={session} />
-    </div>
-  );
+  return <CastVideosPageWrapper session={session} />
 }
