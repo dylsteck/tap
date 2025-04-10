@@ -1,5 +1,6 @@
 {
   "name": "tap",
+  "author": "dylsteck",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,8 +12,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.13",
-    "@farcaster/frame-sdk": "^0.0.28",
-    "@farcaster/frame-wagmi-connector": "^0.0.16",
+    "@farcaster/frame-sdk": "^0.0.34",
+    "@farcaster/frame-wagmi-connector": "^0.0.22",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.5",
@@ -45,7 +46,7 @@
     "hls.js": "^1.5.20",
     "lucide-react": "^0.474.0",
     "motion": "^11.11.17",
-    "next": "^15.1.7",
+    "next": "^15.3.0",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "^0.3.0",
     "ox": "^0.6.9",

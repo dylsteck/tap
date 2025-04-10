@@ -1,6 +1,8 @@
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
+import sdk from "@farcaster/frame-sdk"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
@@ -19,7 +21,6 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { cn, fetcher, USER_FALLBACK_IMG_URL } from "@/lib/utils"
 
 import TipDrawer from "./tip"
-import FrameLink from "../../utils/frame-link"
 
 
 interface VideoPlayerProps {
@@ -38,6 +39,24 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   const videoEmbed = cast.embeds?.find((embed) => 
     embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
   )
+  const handleViewProfile = async(fid: number) => {
+    try{
+      await sdk.actions.viewProfile({ fid });
+    } catch(error: any){
+      throw new Error(error);
+    }
+  }
+
+  const handleShareCast = async() => {
+    try{
+      await sdk.actions.composeCast({
+        text: "I just found this video on /tap!",
+        embeds: [`https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`]
+      });
+    } catch(error: any){
+      throw new Error(error);
+    }
+  }
 
   const togglePlayPause = useCallback(() => {
     if (videoRef.current) {
@@ -67,6 +86,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
           const video = videoRef.current
           if (video) {
             const videoUrl = videoEmbed.url
+            // eslint-disable-next-line import/no-named-as-default-member
             if (Hls.isSupported() && videoUrl.includes(".m3u8")) {
               const hls = new Hls()
               hls.loadSource(videoUrl)
@@ -141,13 +161,12 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
           <TipDrawer recipientAddress={(cast.author as any).verified_addresses.eth_addresses[0]} recipientUsername={cast.author.username} recipientPfp={cast.author.pfp_url} />
         : null}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
-          <FrameLink identifier={`${cast.author.fid}`} type="profile">
-            <img
-              src={cast.author?.pfp_url ?? USER_FALLBACK_IMG_URL}
-              alt={`@${cast.author.username}'s PFP`}
-              className="size-full object-cover cursor-pointer"
-            />
-          </FrameLink>
+          <img
+            src={cast.author?.pfp_url ?? USER_FALLBACK_IMG_URL}
+            alt={`@${cast.author.username}'s PFP`}
+            className="size-full object-cover cursor-pointer"
+            onClick={() => handleViewProfile(cast.author.fid)}
+          />
         </div>
       </div>
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -159,15 +178,14 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         >
           {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
         </Button>
-          <FrameLink type="url" identifier={`https://warpcast.com/~/compose?text=I%20just%20found%20this%20video%20on%20%2Ftap!&embeds[]=https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`}>
           <Button
             variant="ghost"
             size="icon"
             className="flex items-center justify-center rounded-full bg-black/40 hover:bg-black/75 transition-colors p-2"
+            onClick={handleShareCast}
           >
             <Share2 className="size-4" />
           </Button>
-          </FrameLink>
       </div>
     </div>
   )
