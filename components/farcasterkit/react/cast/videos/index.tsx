@@ -13,6 +13,7 @@ import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
+import { SidebarToggle } from "@/components/custom/sidebar-toggle"
 import { VideoHeader } from "@/components/custom/video-header"
 import { NeynarCastV2 } from "@/components/farcasterkit/common/types/neynar"
 import { Button } from "@/components/ui/button"
@@ -36,6 +37,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   const [isPlaying, setIsPlaying] = useState(true)
   const [showControl, setShowControl] = useState(false)
   const controlTimeoutRef = useRef<NodeJS.Timeout>()
+  const isMobile = useIsMobile()
   const videoEmbed = cast.embeds?.find((embed) => 
     embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
   )
@@ -137,7 +139,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   if (!videoEmbed) return null
 
   return (
-    <div className="relative w-full max-w-[340px] md:max-w-[360px] aspect-[9/16] rounded-2xl overflow-hidden">
+    <div className={`relative w-full ${isMobile ? 'max-w-full h-full' : 'max-w-[340px] md:max-w-[360px] aspect-[9/16]'} ${isMobile ? '' : 'rounded-2xl'} overflow-hidden`}>
       <video
         ref={videoRef}
         className="absolute inset-0 size-full object-cover cursor-pointer"
@@ -199,15 +201,8 @@ interface VirtualItem {
 }
 
 export function CastVideos({ session }: { session: Session | null }) {
-  const [selectedTab, setSelectedTab] = useState<"trending" | "your profile">("trending")
-  const [isMobile, setIsMobile] = useState(false)
-  const feedUrl = useMemo(() => {
-    if (selectedTab === "your profile" && session?.user) {
-      return `/api/farcaster/cast/videos/${(session.user as any).fid}`
-    }
-    return "/api/farcaster/cast/videos"
-  }, [selectedTab, session])
-  const { data, error: isError, isLoading } = useSWR<{ result: { casts: NeynarCastV2[], next: string } }>(feedUrl, fetcher)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
+  const { data, error: isError, isLoading } = useSWR<{ result: { casts: NeynarCastV2[], next: string } }>("/api/farcaster/cast/videos", fetcher)
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({})
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -295,7 +290,7 @@ export function CastVideos({ session }: { session: Session | null }) {
     if (!data) return null
 
     return(
-      <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none m-0 p-0">
+      <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none no-scrollbar m-0 p-0">
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
@@ -310,7 +305,7 @@ export function CastVideos({ session }: { session: Session | null }) {
               key={cast.hash}
               data-hash={cast.hash}
               data-index={virtualRow.index}
-              className={`video-container absolute top-0 left-0 w-full h-screen flex ${!isMobile || (virtualRow.index === 0) ? 'items-center' : 'items-start'} justify-center snap-center snap-always -mt-12`}
+              className="video-container absolute top-0 left-0 w-full h-screen flex items-center justify-center snap-center snap-always"
               style={{
                 transform: `translateY(${virtualRow.start}px)`
               }}
@@ -331,36 +326,14 @@ export function CastVideos({ session }: { session: Session | null }) {
 
   return (
     <div className="flex justify-center items-center w-full min-h-screen">
-      <div className="relative w-full max-w-[360px] h-screen">
+      <div className={`relative w-full ${isMobile ? 'max-w-full' : 'max-w-[360px]'} h-screen`}>
         <div
-          className="fixed z-20 w-auto max-w-[360px] pt-2"
+          className={`fixed z-20 w-auto ${isMobile ? 'hidden' : 'max-w-[360px] pt-2'}`}
           style={{
             top: 0,
             left: isMobile ? "55px" : "auto"
           }}
         >
-          {/* <div className="flex items-center space-x-1">
-            <button
-              onClick={() => setSelectedTab("trending")}
-              className={cn(
-                "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
-                selectedTab === "trending" ? "font-medium" : "opacity-70 hover:opacity-100"
-              )}
-            >
-              Trending
-            </button>
-            {session ? 
-              <button
-                onClick={() => setSelectedTab("your profile")}
-                className={cn(
-                  "text-black dark:text-white font-normal px-2 py-1 rounded transition-colors cursor-pointer",
-                  selectedTab === "your profile" ? "font-medium" : "opacity-70 hover:opacity-100"
-                )}
-              >
-                Your Profile
-              </button>
-            : null}
-          </div> */}
         </div>
         {renderBody()}
       </div>
@@ -371,8 +344,8 @@ export function CastVideos({ session }: { session: Session | null }) {
 export function CastVideosPageWrapper({ session }: { session: Session | null }){
   const isMobile = useIsMobile()
   return(
-    <div className="mt-12 md:mt-0 message-container">
-      {!isMobile && <VideoHeader />}
+    <div className={`relative flex justify-center items-center size-full ${isMobile ? 'p-0 m-0' : 'mt-12 md:mt-0'} message-container`}>
+      {!isMobile && <div className="fixed top-4 left-4 z-50"><SidebarToggle /></div>}
       <CastVideos session={session} />
     </div>
   )
