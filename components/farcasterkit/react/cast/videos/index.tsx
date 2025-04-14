@@ -19,7 +19,7 @@ import { NeynarCastV2 } from "@/components/farcasterkit/common/types/neynar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { cn, fetcher, USER_FALLBACK_IMG_URL } from "@/lib/utils"
+import { cn, fetcher, USER_FALLBACK_IMG_URL, BASE_URL } from "@/lib/utils"
 
 import TipDrawer from "./tip"
 
@@ -53,7 +53,10 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
     try{
       await sdk.actions.composeCast({
         text: "I just found this video on /tap!",
-        embeds: [`https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`]
+        embeds: [
+          `https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`,
+          `${BASE_URL}/videos`
+        ]
       });
     } catch(error: any){
       throw new Error(error);
@@ -88,7 +91,6 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
           const video = videoRef.current
           if (video) {
             const videoUrl = videoEmbed.url
-            // eslint-disable-next-line import/no-named-as-default-member
             if (Hls.isSupported() && videoUrl.includes(".m3u8")) {
               const hls = new Hls()
               hls.loadSource(videoUrl)
@@ -96,6 +98,13 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
             } else {
               video.src = videoUrl
             }
+            
+            // Set additional properties to prevent fullscreen
+            video.setAttribute('webkit-playsinline', 'true');
+            video.setAttribute('playsinline', 'true');
+            video.setAttribute('x5-playsinline', 'true');
+            (video as any).webkitAllowsInlineMediaPlayback = true;
+            
             video.load()
             video.play().catch(() => {})
             setIsPlaying(true)
@@ -118,14 +127,42 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && isVisible) {
-        video.play().catch(() => {})
-        setIsPlaying(true)
+    
+    const disableFullscreen = (e: Event) => {
+      e.preventDefault()
+      return false
+    }
+    
+    video.addEventListener('webkitfullscreenchange', disableFullscreen)
+    video.addEventListener('fullscreenchange', disableFullscreen)
+    video.addEventListener('fullscreenrequest', disableFullscreen, true)
+    
+    const disableFullscreenAction = () => {
+      if (document.fullscreenElement === video) {
+        document.exitFullscreen().catch(() => {})
       }
     }
-    video.addEventListener("fullscreenchange", handleFullscreenChange)
-    return () => video.removeEventListener("fullscreenchange", handleFullscreenChange)
+    
+    const preventAction = (e: Event) => {
+      e.preventDefault()
+      e.stopPropagation()
+      return false
+    }
+    
+    video.addEventListener('webkitbeginfullscreen', preventAction, true)
+    video.addEventListener('enterfullscreen', preventAction, true)
+    video.addEventListener('fullscreenchange', disableFullscreenAction)
+    video.addEventListener('webkitfullscreenchange', disableFullscreenAction)
+    
+    return () => {
+      video.removeEventListener('webkitfullscreenchange', disableFullscreen)
+      video.removeEventListener('fullscreenchange', disableFullscreen)
+      video.removeEventListener('fullscreenrequest', disableFullscreen, true)
+      video.removeEventListener('webkitbeginfullscreen', preventAction, true)
+      video.removeEventListener('enterfullscreen', preventAction, true)
+      video.removeEventListener('fullscreenchange', disableFullscreenAction)
+      video.removeEventListener('webkitfullscreenchange', disableFullscreenAction)
+    }
   }, [isVisible])
 
   useEffect(() => {
@@ -140,15 +177,27 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
 
   return (
     <div className={`relative w-full ${isMobile ? 'max-w-full h-full' : 'max-w-[340px] md:max-w-[360px] aspect-[9/16]'} ${isMobile ? '' : 'rounded-2xl'} overflow-hidden`}>
-      <video
-        ref={videoRef}
-        className="absolute inset-0 size-full object-cover cursor-pointer"
-        loop
-        playsInline
-        muted={isMuted}
-        autoPlay={isVisible}
+      <div 
+        className="absolute inset-0 size-full overflow-hidden"
         onClick={togglePlayPause}
-      />
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <video
+          ref={videoRef}
+          className="absolute inset-0 size-full object-cover"
+          loop
+          playsInline
+          data-webkit-playsinline="true"
+          data-x5-playsinline="true"
+          muted={isMuted}
+          autoPlay={isVisible}
+          controls={false}
+          disablePictureInPicture
+          disableRemotePlayback
+          controlsList="nodownload nofullscreen noremoteplayback"
+          style={{ objectFit: 'cover', pointerEvents: 'none' }}
+        />
+      </div>
       {showControl && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/40 rounded-full p-4 transition-opacity">
           {isPlaying ? (
@@ -180,14 +229,14 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         >
           {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
         </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="flex items-center justify-center rounded-full bg-black/40 hover:bg-black/75 transition-colors p-2"
-            onClick={handleShareCast}
-          >
-            <Share2 className="size-4" />
-          </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="flex items-center justify-center rounded-full bg-black/40 hover:bg-black/75 transition-colors p-2"
+          onClick={handleShareCast}
+        >
+          <Share2 className="size-4" />
+        </Button>
       </div>
     </div>
   )
@@ -259,13 +308,25 @@ export function CastVideos({ session }: { session: Session | null }) {
   }, [])
 
   const handleExpand = useCallback((hash: string) => {
-    const videoElement = document.querySelector(`[data-hash="${hash}"] video`) as HTMLVideoElement
-    if (videoElement) {
-      if (videoElement.requestFullscreen) {
-        videoElement.requestFullscreen()
-      } else if ((videoElement as any).webkitEnterFullscreen) {
-        (videoElement as any).webkitEnterFullscreen()
+    return
+  }, [])
+
+  useEffect(() => {
+    const style = document.createElement('style')
+    style.textContent = `
+      ::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
       }
+      * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+    `
+    document.head.appendChild(style)
+    return () => {
+      document.head.removeChild(style)
     }
   }, [])
 
@@ -290,7 +351,7 @@ export function CastVideos({ session }: { session: Session | null }) {
     if (!data) return null
 
     return(
-      <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none no-scrollbar m-0 p-0">
+      <div ref={containerRef} className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none no-scrollbar m-0 p-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
