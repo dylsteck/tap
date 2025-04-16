@@ -6,7 +6,6 @@ import { Zap } from 'lucide-react';
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-import { profiles } from '@/lib/tools';
 import { ChatProfileId } from '@/lib/types';
 
 import { ArrowUpIcon, StopIcon } from './icons';
@@ -21,8 +20,6 @@ export function ChatInput({
   isLoading,
   stop,
   messages,
-  profile,
-  setProfile,
   append,
   handleSubmit,
 }: {
@@ -31,8 +28,6 @@ export function ChatInput({
   isLoading: boolean;
   stop: () => void;
   messages: Array<Message>;
-  profile: ChatProfileId;
-  setProfile: (value: ChatProfileId) => void;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions
@@ -46,8 +41,6 @@ export function ChatInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
-
-  const selectedProfile = profiles.find((item) => item.id === profile) || profiles[0];
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -99,31 +92,6 @@ export function ChatInput({
         rows={2}
         onKeyDown={handleKeyDown}
       />
-
-      <div className="absolute bottom-0 right-9 p-2 pb-1.5">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="rounded-full h-8 px-2 flex items-center gap-2 border dark:border-zinc-600">
-              {selectedProfile.icon && <selectedProfile.icon />}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[220px] p-1 rounded-md bg-white dark:bg-neutral-800">
-            {profiles.map((item) => (
-              <DropdownMenuItem
-                key={item.id}
-                onSelect={() => setProfile(item.id as any)}
-                className="flex items-start gap-2 px-2 py-1.5 rounded-md text-xs mb-1 last:mb-0 cursor-pointer"
-              >
-                 {item.icon && <item.icon />}
-                <div>
-                  <div className="font-bold">{item.name}</div>
-                  <div className="text-xs opacity-70">{item.description}</div>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
 
       <div className="absolute bottom-0 right-0 p-2">
         {isLoading ? (

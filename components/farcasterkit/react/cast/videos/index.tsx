@@ -36,7 +36,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   const [isVisible, setIsVisible] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
   const [showControl, setShowControl] = useState(false)
-  const controlTimeoutRef = useRef<NodeJS.Timeout>()
+  const controlTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isMobile = useIsMobile()
   const videoEmbed = cast.embeds?.find((embed) => 
     embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
@@ -406,7 +406,7 @@ export function CastVideosPageWrapper({ session }: { session: Session | null }){
   const isMobile = useIsMobile()
   return(
     <div className={`relative flex justify-center items-center size-full ${isMobile ? 'p-0 m-0' : 'mt-12 md:mt-0'} message-container`}>
-      {!isMobile && <div className="fixed top-4 left-4 z-50"><SidebarToggle /></div>}
+      <VideoHeader />
       <CastVideos session={session} />
     </div>
   )

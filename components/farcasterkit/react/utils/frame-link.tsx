@@ -20,18 +20,18 @@ export default function FrameLink({
                     await sdk.actions.openUrl(identifier);
                     break;
                 case 'profile':
-                    await sdk.actions.viewProfile({ fid: parseInt(identifier) })
+                    await sdk.actions.viewProfile({ fid: parseInt(identifier) });
                 default:
                     break;
             }
         } else{
             switch(type){
                 case 'url':
-                    window.open(identifier, '_blank')
+                    window.open(identifier, '_blank');
                     break;
                 case 'profile':
-                    window.open(`https://warpcast.com/~/profiles/${identifier}`)
-                    await sdk.actions.viewProfile({ fid: parseInt(identifier) })
+                    window.open(`https://warpcast.com/~/profiles/${identifier}`);
+                    break;
                 default:
                     break;
             }

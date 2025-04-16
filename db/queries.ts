@@ -73,12 +73,10 @@ export async function createUser(userData: AuthData) {
 export async function saveChat({
   id,
   messages,
-  profile,
   userId,
 }: {
   id: string;
   messages: any;
-  profile: string;
   userId: string;
 }) {
   try {
@@ -89,7 +87,6 @@ export async function saveChat({
         .update(chat)
         .set({
           messages: JSON.stringify(messages),
-          profile: profile
         })
         .where(eq(chat.id, id));
     }
@@ -98,7 +95,7 @@ export async function saveChat({
       id,
       createdAt: new Date(),
       messages: JSON.stringify(messages),
-      profile: profile,
+      profile: "default",
       userId,
     });
   } catch (error) {

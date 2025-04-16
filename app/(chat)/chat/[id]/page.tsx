@@ -39,7 +39,6 @@ export default async function Page(props: { params: Promise<any> }) {
       id={chat.id}
       user={session?.user}
       initialMessages={chat.messages}
-      initialProfile={chat.profile as ChatProfileId}
       selectedModelName={MODEL_NAME}
     />
   );

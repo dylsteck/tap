@@ -17,21 +17,18 @@ import { Overview } from './overview';
 export function Chat({
   id,
   initialMessages,
-  initialProfile,
   user,
   selectedModelName,
 }: {
   id: string;
   initialMessages: Array<Message>;
-  initialProfile?: ChatProfileId;
   user: User | undefined;
   selectedModelName: string;
 }) {
   const isMobile = useIsMobile();
-  const [profile, setProfile] = useState<ChatProfileId>(initialProfile && initialProfile.length > 0 ? initialProfile : 'farcaster');
   const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
     useChat({
-      body: { id, profile, model: selectedModelName },
+      body: { id, model: selectedModelName },
       initialMessages,
       onFinish: () => {
         window.history.replaceState({}, '', `/chat/${id}`);
@@ -41,7 +38,7 @@ export function Chat({
   const [containerRef, endRef] = useScrollToBottom(messages);
   return (
     <div className="flex flex-col w-screen h-dvh bg-background overflow-hidden border-0 mt-5 md:mt-0 chat-input-container">
-      {!isMobile && <ChatHeader />}
+      <ChatHeader />
       <main className="flex-1 w-full md:!w-2/3 md:mx-auto overflow-y-auto" ref={containerRef}>
         <div className="w-full md:mx-auto px-5 md:px-3">
           {messages.length === 0 && <Overview />}
@@ -69,8 +66,6 @@ export function Chat({
                 isLoading={isLoading}
                 stop={stop}
                 messages={messages}
-                profile={profile}
-                setProfile={setProfile}
                 append={append}
                 handleSubmit={handleSubmit}
               />
