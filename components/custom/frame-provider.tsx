@@ -4,35 +4,43 @@ import { Context, sdk, SignIn } from "@farcaster/frame-sdk";
 import { FrameSDK } from "@farcaster/frame-sdk/dist/types";
 import { usePathname, useRouter } from "next/navigation";
 import { Session } from "next-auth";
-import { useCallback, useEffect } from "react";
+import { getCsrfToken } from "next-auth/react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 import { login } from "@/app/(auth)/actions";
 import { AuthData } from "@/lib/types";
 
-// import { getCsrfToken } from "next-auth/react";
+type FrameContextType = Context.FrameContext | null;
+
+const FrameContext = createContext<FrameContextType>(null);
+
+export const useFrameContext = () => useContext(FrameContext);
 
 export default function FrameProvider({ children, session }: { children: React.ReactNode, session?: Session | null }){
   const router = useRouter(); 
   const pathname = usePathname();
-  // const getNonce = useCallback(async () => {
-  //     const nonce = await getCsrfToken();
-  //     if (!nonce) throw new Error("Unable to generate nonce");
-  //     return nonce;
-  //   }, []);
+  const [frameContext, setFrameContext] = useState<FrameContextType>(null);
+
+  const getNonce = useCallback(async () => {
+      const nonce = await getCsrfToken();
+      if (!nonce) throw new Error("Unable to generate nonce");
+      return nonce;
+    }, []);
 
     const handleSignIn = useCallback(async (user: Context.FrameContext['user']) => {
       try {
-        // note: temporarily commented signIn out because it triggers too much on mobile, will switch back
-        // const nonce = await getNonce();
-        // const result = await sdk.actions.signIn({ nonce });
+        const nonce = await getNonce();
+        const result = await sdk.actions.signIn({ nonce });
         const loginData: AuthData = {
           fid: user.fid.toString(),
           username: user.username || "",
           name: user.displayName || "",
           bio: '',
           verified_address: '',
-          signer_uuid: "",
           pfp_url: user.pfpUrl || "",
+          message: result.message,
+          signature: result.signature,
+          csrfToken: nonce
         };
         await login(loginData);
       } catch (e) {
@@ -41,12 +49,12 @@ export default function FrameProvider({ children, session }: { children: React.R
           return;
         }
       }
-    // }, [getNonce]);
-    }, []);
+    }, [getNonce]);
 
     useEffect(() => {
         const init = async () => {
           const context = await sdk.context;
+          setFrameContext(context);
           if (context?.client.clientFid && (!session?.user && !session)) {
             await handleSignIn(context.user);
             router.push(pathname);
@@ -59,8 +67,8 @@ export default function FrameProvider({ children, session }: { children: React.R
       }, [handleSignIn, pathname, router, session])
 
     return(
-        <>
+        <FrameContext.Provider value={frameContext}>
          {children}
-        </>
+        </FrameContext.Provider>
     )
 }

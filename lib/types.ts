@@ -23,8 +23,10 @@ export type AuthData = {
   name: string;
   bio: string;
   verified_address?: string;
-  signer_uuid: string;
   pfp_url: string;
+  message: string;
+  signature: string;
+  csrfToken: string;
 };
 
 export type SessionData = {

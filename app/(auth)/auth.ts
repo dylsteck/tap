@@ -26,9 +26,10 @@ export const {
         name: { label: "Name", type: "text" },
         bio: { label: "Bio", type: "text" },
         verified_address: { label: "Verified address", type: "text" },
-        signer_uuid: { label: "Signer UUID", type: "text" },
         pfp_url: { label: "Pfp Url", type: "text" },
-        is_authenticated: { label: "Is Authenticated", type: "boolean" },
+        message: { label: "Message", type: "text", placeholder: "0x0" },
+        signature: { label: "Signature", type: "text", placeholder: "0x0" },
+        csrfToken: { label: "CSRF Token", type: "text", placeholder: "0x0" },
       },
       async authorize(credentials: any) {
         if (!credentials) return null;
