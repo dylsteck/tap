@@ -3,6 +3,7 @@
 import { Context, sdk, SignIn } from "@farcaster/frame-sdk";
 import { FrameSDK } from "@farcaster/frame-sdk/dist/types";
 import { usePathname, useRouter } from "next/navigation";
+import { Session } from "next-auth";
 import { useCallback, useEffect } from "react";
 
 import { login } from "@/app/(auth)/actions";
@@ -10,7 +11,7 @@ import { AuthData } from "@/lib/types";
 
 // import { getCsrfToken } from "next-auth/react";
 
-export default function FrameProvider({ children }: { children: React.ReactNode }){
+export default function FrameProvider({ children, session }: { children: React.ReactNode, session?: Session | null }){
   const router = useRouter(); 
   const pathname = usePathname();
   // const getNonce = useCallback(async () => {
@@ -46,7 +47,7 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
     useEffect(() => {
         const init = async () => {
           const context = await sdk.context;
-          if (context?.client.clientFid) {
+          if (context?.client.clientFid && (!session?.user && !session)) {
             await handleSignIn(context.user);
             router.push(pathname);
           }
@@ -55,7 +56,7 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
           }, 500)
         }
         init()
-      }, [handleSignIn, pathname, router])
+      }, [handleSignIn, pathname, router, session])
 
     return(
         <>

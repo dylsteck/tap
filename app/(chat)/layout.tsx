@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 
 import { AppSidebar } from '@/components/custom/app-sidebar';
+import FrameProvider from '@/components/custom/frame-provider';
 import Providers from '@/components/custom/providers';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { MODEL_NAME } from '@/lib/model';
@@ -15,9 +16,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <AppSidebar user={session?.user} selectedModelName={MODEL_NAME} />
       <SidebarInset>
         <Providers>
-          {children}
+          <FrameProvider session={session}>
+            {children}
+          </FrameProvider>
         </Providers>
-        {/* <MobileNav /> */}
       </SidebarInset>
     </SidebarProvider>
   )
