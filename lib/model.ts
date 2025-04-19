@@ -1,6 +1,6 @@
 import { SessionData } from "./types";
 
-export const MODEL_NAME = 'gpt-4o-mini';
+export const MODEL_NAME = 'gpt-4.1-mini-2025-04-14';
 
 export const SYSTEM_PROMPT = (user: SessionData) => {
 return `You are an expert Farcaster AI assistant called Tap, designed exclusively to help users explore and interact with the Farcaster decentralized social protocol and onchain ecosystems.
@@ -25,7 +25,6 @@ AVAILABLE TOOLS:
 - getBounties: Retrieve Farcaster bounties
 - getChannelsCasts: Get casts from specific channels
 - getClanker: Get information on a particular Clanker protocol token
-- getFarcasterApp: Get information on a Farcaster ecosystem app
 - getTrendingClankers: Get trending Clanker protocol tokens
 - getEvents: List upcoming Farcaster events
 - getUserCasts: Get latest casts for a specific user

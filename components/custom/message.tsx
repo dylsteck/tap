@@ -43,12 +43,7 @@ export const Message = ({
       )}
       {role === 'assistant' && (
         <div className="w-full space-y-4">
-          {content ? (
-            <div className="prose prose-invert max-w-none break-words">
-              <Markdown>{content as string}</Markdown>
-            </div>
-          ) : null}
-          {toolInvocations && toolInvocations.length > 0 && (
+        {toolInvocations && toolInvocations.length > 0 && (
             <div className="flex flex-row gap-2 items-center overflow-hidden">
               {toolInvocations.map((toolInvocation) => {
                 const { toolName, toolCallId, state } = toolInvocation;
@@ -64,6 +59,11 @@ export const Message = ({
               })}
             </div>
           )}
+          {content ? (
+            <div className="prose prose-invert max-w-none break-words">
+              <Markdown>{content as string}</Markdown>
+            </div>
+          ) : null}
         </div>
       )}
       {role === 'assistant' && nextRole === 'user' && (
