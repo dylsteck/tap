@@ -96,18 +96,6 @@ class TapSDK {
     return await fetcher(`${this.BASE_URL}/api/farcaster/events`)
   }
 
-  async getFarcasterApp(name: string): Promise<any>{
-    return await fetcher(`${this.BASE_URL}/api/farcaster/app/${name}`)
-  }
-
-  async getFarcasterApps(cursor: number = 0): Promise<any>{
-    return await fetcher(`${this.BASE_URL}/api/farcaster/app/list?cursor=${cursor}`)
-  }
-
-  async getFarcasterToken(name: string): Promise<any>{
-    return await fetcher(`${this.BASE_URL}/api/farcaster/tokens/${name}`)
-  }
-
   async getFarcasterTokens(): Promise<any>{
     return await fetcher(`${this.BASE_URL}/api/farcaster/tokens`)
   }

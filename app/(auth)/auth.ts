@@ -43,8 +43,7 @@ export const {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const { signer_uuid, ...userWithoutSignerUuid } = user as any;
-        token.user = userWithoutSignerUuid;
+        token.user = user as any;
       }
       
       return token;

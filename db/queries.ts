@@ -1,43 +1,34 @@
 "server-only";
 
-import { asc, desc, eq, sql } from "drizzle-orm";
+import { desc, eq, asc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
+import { revalidatePath } from "next/cache";
 import postgres from "postgres";
 
 import { AuthData } from "@/lib/types";
 
-import { user, chat, User, farcasterApps } from "./schema";
+import { user, chat, User } from "./schema";
 
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
 
-export async function getFarcasterApps(cursor: number = 0): Promise<{ apps: Array<any>, hasMore: boolean }> {
+const USER_BATCH_SIZE = 10;
+
+export async function getUsers(cursor: number = 0): Promise<{ users: Array<User>, hasMore: boolean }> {
   try {
-    const limit = 25;
-    const apps = await db
+    const limit = USER_BATCH_SIZE;
+    const users = await db
       .select()
-      .from(farcasterApps)
-      .orderBy(asc(farcasterApps.name))
+      .from(user)
+      .orderBy(asc(user.id))
       .limit(limit)
       .offset(cursor * limit);
 
-    const hasMore = apps.length === limit;
+    const hasMore = users.length === limit;
 
-    return { apps, hasMore };
+    return { users, hasMore };
   } catch (error) {
-    console.error("Failed to get apps from database");
-    throw error;
-  }
-}
-
-// todo: Promise<FarcasterApp>
-export async function getFarcasterAppByName(name: string): Promise<Array<any>> {
-  try {
-    return await db.select().from(farcasterApps).where(
-      sql`LOWER(${farcasterApps.name}) = LOWER(${name}) OR LOWER(${farcasterApps.slug}) = LOWER(${name})`
-    );
-  } catch (error) {
-    console.error("Failed to get app from database");
+    console.error("Failed to get users from database");
     throw error;
   }
 }

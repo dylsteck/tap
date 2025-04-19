@@ -9,7 +9,6 @@ export const user = pgTable("user", {
   name: varchar("name", { length: 64 }),
   bio: varchar("bio", { length: 256 }),
   verified_address: varchar("verified_address", { length: 256 }),
-  signer_uuid: varchar("signer_uuid", { length: 64 }),
   pfp_url: varchar("pfp_url", { length: 256 }),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
@@ -29,17 +28,3 @@ export const chat = pgTable("chat", {
 export type Chat = Omit<InferSelectModel<typeof chat>, "messages"> & {
   messages: Array<Message>;
 };
-
-export const farcasterApps = pgTable("farcaster_apps", {
-  slug: text("slug").primaryKey().notNull(),
-  name: text("name").notNull(),
-  tag: text("tag").notNull(),
-  description: text("description").notNull(),
-  image_url: text("image_url").notNull(),
-  screenshots: json("screenshots").notNull(),
-  url: text("url").notNull(),
-  author_fid: text("author_fid"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export type FarcasterApp = InferSelectModel<typeof farcasterApps>;

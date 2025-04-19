@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 
-import { FarcasterApp } from '@/components/farcasterkit/react/app';
 import { Cast } from '@/components/farcasterkit/react/cast';
 import { Token } from '@/components/farcasterkit/react/ethereum/token';
 
@@ -29,8 +28,6 @@ export const Tool = ({ result, toolName }: {result: any, toolName: string}) => {
           return <CastsTool casts={result} />;
         case 'getClanker': 
           return <Token token={result} />
-        case 'getFarcasterApp':
-          return <FarcasterApp app ={result } />
         case 'getTrendingClankers':
           return <ClankerTrendingTool clankers={result} />;
         case 'getUserCasts':
