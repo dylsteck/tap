@@ -218,6 +218,15 @@ export interface WarpcastUser {
     };
 }
 
+export interface WarpcastTopicCastsResponse {
+  result: {
+    casts: WarpcastCast[];
+    next?: {
+      cursor: string;
+    };
+  };
+}
+
 export interface WarpcastTrendingTopicsResponse {
   result: {
     topics: WarpcastTopic[];

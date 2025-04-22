@@ -1,4 +1,4 @@
-import { WarpcastCastsResponse, WarpcastUserResponse, WarpcastTrendingTopicsResponse } from "../common/types/warpcast";
+import { WarpcastCastsResponse, WarpcastUserResponse, WarpcastTrendingTopicsResponse, WarpcastTopicCastsResponse, WarpcastCast } from "../common/types/warpcast";
 
 class WarpcastService {
     private static instance: WarpcastService
@@ -70,6 +70,38 @@ class WarpcastService {
     async getUserByFid(fid: string): Promise<WarpcastUserResponse> {
         const url = `${this.baseUrlV2}/user-by-fid?fid=${encodeURIComponent(fid)}`;
         return this.fetcher<WarpcastUserResponse>(url);
+    }
+
+    async getTrendingTopicById(id: string, limit: number = 15): Promise<WarpcastCast[]> {
+        let allCasts: WarpcastCast[] = [];
+        let cursor: string | undefined = undefined;
+
+        try {
+            do {
+                let url = `${this.baseUrlV1}/get-trending-topic-casts?topicId=${encodeURIComponent(id)}&sort=top&limit=${limit}`;
+                if (cursor) {
+                    url += `&cursor=${encodeURIComponent(cursor)}`;
+                }
+
+                const response = await this.fetcher<WarpcastTopicCastsResponse>(url);
+
+                if (response?.result?.casts) {
+                    allCasts = allCasts.concat(response.result.casts);
+                }
+
+                cursor = response?.result?.next?.cursor;
+
+            } while (cursor);
+
+            return allCasts;
+        } catch (error) {
+            console.error(`Error fetching trending topic casts for ID ${id}:`, error);
+            throw error; 
+        }
+    }
+
+    async getThreadCasts(hash: string) {
+        return this.fetcher<{ data: any }>(`v2/thread-casts?castHash=${encodeURIComponent(hash)}`);
     }
 }
 

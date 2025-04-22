@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { auth } from "@/app/(auth)/auth";
 import { checkKey, setKey } from "@/lib/redis";
 import { ENSData } from "@/lib/types";
+import { authMiddleware, CACHE_EX_SECONDS } from "@/lib/utils";
 
 const ENS_DATA_API_URL = "https://api.ensdata.net";
 
@@ -15,7 +17,7 @@ export async function GET(request: Request) {
     }
 
     const cacheKey = `ensdata:ens:${name}`;
-    const cacheEx = 3600;
+    const cacheEx = CACHE_EX_SECONDS;
     const cacheServerHeaders = {
       "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
       "x-cache-tags": cacheKey,

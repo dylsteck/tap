@@ -1,7 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
 import { neynar } from "@/components/farcasterkit/services/neynar";
 import { checkKey, setKey } from "@/lib/redis";
-import { authMiddleware } from "@/lib/utils";
+import { authMiddleware, CACHE_EX_SECONDS } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -20,11 +20,11 @@ export async function GET(request: Request) {
   const channel_id = url.searchParams.get("channel_id");
 
   if (!fid) {
-    return new Response(JSON.stringify("FID parameter is required!"), { status: 400 });
+    return new Response("Missing required fid parameter", { status: 400 });
   }
 
   const cacheKey = `user_casts:${fid}:${viewer_fid}:${limit}:${cursor}:${include_replies}:${parent_url}:${channel_id}`;
-  const cacheEx = 3600;
+  const cacheEx = CACHE_EX_SECONDS;
   const cacheServerHeaders = {
     "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
     "x-cache-tags": cacheKey
