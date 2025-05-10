@@ -1,14 +1,15 @@
+import { SidebarProvider } from '@workspace/ui/components/sidebar';
+import { Skeleton } from '@workspace/ui/components/skeleton';
 import { motion } from 'framer-motion';
 
 import { Cast } from '@/components/farcasterkit/react/cast';
 import { Token } from '@/components/farcasterkit/react/ethereum/token';
 
-import CastsTool from './tools/casts';
-import EventsTool from './tools/events';
-import { SidebarProvider } from '@workspace/ui/components/sidebar';
-import { Skeleton } from '@workspace/ui/components/skeleton';
 import BountiesTool from './tools/bounties';
+import CastsTool from './tools/casts';
 import ClankerTrendingTool from './tools/clanker-trending';
+import EventsTool from './tools/events';
+
 
 export const Tool = ({ result, toolName }: {result: any, toolName: string}) => {
 

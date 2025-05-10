@@ -1,5 +1,6 @@
-import { SidebarToggle } from '@/components/custom/sidebar-toggle';
 import { Button } from '@workspace/ui/components/button';
+
+import { SidebarToggle } from '@/components/custom/sidebar-toggle';
 
 export function ChatHeader(){
   return (

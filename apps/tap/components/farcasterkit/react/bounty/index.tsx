@@ -1,9 +1,9 @@
-import { AwardIcon, CalendarIcon, ExternalLinkIcon } from "lucide-react"
-import React from 'react';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@workspace/ui/components/avatar';
 import { Badge } from '@workspace/ui/components/badge';
 import { ScrollArea, ScrollBar } from '@workspace/ui/components/scroll-area';
+import { AwardIcon, CalendarIcon, ExternalLinkIcon } from "lucide-react"
+import React from 'react';
 
 import { Bounty as BountyType } from '../../common/types'
 

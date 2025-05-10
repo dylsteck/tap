@@ -1,20 +1,5 @@
 'use client';
 
-import { HomeIcon, PlusIcon, VideoIcon, BookOpenIcon } from 'lucide-react';
-import Link from 'next/link';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { type User } from 'next-auth';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import useSWR from 'swr';
-
-import {
-  InfoIcon,
-  MessageIcon,
-  MoreHorizontalIcon,
-  TrashIcon,
-  UserIcon,
-} from '@/components/custom/icons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +26,21 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@workspace/ui/components/sidebar';
+import { HomeIcon, PlusIcon, VideoIcon, BookOpenIcon } from 'lucide-react';
+import Link from 'next/link';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { type User } from 'next-auth';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import useSWR from 'swr';
+
+import {
+  InfoIcon,
+  MessageIcon,
+  MoreHorizontalIcon,
+  TrashIcon,
+  UserIcon,
+} from '@/components/custom/icons';
 import { Chat } from '@/db/schema';
 import { fetcher, getTitleFromChat } from '@/lib/utils';
 

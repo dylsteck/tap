@@ -15,6 +15,11 @@ export const {
   auth,
   signIn,
   signOut,
+}: {
+  handlers: { GET: Function; POST: Function };
+  auth: import("next-auth").GetAuth;
+  signIn: Function;
+  signOut: Function;
 } = NextAuth({
   ...authConfig,
   providers: [

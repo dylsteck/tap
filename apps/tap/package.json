@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "fix:imports": "eslint --fix 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,8 +20,6 @@
     "@farcaster/frame-sdk": "^0.0.38",
     "@farcaster/frame-wagmi-connector": "^0.0.26",
     "@workspace/ui": "*",
-    "@workspace/eslint-config": "*",
-    "@workspace/typescript-config": "*",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.5",
@@ -81,6 +80,8 @@
     "@types/pdf-parse": "^1.1.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@workspace/eslint-config": "*",
+    "@workspace/typescript-config": "*",
     "drizzle-kit": "^0.29.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.3.1",

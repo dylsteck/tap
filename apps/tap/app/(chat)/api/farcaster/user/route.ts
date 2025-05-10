@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       console.error("Failed to fetch data from Warpcast Service:", error);
       const errorMessage = error instanceof Error ? error.message : "Failed to fetch data from Warpcast Service!";
       const statusCode = error instanceof Error && error.message.includes("status:") 
-        ? parseInt(error.message.split("status: ")[1]) 
+        ? parseInt(error.message.split("status: ")[1] || "500") 
         : 500;
       return new Response(errorMessage, { status: statusCode });
     }

@@ -1,8 +1,8 @@
+import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar';
 import { cookies } from 'next/headers';
 
 import { AppSidebar } from '@/components/custom/app-sidebar';
 import Providers from '@/components/custom/providers';
-import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar';
 import { MODEL_NAME } from '@/lib/model';
 
 import { auth } from '../(auth)/auth';

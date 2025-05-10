@@ -1,13 +1,13 @@
 'use client';
 
+import { useIsMobile } from '@workspace/ui/hooks/use-mobile';
+import { useScrollToBottom } from '@workspace/ui/hooks/use-scroll-to-bottom';
 import { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { User } from 'next-auth';
 import { useState, useEffect, useRef } from 'react';
 
 import { Message as PreviewMessage } from '@/components/custom/message';
-import { useIsMobile } from '@workspace/ui/hooks/use-mobile';
-import { useScrollToBottom } from '@workspace/ui/hooks/use-scroll-to-bottom';
 import { ChatProfileId } from '@/lib/types';
 
 import { ChatHeader } from './chat-header';
@@ -47,7 +47,7 @@ export function Chat({
               key={message.id}
               role={message.role}
               user={user}
-              nextRole={messages[index + 1] ? messages[index + 1].role : ""}
+              nextRole={messages[index + 1] ? (messages as any)[index + 1].role : ""}
               content={message.content}
               attachments={message.experimental_attachments}
               toolInvocations={message.toolInvocations}

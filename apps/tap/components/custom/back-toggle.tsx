@@ -1,11 +1,11 @@
 'use client';
 
+import { BetterTooltip } from '@workspace/ui/components/tooltip';
+import { cn } from "@workspace/ui/lib/utils"
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ComponentProps } from 'react';
 
-import { BetterTooltip } from '@workspace/ui/components/tooltip';
-import { cn } from "@workspace/ui/lib/utils"
 
 export function BackToggle({
   className,

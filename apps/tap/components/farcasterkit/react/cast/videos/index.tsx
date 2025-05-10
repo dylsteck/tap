@@ -4,6 +4,9 @@
 
 import sdk from "@farcaster/frame-sdk"
 import { useVirtualizer } from "@tanstack/react-virtual"
+import { Button } from "@workspace/ui/components/button"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
@@ -13,15 +16,9 @@ import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
-import { SidebarToggle } from "@/components/custom/sidebar-toggle"
-import { VideoHeader } from "@/components/custom/video-header"
-import { NeynarCastV2 } from "@/components/farcasterkit/common/types/neynar"
-import { Button } from "@workspace/ui/components/button"
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
-import { cn, fetcher, USER_FALLBACK_IMG_URL, BASE_URL } from "@/lib/utils"
-
-import TipDrawer from "./tip"
+import { cn, fetcher, USER_FALLBACK_IMG_URL, BASE_URL } from "../../../../../lib/utils"
+import { VideoHeader } from "../../../../custom/video-header"
+import { NeynarCastV2 } from "../../../common/types/neynar"
 
 
 interface VideoPlayerProps {
@@ -85,7 +82,8 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
     if (!videoRef.current || !videoEmbed) return
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0]
+        // const entry = entries[0]
+        const entry: any = entries[0]
         setIsVisible(entry.isIntersecting)
         if (entry.isIntersecting) {
           const video = videoRef.current
@@ -208,9 +206,6 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         </div>
       )}
       <div className="absolute right-4 bottom-8 flex flex-col items-center gap-4 z-10">
-        {(cast.author as any).verified_addresses?.eth_addresses && (cast.author as any).verified_addresses.eth_addresses.length > 0 ? 
-          <TipDrawer recipientAddress={(cast.author as any).verified_addresses.eth_addresses[0]} recipientUsername={cast.author.username} recipientPfp={cast.author.pfp_url} />
-        : null}
         <div className="size-10 rounded-full overflow-hidden bg-black/40 ring-2 ring-white">
           <img
             src={cast.author?.pfp_url ?? USER_FALLBACK_IMG_URL}
@@ -360,7 +355,8 @@ export function CastVideos({ session }: { session: Session | null }) {
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
-          const cast = filteredCasts[virtualRow.index]
+          // const cast = filteredCasts[virtualRow.index]
+          const cast: any = filteredCasts[virtualRow.index]
           return (
             <div
               key={cast.hash}
@@ -373,7 +369,8 @@ export function CastVideos({ session }: { session: Session | null }) {
             >
               <VideoPlayer
                 cast={cast}
-                isMuted={mutedStates[cast.hash]}
+                // isMuted={mutedStates[cast.hash]}
+                isMuted={(mutedStates as any)[cast.hash]}
                 toggleMute={toggleMute}
                 handleExpand={handleExpand}
               />

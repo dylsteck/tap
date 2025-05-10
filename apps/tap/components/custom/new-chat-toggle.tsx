@@ -1,12 +1,11 @@
 'use client';
 
+import { Button } from '@workspace/ui/components/button';
+import { BetterTooltip } from '@workspace/ui/components/tooltip';
+import { cn } from "@workspace/ui/lib/utils"
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { BetterTooltip } from '@workspace/ui/components/tooltip';
-import { cn } from "@workspace/ui/lib/utils"
-
-import { Button } from '@workspace/ui/components/button';
 
 export function NewChatToggle() {
   const router = useRouter();

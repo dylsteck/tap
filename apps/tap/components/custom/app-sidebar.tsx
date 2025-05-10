@@ -1,11 +1,5 @@
 'use client';
 
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
-import { type User } from 'next-auth';
-
-import { SidebarHistory } from '@/components/custom/sidebar-history';
-import { SidebarUserNav } from '@/components/custom/sidebar-user-nav';
 import { Button } from '@workspace/ui/components/button';
 import {
   Card,
@@ -27,6 +21,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@workspace/ui/components/sidebar';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { type User } from 'next-auth';
+
+import { SidebarHistory } from '@/components/custom/sidebar-history';
+import { SidebarUserNav } from '@/components/custom/sidebar-user-nav';
 
 export function AppSidebar({ user, selectedModelName }: { user: User | undefined, selectedModelName: string }) {
   const { setOpenMobile } = useSidebar();

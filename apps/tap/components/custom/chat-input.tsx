@@ -1,5 +1,9 @@
 "use client";
 
+import { Button } from '@workspace/ui/components/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@workspace/ui/components/dropdown-menu';
+import { Textarea } from '@workspace/ui/components/textarea';
+import useWindowSize from '@workspace/ui/hooks/use-window-size';
 import { ChatRequestOptions, CreateMessage, Message } from 'ai';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
@@ -9,10 +13,6 @@ import { toast } from 'sonner';
 import { ChatProfileId } from '@/lib/types';
 
 import { ArrowUpIcon, StopIcon } from './icons';
-import useWindowSize from '@workspace/ui/hooks/use-window-size';
-import { Button } from '@workspace/ui/components/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@workspace/ui/components/dropdown-menu';
-import { Textarea } from '@workspace/ui/components/textarea';
 
 export function ChatInput({
   input,

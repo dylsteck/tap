@@ -22,6 +22,17 @@
           "object",
           "type"
         ],
+        "pathGroups": [
+          {
+            "pattern": "@workspace/**",
+            "group": "external",
+            "position": "after"
+          },
+          {
+            "pattern": "@/**",
+            "group": "internal"
+          }
+        ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
@@ -33,7 +44,11 @@
   "settings": {
     "import/resolver": {
       "typescript": {
-        "alwaysTryTypes": true
+        "alwaysTryTypes": true,
+        "project": "apps/tap/tsconfig.json"
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
