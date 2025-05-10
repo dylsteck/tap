@@ -3,8 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "deploy": "npm run build && node dist/main.js"
+    "start": "bun src/main.ts"
   },
   "exports": {
     "./trpc": "./src/trpc/index.ts"
@@ -23,7 +22,6 @@
   },
   "devDependencies": {
     "@types/node": "^22.9.0",
-    "tsx": "^4.16.2",
     "typescript": "^5.5.3"
   }
 }

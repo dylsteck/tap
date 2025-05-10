@@ -1,9 +1,12 @@
-import type { HonoContext, HonoVariables, AppEnv } from './ctx';
-import { trpcServer } from '@hono/trpc-server';
-import { appRouter } from './trpc';
-import { cors } from 'hono/cors';
-import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
+import { trpcServer } from '@hono/trpc-server';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+
+import { appRouter } from './trpc/index.js';
+
+import type { HonoContext, HonoVariables, AppEnv } from './ctx.js';
+
 
 const api = new Hono<{ Variables: HonoVariables; Bindings: AppEnv }>()
   .use(
@@ -44,7 +47,7 @@ const app = new Hono<{ Variables: HonoVariables; Bindings: AppEnv }>()
   .route('/api', api)
   .get('/health', (c) => c.json({ message: 'Hello World!' }));
 
-const port = 8787;
+const port = 3000;
 console.log(`Server is running on port ${port}`)
 
 serve({

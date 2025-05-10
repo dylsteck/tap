@@ -8,7 +8,7 @@
     "build:web": "turbo build --filter=web",
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=web",
-    "dev:server": "turbo dev --filter=@tap/server",
+    "dev:server": "turbo start --filter=@tap/server",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
