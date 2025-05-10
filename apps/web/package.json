@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@tap/web",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,7 +18,7 @@
     "@farcaster/auth-kit": "^0.6.0",
     "@farcaster/frame-sdk": "^0.0.38",
     "@farcaster/frame-wagmi-connector": "^0.0.26",
-    "@workspace/ui": "*",
+    "@tap/ui": "*",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.5",

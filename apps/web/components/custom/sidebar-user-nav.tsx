@@ -5,12 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@workspace/ui/components/dropdown-menu';
+} from '@tap/ui/components/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@workspace/ui/components/sidebar';
+} from '@tap/ui/components/sidebar';
 import { ChevronUp, Moon, Sun, LogOut, Settings } from 'lucide-react';
 import Image from 'next/image';
 import { type User } from 'next-auth';

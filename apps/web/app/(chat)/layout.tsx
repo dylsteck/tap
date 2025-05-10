@@ -1,4 +1,4 @@
-import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar';
+import { SidebarInset, SidebarProvider } from '@tap/ui/components/sidebar';
 import { cookies } from 'next/headers';
 
 import { AppSidebar } from '@/components/custom/app-sidebar';

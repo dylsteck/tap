@@ -1,5 +1,5 @@
-import { SidebarProvider } from '@workspace/ui/components/sidebar';
-import { Skeleton } from '@workspace/ui/components/skeleton';
+import { SidebarProvider } from '@tap/ui/components/sidebar';
+import { Skeleton } from '@tap/ui/components/skeleton';
 import { motion } from 'framer-motion';
 
 import { Cast } from '@/components/farcasterkit/react/cast';

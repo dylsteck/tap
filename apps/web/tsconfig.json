@@ -21,7 +21,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@workspace/ui/*": ["../../packages/ui/src/*"]
+      "@tap/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

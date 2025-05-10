@@ -1,7 +1,7 @@
 'use client';
 
-import { useIsMobile } from '@workspace/ui/hooks/use-mobile';
-import { useScrollToBottom } from '@workspace/ui/hooks/use-scroll-to-bottom';
+import { useIsMobile } from '@tap/ui/hooks/use-mobile';
+import { useScrollToBottom } from '@tap/ui/hooks/use-scroll-to-bottom';
 import { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { User } from 'next-auth';

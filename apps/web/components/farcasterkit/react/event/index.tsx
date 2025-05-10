@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@tap/ui/components/avatar";
 import { CalendarIcon, MapPinIcon, UserIcon, UsersIcon } from "lucide-react";
 import React from "react";
 

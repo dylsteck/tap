@@ -1,7 +1,7 @@
 'use client';
 
-import { BetterTooltip } from '@workspace/ui/components/tooltip';
-import { cn } from "@workspace/ui/lib/utils"
+import { BetterTooltip } from '@tap/ui/components/tooltip';
+import { cn } from "@tap/ui/lib/utils"
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ComponentProps } from 'react';

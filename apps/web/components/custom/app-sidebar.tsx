@@ -1,13 +1,13 @@
 'use client';
 
-import { Button } from '@workspace/ui/components/button';
+import { Button } from '@tap/ui/components/button';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@workspace/ui/components/card';
+} from '@tap/ui/components/card';
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@workspace/ui/components/sidebar';
+} from '@tap/ui/components/sidebar';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { type User } from 'next-auth';

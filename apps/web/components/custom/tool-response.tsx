@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Badge } from "@workspace/ui/components/badge";
-import { Card } from "@workspace/ui/components/card";
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@workspace/ui/components/drawer";
-import { useMediaQuery } from "@workspace/ui/hooks/use-media-query";
+import { Badge } from "@tap/ui/components/badge";
+import { Card } from "@tap/ui/components/card";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@tap/ui/components/drawer";
+import { useMediaQuery } from "@tap/ui/hooks/use-media-query";
 import { motion } from "framer-motion";
 import { XIcon } from "lucide-react";
 import Link from "next/link";

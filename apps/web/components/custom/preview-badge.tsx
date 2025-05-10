@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
-import { Badge } from "@workspace/ui/components/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@tap/ui/components/avatar";
+import { Badge } from "@tap/ui/components/badge";
 
 export default function PreviewBadge({ title, images, isOpen, onClick }: { title: string, images: string[], isOpen: boolean, onClick: () => void }) {
     return (

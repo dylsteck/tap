@@ -1,4 +1,4 @@
-import { Button } from '@workspace/ui/components/button';
+import { Button } from '@tap/ui/components/button';
 
 import { SidebarToggle } from '@/components/custom/sidebar-toggle';
 

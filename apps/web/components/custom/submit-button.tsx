@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@tap/ui/components/button";
 import { useFormStatus } from "react-dom";
 
 import { LoaderIcon } from "@/components/custom/icons";

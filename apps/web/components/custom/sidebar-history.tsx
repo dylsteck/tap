@@ -9,13 +9,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@workspace/ui/components/alert-dialog';
+} from '@tap/ui/components/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@workspace/ui/components/dropdown-menu';
+} from '@tap/ui/components/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -25,7 +25,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@workspace/ui/components/sidebar';
+} from '@tap/ui/components/sidebar';
 import { HomeIcon, PlusIcon, VideoIcon, BookOpenIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';

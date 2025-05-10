@@ -1,6 +1,6 @@
-import { SidebarTrigger } from '@workspace/ui/components/sidebar';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@workspace/ui/components/tooltip';
-import { cn } from '@workspace/ui/lib/utils';
+import { SidebarTrigger } from '@tap/ui/components/sidebar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@tap/ui/components/tooltip';
+import { cn } from '@tap/ui/lib/utils';
 import { ComponentProps } from 'react';
 
 export function SidebarToggle({

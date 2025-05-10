@@ -2,9 +2,9 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query';
-import { Button } from '@workspace/ui/components/button';
-import { Skeleton } from '@workspace/ui/components/skeleton';
-import { useIsMobile } from '@workspace/ui/hooks/use-mobile';
+import { Button } from '@tap/ui/components/button';
+import { Skeleton } from '@tap/ui/components/skeleton';
+import { useIsMobile } from '@tap/ui/hooks/use-mobile';
 import { AlertCircle, ArrowLeft, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Session } from "next-auth";
 import React, { useState, useCallback, useEffect, useMemo } from 'react';

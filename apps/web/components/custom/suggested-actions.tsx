@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@workspace/ui/components/button'
+import { Button } from '@tap/ui/components/button'
 import { motion } from 'framer-motion'
 import { TrendingUp } from 'lucide-react'
 import React from 'react'
