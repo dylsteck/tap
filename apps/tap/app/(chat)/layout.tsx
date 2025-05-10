@@ -1,0 +1,23 @@
+import { cookies } from 'next/headers';
+
+import { AppSidebar } from '@/components/custom/app-sidebar';
+import Providers from '@/components/custom/providers';
+import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar';
+import { MODEL_NAME } from '@/lib/model';
+
+import { auth } from '../(auth)/auth';
+
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const [session, cookieStore] = await Promise.all([auth(), cookies()]);
+  const isCollapsed = cookieStore.get('sidebar:state')?.value !== 'true';
+  return(
+    <SidebarProvider defaultOpen={!isCollapsed}>
+      <AppSidebar user={session?.user} selectedModelName={MODEL_NAME} />
+      <SidebarInset>
+        <Providers session={session}>
+          {children}
+        </Providers>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
