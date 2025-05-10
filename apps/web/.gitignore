@@ -32,6 +32,9 @@ yarn-error.log*
 # turbo
 .turbo
 
+# tsconfig
+tsconfig.tsbuildinfo
+
 # bun
 bun.lock
 
