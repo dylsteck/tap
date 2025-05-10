@@ -8,7 +8,6 @@
     "build:tap": "turbo build --filter=tap",
     "dev": "turbo dev",
     "dev:tap": "turbo dev --filter=tap",
-    "dev:web": "turbo dev --filter=web",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
