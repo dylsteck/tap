@@ -1,5 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
-import { eventcaster } from "@/components/farcasterkit/services/eventcaster";
+import { warpcast } from "@/components/farcasterkit/services/warpcast";
 import { checkKey, setKey } from "@/lib/redis";
 import { authMiddleware, CACHE_EX_SECONDS } from "@/lib/utils";
 
@@ -17,16 +17,28 @@ export async function GET(request: Request) {
     return new Response(JSON.stringify("Query parameter 'id' is required!"), { status: 400 });
   }
 
-  const cacheKey = `event:${id}`;
+  const cacheKey = `topic:${id}`;
   const cacheEx = CACHE_EX_SECONDS;
   const cacheServerHeaders = {
     "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
     "x-cache-tags": cacheKey
   };
   const cacheRespInit: ResponseInit = { status: 200, headers: cacheServerHeaders };
-  await checkKey(cacheKey, cacheRespInit);
+  const cachedResponse = await checkKey(cacheKey, cacheRespInit);
+  if(cachedResponse){
+    return cachedResponse;
+  }
 
-  const data = await eventcaster.getEventById(id);
-  const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
-  return setKeyResp;
+  try {
+    const data = await warpcast.getTrendingTopicById(id);
+    const setKeyResp = await setKey(cacheKey, JSON.stringify(data), cacheEx, cacheRespInit);
+    return setKeyResp;
+  } catch (error) {
+    console.error(`Error fetching trending topic casts for ID ${id}:`, error);
+    if (error instanceof Error && error.message.includes('HTTP error! status: 404')) {
+        return new Response(JSON.stringify({ error: `Topic with ID ${id} not found.` }), { status: 404 });
+    }
+    return new Response(JSON.stringify({ error: "Failed to fetch trending topic casts." }), { status: 500 });
+  }
+
 }

@@ -217,3 +217,56 @@ export interface WarpcastUser {
       solanaWallets: string[];
     };
 }
+
+export interface WarpcastTopicCastsResponse {
+  result: {
+    casts: WarpcastCast[];
+    next?: {
+      cursor: string;
+    };
+  };
+}
+
+export interface WarpcastTrendingTopicsResponse {
+  result: {
+    topics: WarpcastTopic[];
+  }
+}
+
+export interface WarpcastTopic {
+  id: string;
+  displayName: string;
+  castCount: number;
+  users: WarpcastTopicUser[];
+  userCount: number;
+}
+
+export interface WarpcastTopicUser {
+  fid: number;
+  username: string;
+  displayName: string;
+  pfp: {
+    url: string;
+    verified: boolean;
+  };
+  profile: {
+    bio: {
+      text: string;
+      mentions: string[];
+      channelMentions: string[];
+    };
+    location: {
+      placeId: string;
+      description: string;
+    };
+    earlyWalletAdopter?: boolean;
+  };
+  followerCount: number;
+  followingCount: number;
+  referrerUsername?: string;
+  viewerContext: {
+    following: boolean;
+    followedBy: boolean;
+    enableNotifications: boolean;
+  };
+}

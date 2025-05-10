@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeIcon, PlusIcon, VideoIcon } from 'lucide-react';
+import { HomeIcon, PlusIcon, VideoIcon, BookOpenIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { type User } from 'next-auth';
@@ -106,6 +106,14 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/stories">
+              <SidebarMenuButton>
+                <BookOpenIcon size={12} />
+                <span>Stories</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
         </SidebarMenu>
         <SidebarGroupLabel>Chat History</SidebarGroupLabel>
         <SidebarGroupContent>
@@ -135,6 +143,14 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
               <SidebarMenuButton>
                 <VideoIcon size={12} />
                 <span>Videos</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/stories">
+              <SidebarMenuButton>
+                <BookOpenIcon size={12} />
+                <span>Stories</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -183,6 +199,14 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/stories">
+              <SidebarMenuButton>
+                <BookOpenIcon size={12} />
+                <span>Stories</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
         </SidebarMenu>
         <SidebarGroupLabel>Chat History</SidebarGroupLabel>
         <SidebarGroupContent>
@@ -216,6 +240,14 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
               <SidebarMenuButton>
                 <VideoIcon size={12} />
                 <span>Videos</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/stories">
+              <SidebarMenuButton>
+                <BookOpenIcon size={12} />
+                <span>Stories</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>

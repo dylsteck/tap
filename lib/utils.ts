@@ -18,6 +18,8 @@ const localUrl = `http://localhost:${port}`;
 
 export const BASE_URL = isDev ? localUrl : 'https://tap.computer';
 
+export const CACHE_EX_SECONDS = 3600; // 1 hour
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

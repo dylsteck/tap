@@ -1,3 +1,5 @@
+import { WarpcastTrendingTopicsResponse, WarpcastCast } from "@/components/farcasterkit/common/types/warpcast"
+
 import { BASE_URL, fetcher } from "./utils"
 
 class TapSDK {
@@ -190,6 +192,16 @@ class TapSDK {
 
   async getTrendingCasts(): Promise<any> {
     return await fetcher(`${this.BASE_URL}/api/farcaster/feed/trending`)
+  }
+
+  async getTrendingTopics(): Promise<WarpcastTrendingTopicsResponse> {
+    const result = await fetcher(`${this.BASE_URL}/api/farcaster/feed/topics`);
+    return result as WarpcastTrendingTopicsResponse;
+  }
+
+  async getTopicCastsById(id: string): Promise<WarpcastCast[]> {
+    const result = await fetcher(`${this.BASE_URL}/api/farcaster/feed/topics/${id}`);
+    return result as WarpcastCast[];
   }
 }
 

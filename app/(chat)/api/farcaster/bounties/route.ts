@@ -4,7 +4,7 @@ import { z } from "zod";
 import { auth } from "@/app/(auth)/auth";
 import { bountycaster } from "@/components/farcasterkit/services/bountycaster";
 import { checkKey, setKey } from "@/lib/redis";
-import { authMiddleware } from "@/lib/utils";
+import { authMiddleware, CACHE_EX_SECONDS } from "@/lib/utils";
 
 const statusSchema = z.enum(['all', 'open', 'open-above-1-dollar', 'in-progress', 'completed', 'expired']);
 const querySchema = z.object({
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 
   const cacheKey = `bounties:${status}:${eventsSince}:${minUsdValue || 'none'}`;
-  const cacheEx = 3600;
+  const cacheEx = CACHE_EX_SECONDS;
   const cacheServerHeaders = {
     "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
     "x-cache-tags": cacheKey

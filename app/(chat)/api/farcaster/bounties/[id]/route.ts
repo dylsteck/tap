@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/app/(auth)/auth";
 import { bountycaster } from "@/components/farcasterkit/services/bountycaster";
 import { checkKey, setKey } from "@/lib/redis";
-import { authMiddleware } from "@/lib/utils";
+import { authMiddleware, CACHE_EX_SECONDS } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   }
 
   const cacheKey = `bounty:${id}`;
-  const cacheEx = 3600;
+  const cacheEx = CACHE_EX_SECONDS;
   const cacheServerHeaders = {
     "Cache-Control": `public, s-maxage=${cacheEx}, stale-while-revalidate=${cacheEx}`,
     "x-cache-tags": cacheKey
