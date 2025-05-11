@@ -1,12 +1,14 @@
 import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
+
+import { farcasterRouter } from './routes/farcaster.js';
+import { icebreakerRouter } from './routes/icebreaker.js';
+import { router } from './trpc.js';
+
 import type { HonoContext } from '../ctx.js';
-import { router, publicProcedure } from './trpc.js';
 
 export const appRouter = router({
-  farcaster: publicProcedure
-    .query(() => {
-      return { message: "hello farcaster!", status: 200 };
-    }),
+  farcaster: farcasterRouter,
+  icebreaker: icebreakerRouter,
 });
 
 export type AppRouter = typeof appRouter;
