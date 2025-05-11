@@ -1,21 +1,33 @@
-FROM oven/bun:1
+FROM oven/bun:1 AS build
 
 WORKDIR /app
 
-# Copy the server's package.json and bun.lock
-COPY package.json ./package.json
-COPY bun.lock ./bun.lock
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lock bun.lock
 
-# Install only production dependencies.
 RUN bun install
 
-# Copy the application's source code into the container
-COPY src ./src
+COPY ./src ./src
 
+ENV NODE_ENV=production
 
-# Expose the Hono server on port 3000
-EXPOSE 3000
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	./src/index.ts
 
-# Command to run your Hono server
-# This assumes your entry point is src/main.ts
-CMD ["bun", "run", "start"]
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3001

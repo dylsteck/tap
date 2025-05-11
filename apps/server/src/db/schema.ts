@@ -1,4 +1,5 @@
-import { Message } from "ai";
+// TODO: move the import for "ai" to server
+import { Message } from "ai"; 
 import { InferSelectModel } from "drizzle-orm";
 import { pgTable, text, varchar, timestamp, json, uuid } from "drizzle-orm/pg-core";
 
@@ -27,4 +28,3 @@ export const chat = pgTable("chat", {
 export type Chat = Omit<InferSelectModel<typeof chat>, "messages"> & {
   messages: Array<Message>;
 };
-
