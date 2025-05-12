@@ -14,6 +14,7 @@
   "dependencies": {
     "@elysiajs/cors": "1.1.1",
     "@elysiajs/jwt": "1.1.1",
+    "@xmtp/node-sdk": "^2.0.9",
     "ai": "^4.3.15",
     "dotenv": "^16.4.5",
     "drizzle-orm": "0.36.0",
@@ -27,8 +28,7 @@
   "devDependencies": {
     "bun-types": "latest",
     "@types/pg": "^8.11.10",
-    "drizzle-kit": "0.27.2",
-    "tsx": "^4.19.2"
+    "drizzle-kit": "0.27.2"
   },
   "module": "src/index.js"
 }
