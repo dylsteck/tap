@@ -1,0 +1,13 @@
+{
+  "extends": "@tap/typescript-config/base.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../api/src/db/types.ts",
+    "../api/drizzle.config.ts"
+  ],
+  "compilerOptions": {
+    "composite": true
+  },
+  "references": []
+}
