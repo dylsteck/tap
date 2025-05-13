@@ -83,3 +83,34 @@ export type MergedClanker = {
       img_url: ClankerTrendingTokensResponse['tokens'][string]['img_url'];
   };
 }
+
+export type ClankerSearchResult = {
+  id: string;
+  contract_address: string;
+  name: string;
+  symbol: string;
+  img_url: string | null;
+}
+
+export type ClankerSearchResponse = {
+  query: string;
+  results: ClankerSearchResult[];
+}
+
+export type ClankerTrendingResponse = {
+  time_window: string;
+  results: MergedClanker[];
+}
+
+export type ClankerAddressResult = {
+  contract_address: string;
+  name: string;
+  symbol: string;
+  balance: string;
+  value_usd: string;
+}
+
+export type ClankerAddressResponse = {
+  address: string;
+  results: ClankerAddressResult[];
+}

@@ -31,3 +31,9 @@ export interface NounsBuilderProposal {
       tokenAddress: string;
     };
 }
+
+export interface NounsBuilderProposalsResponse {
+  dao_address: string;
+  status: string;
+  results: NounsBuilderProposal[];
+}
