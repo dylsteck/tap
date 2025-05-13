@@ -1,4 +1,5 @@
-import { WarpcastCastsResponse, WarpcastUserResponse, WarpcastTrendingTopicsResponse, WarpcastTopicCastsResponse, WarpcastCast } from "../common/types/warpcast";
+// small nit: worth keeping the pathname '@tap/common'?
+import { WarpcastCastsResponse, WarpcastUserResponse, WarpcastTrendingTopicsResponse, WarpcastTopicCastsResponse, WarpcastCast } from "@tap/common"
 
 class WarpcastService {
     private static instance: WarpcastService

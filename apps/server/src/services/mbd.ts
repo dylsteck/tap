@@ -1,4 +1,4 @@
-import { MBDCast } from "../common/types"
+import { MBDCast } from "@tap/common"
 
 class MBDService {
     private readonly bearerToken: string

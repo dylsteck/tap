@@ -1,6 +1,6 @@
 import { chatRoutes } from './routes/chat';
 import { farcasterRoutes } from './routes/farcaster'
-import { createElysia } from './utils'
+import { createElysia } from './lib/utils'
 
 const PORT = 3001;
 
