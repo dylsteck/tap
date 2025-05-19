@@ -11,7 +11,15 @@ export const createElysia = (config?: ConstructorParameters<typeof Elysia>[0]) =
   new Elysia(config)
     .use(cors())
     .use(Logestic.preset('common'))
-    .use(swagger())
+    .use(swagger({
+      documentation: {
+          info: {
+              title: 'Tap API Docs',
+              version: '0.0.1',
+          }
+      },
+      path: '/docs'
+    }))
     .onError(({ server, error, path }) => {
       console.error(path, error)
       if (error.message.toLowerCase().includes('out of memory')) {
