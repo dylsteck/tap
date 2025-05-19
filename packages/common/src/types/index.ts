@@ -5,5 +5,4 @@ export * from './events';
 export * from './icebreaker';
 export * from './mbd';
 export * from './neynar';
-export * from './nouns-builder';
 export * from './warpcast';

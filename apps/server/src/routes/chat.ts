@@ -13,7 +13,7 @@ export const chatRoutes = createElysia({ prefix: '/chat' })
     const coreMessages = convertToCoreMessages(messages)
     const result = await streamText({
       model: await openai(model),
-      system: SYSTEM_PROMPT(null),
+      system: SYSTEM_PROMPT(null as any),
       messages: coreMessages,
       maxSteps: 3,
       tools,
