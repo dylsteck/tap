@@ -24,7 +24,7 @@ export const chat = pgTable("chat", {
     .notNull()
     .references(() => user.id),
 });
-
 export type Chat = Omit<InferSelectModel<typeof chat>, "messages"> & {
   messages: Array<Message>;
 };
+

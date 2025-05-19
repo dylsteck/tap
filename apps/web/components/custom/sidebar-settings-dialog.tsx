@@ -9,16 +9,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@workspace/ui/components/alert-dialog';
-import { Button } from '@workspace/ui/components/button';
+} from '@tap/ui/components/alert-dialog';
+import { Button } from '@tap/ui/components/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@workspace/ui/components/dialog';
-import { Input } from '@workspace/ui/components/input';
-import { Label } from '@workspace/ui/components/label';
+} from '@tap/ui/components/dialog';
+import { Input } from '@tap/ui/components/input';
+import { Label } from '@tap/ui/components/label';
 import { useState } from 'react';
 import { toast } from 'sonner';
 

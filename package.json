@@ -5,15 +5,18 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:web": "turbo build --filter=web",
+    "build:web": "turbo build --filter=@tap/web",
     "dev": "turbo dev",
-    "dev:web": "turbo dev --filter=web",
+    "dev:web": "turbo dev --filter=@tap/web",
+    "dev:server": "turbo dev --filter=@tap/server",
+    "deploy:web": "vercel deploy --prod",
+    "deploy:server": "fly deploy",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@workspace/eslint-config": "*",
-    "@workspace/typescript-config": "*",
+    "@tap/eslint-config": "*",
+    "@tap/typescript-config": "*",
     "prettier": "^3.5.1",
     "turbo": "^2.4.2",
     "typescript": "5.7.3"

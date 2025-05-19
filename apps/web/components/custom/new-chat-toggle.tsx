@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@workspace/ui/components/button';
-import { BetterTooltip } from '@workspace/ui/components/tooltip';
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from '@tap/ui/components/button';
+import { BetterTooltip } from '@tap/ui/components/tooltip';
+import { cn } from "@tap/ui/lib/utils"
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

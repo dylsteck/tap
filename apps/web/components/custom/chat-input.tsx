@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from '@workspace/ui/components/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@workspace/ui/components/dropdown-menu';
-import { Textarea } from '@workspace/ui/components/textarea';
-import useWindowSize from '@workspace/ui/hooks/use-window-size';
+import { Button } from '@tap/ui/components/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@tap/ui/components/dropdown-menu';
+import { Textarea } from '@tap/ui/components/textarea';
+import useWindowSize from '@tap/ui/hooks/use-window-size';
 import { ChatRequestOptions, CreateMessage, Message } from 'ai';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';

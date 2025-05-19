@@ -4,9 +4,9 @@
 
 import sdk from "@farcaster/frame-sdk"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { Button } from "@workspace/ui/components/button"
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { Button } from "@tap/ui/components/button"
+import { Skeleton } from "@tap/ui/components/skeleton"
+import { useIsMobile } from "@tap/ui/hooks/use-mobile"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"

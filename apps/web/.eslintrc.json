@@ -24,7 +24,7 @@
         ],
         "pathGroups": [
           {
-            "pattern": "@workspace/**",
+            "pattern": "@tap/**",
             "group": "external",
             "position": "after"
           },
