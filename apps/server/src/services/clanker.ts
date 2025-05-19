@@ -55,7 +55,7 @@ class ClankerService {
     }
 
     async getTrendingTokens() {
-        return this.fetcher<{ data: Array<any>, hasMore: boolean, total: number }>(`tokens/trending`)
+        return this.fetcher<any>(`tokens/trending`)
     }
 }
 

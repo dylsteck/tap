@@ -1,3 +1,5 @@
+import { IcebreakerProfile } from '@tap/common';
+
 class IcebreakerService {
     private readonly baseUrl = 'https://app.icebreaker.xyz/api/v1';
     private static instance: IcebreakerService;
@@ -27,24 +29,28 @@ class IcebreakerService {
         return response.json();
     }
 
-    async getCredentialProfiles(credentialName: string, limit: string = '100', offset: string = '3') {
-        return this.fetcher<{ profiles: any[] }>(`credentials?credentialName=${encodeURIComponent(credentialName)}&limit=${encodeURIComponent(limit)}&offset=${encodeURIComponent(offset)}`);
+    async getProfileBySocial(channelType: string, username: string) {
+        return this.fetcher<{ profiles: IcebreakerProfile[] }>(`socials/${encodeURIComponent(channelType)}/${encodeURIComponent(username)}`);
+    }
+
+    async getCredentialProfiles(credentialName: string, limit: string = '100', offset: string = '0') {
+        return this.fetcher<{ profiles: IcebreakerProfile[] }>(`credentials?credentialName=${encodeURIComponent(credentialName)}&limit=${encodeURIComponent(limit)}&offset=${encodeURIComponent(offset)}`);
     }
 
     async getProfileByENS(ensName: string) {
-        return this.fetcher<{ profile: { profiles: any[] } }>(`ens/${encodeURIComponent(ensName)}`);
+        return this.fetcher<{ profiles: any[] }>(`ens/${encodeURIComponent(ensName)}`);
     }
 
     async getProfileByWallet(walletAddress: string) {
-        return this.fetcher<{ profile: { profiles: any[] } }>(`eth/${encodeURIComponent(walletAddress)}`);
+        return this.fetcher<{ profiles: any[] }>(`eth/${encodeURIComponent(walletAddress)}`);
     }
 
     async getProfileByFID(fid: string) {
-        return this.fetcher<{ profile: { profiles: any[] } }>(`fid/${encodeURIComponent(fid)}`);
+        return this.fetcher<{ profiles: any[] }>(`fid/${encodeURIComponent(fid)}`);
     }
 
     async getProfileByFName(fname: string) {
-        return this.fetcher<{ profile: { profiles: any[] } }>(`fname/${encodeURIComponent(fname)}`);
+        return this.fetcher<{ profiles: any[] }>(`fname/${encodeURIComponent(fname)}`);
     }
 }
 

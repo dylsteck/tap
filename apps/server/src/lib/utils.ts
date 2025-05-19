@@ -4,7 +4,7 @@ import swagger from '@elysiajs/swagger'
 import { Logestic } from 'logestic'
 
 // Add BASE_URL and CAST_HASH_LENGTH
-export const BASE_URL = 'https://tap.xyz'
+export const BASE_URL = 'https://api.tap.computer'
 export const CAST_HASH_LENGTH = 66 // Standard Ethereum hash length (0x + 64 hex chars)
 
 export const createElysia = (config?: ConstructorParameters<typeof Elysia>[0]) =>

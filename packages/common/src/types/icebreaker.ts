@@ -11,7 +11,7 @@ export type IcebreakerEnsResult = IcebreakerBaseResult & {
 }
 
 export type IcebreakerEnsResponse = {
-  results: IcebreakerEnsResult[];
+  profiles: IcebreakerProfile[];
 }
 
 export type IcebreakerEthResult = IcebreakerBaseResult & {
@@ -24,20 +24,73 @@ export type IcebreakerEthResult = IcebreakerBaseResult & {
 }
 
 export type IcebreakerEthResponse = {
-  address: string;
-  results: IcebreakerEthResult[];
+  profiles: IcebreakerProfile[];
 }
 
-export type IcebreakerFidResult = IcebreakerBaseResult & {
-  fid: string;
-  username: string;
-  display_name: string;
-  avatar_url: string | null;
+export type IcebreakerChannelMetadata = {
+  name: string;
+  value: string;
+}
+
+export type IcebreakerChannel = {
+  type: string;
+  value: string;
+  isVerified: boolean;
+  isLocked: boolean;
+  url: string;
+  metadata?: IcebreakerChannelMetadata[];
+}
+
+export type IcebreakerCredential = {
+  name: string;
+  chain: string;
+  source: string;
+  reference: string;
+}
+
+export type IcebreakerGuild = {
+  guildId: number;
+  joinedAt: string;
+  roleIds: number[];
+  isAdmin: boolean;
+  isOwner: boolean;
+}
+
+export type IcebreakerEvent = {
+  id: string;
+  source: string;
+  city: string;
+  country: string;
+  description: string;
+  endDate: string;
+  eventUrl: string;
+  expiryDate: string;
+  imageUrl: string;
+  name: string;
+  startDate: string;
+  year: string;
+}
+
+export type IcebreakerProfile = {
+  profileID: string;
+  walletAddress: string;
+  avatarUrl: string;
+  displayName: string;
+  bio: string;
+  jobTitle: string;
+  primarySkill: string;
+  networkingStatus: string;
+  location: string;
+  channels: IcebreakerChannel[];
+  credentials: IcebreakerCredential[];
+  highlights: any[]; // Could be typed more specifically if structure is known
+  workExperience: any[]; // Could be typed more specifically if structure is known
+  guilds: IcebreakerGuild[];
+  events: IcebreakerEvent[];
 }
 
 export type IcebreakerFidResponse = {
-  fid: string;
-  results: IcebreakerFidResult[];
+  profiles: IcebreakerProfile[];
 }
 
 export type IcebreakerFnameResult = IcebreakerBaseResult & {
@@ -47,8 +100,7 @@ export type IcebreakerFnameResult = IcebreakerBaseResult & {
 }
 
 export type IcebreakerFnameResponse = {
-  name: string;
-  results: IcebreakerFnameResult[];
+  profiles: IcebreakerProfile[];
 }
 
 export type IcebreakerCredentialResult = IcebreakerBaseResult & {
@@ -60,7 +112,9 @@ export type IcebreakerCredentialResult = IcebreakerBaseResult & {
 }
 
 export type IcebreakerCredentialsResponse = {
-  address: string;
-  type?: string;
-  results: IcebreakerCredentialResult[];
+  profiles: IcebreakerProfile[];
+}
+
+export type IcebreakerSocialResponse = {
+  profiles: IcebreakerProfile[];
 } 

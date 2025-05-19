@@ -6,50 +6,47 @@ import {
   IcebreakerEthResponse,
   IcebreakerFidResponse,
   IcebreakerFnameResponse,
-  IcebreakerCredentialsResponse
+  IcebreakerCredentialsResponse,
+  IcebreakerSocialResponse
 } from '@tap/common'
+import { icebreaker } from '../services/icebreaker'
 
 type EnsQuery = {
-  address?: string;
-  name?: string;
-  limit?: string;
-  cursor?: string;
+  name: string;
 }
 
 type EthQuery = {
   address: string;
-  limit?: string;
-  cursor?: string;
 }
 
 type FidQuery = {
   fid: string;
-  limit?: string;
-  cursor?: string;
 }
 
 type FnameQuery = {
   name: string;
-  limit?: string;
-  cursor?: string;
 }
 
 type CredentialsQuery = {
-  address: string;
-  type?: string;
+  credentialName: string;
   limit?: string;
-  cursor?: string;
+  offset?: string;
+}
+
+type SocialParams = {
+  channelType: string;
+  username: string;
 }
 
 export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
   .get('/ens', async ({ query }: { query: EnsQuery }) => {
-    const { address, name, limit = '25', cursor } = query
+    const { name } = query
     
-    if (!address && !name) {
-      throw new Error('Either address or name parameter is required')
+    if (!name) {
+      throw new Error('Name parameter is required')
     }
     
-    const cacheKey = `icebreaker_ens:${address || ''}:${name || ''}:${limit}:${cursor || ''}`
+    const cacheKey = `icebreaker:ens:${name}`
     const cacheEx = 3600
     const cachedData = await checkKey(cacheKey)
     
@@ -58,8 +55,9 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     try {
-      // Replace with actual implementation
-      const data = { results: [] } as IcebreakerEnsResponse
+      const response = await icebreaker.getProfileByENS(name)
+      
+      const data: IcebreakerEnsResponse = response
       
       await setKey(cacheKey, JSON.stringify(data), cacheEx)
       return data
@@ -68,22 +66,19 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
   }, {
     query: t.Object({
-      address: t.Optional(t.String()),
-      name: t.Optional(t.String()),
-      limit: t.Optional(t.String({ default: '25' })),
-      cursor: t.Optional(t.String())
+      name: t.String()
     }),
     response: t.Any()
   })
   
   .get('/eth', async ({ query }: { query: EthQuery }) => {
-    const { address, limit = '25', cursor } = query
+    const { address } = query
     
     if (!address) {
       throw new Error('Address parameter is required')
     }
     
-    const cacheKey = `icebreaker_eth:${address}:${limit}:${cursor || ''}`
+    const cacheKey = `icebreaker:eth:${address}`
     const cacheEx = 3600
     const cachedData = await checkKey(cacheKey)
     
@@ -92,8 +87,8 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     try {
-      // Replace with actual implementation
-      const data = { address, results: [] } as IcebreakerEthResponse
+      const response = await icebreaker.getProfileByWallet(address)
+      const data: IcebreakerEthResponse = response
       
       await setKey(cacheKey, JSON.stringify(data), cacheEx)
       return data
@@ -102,21 +97,19 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
   }, {
     query: t.Object({
-      address: t.String(),
-      limit: t.Optional(t.String({ default: '25' })),
-      cursor: t.Optional(t.String())
+      address: t.String()
     }),
     response: t.Any()
   })
   
   .get('/fid', async ({ query }: { query: FidQuery }) => {
-    const { fid, limit = '25', cursor } = query
+    const { fid } = query
     
     if (!fid) {
       throw new Error('FID parameter is required')
     }
     
-    const cacheKey = `icebreaker_fid:${fid}:${limit}:${cursor || ''}`
+    const cacheKey = `icebreaker:fid:${fid}`
     const cacheEx = 3600
     const cachedData = await checkKey(cacheKey)
     
@@ -125,8 +118,8 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     try {
-      // Replace with actual implementation
-      const data = { fid, results: [] } as IcebreakerFidResponse
+      const response = await icebreaker.getProfileByFID(fid)
+      const data: IcebreakerFidResponse = response
       
       await setKey(cacheKey, JSON.stringify(data), cacheEx)
       return data
@@ -135,21 +128,19 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
   }, {
     query: t.Object({
-      fid: t.String(),
-      limit: t.Optional(t.String({ default: '25' })),
-      cursor: t.Optional(t.String())
+      fid: t.String()
     }),
     response: t.Any()
   })
   
   .get('/fname', async ({ query }: { query: FnameQuery }) => {
-    const { name, limit = '25', cursor } = query
+    const { name } = query
     
     if (!name) {
       throw new Error('Name parameter is required')
     }
     
-    const cacheKey = `icebreaker_fname:${name}:${limit}:${cursor || ''}`
+    const cacheKey = `icebreaker:fname:${name}`
     const cacheEx = 3600
     const cachedData = await checkKey(cacheKey)
     
@@ -158,8 +149,8 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     try {
-      // Replace with actual implementation
-      const data = { name, results: [] } as IcebreakerFnameResponse
+      const response = await icebreaker.getProfileByFName(name)
+      const data: IcebreakerFnameResponse = response
       
       await setKey(cacheKey, JSON.stringify(data), cacheEx)
       return data
@@ -168,21 +159,19 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
   }, {
     query: t.Object({
-      name: t.String(),
-      limit: t.Optional(t.String({ default: '25' })),
-      cursor: t.Optional(t.String())
+      name: t.String()
     }),
     response: t.Any()
   })
   
   .get('/credentials', async ({ query }: { query: CredentialsQuery }) => {
-    const { address, type, limit = '25', cursor } = query
+    const { credentialName, limit = '100', offset = '0' } = query
     
-    if (!address) {
-      throw new Error('Address parameter is required')
+    if (!credentialName) {
+      throw new Error('Credential name parameter is required')
     }
     
-    const cacheKey = `icebreaker_credentials:${address}:${type || ''}:${limit}:${cursor || ''}`
+    const cacheKey = `icebreaker:credentials:${credentialName}:${limit}:${offset}`
     const cacheEx = 3600
     const cachedData = await checkKey(cacheKey)
     
@@ -191,8 +180,8 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     try {
-      // Replace with actual implementation
-      const data = { address, type, results: [] } as IcebreakerCredentialsResponse
+      const response = await icebreaker.getCredentialProfiles(credentialName, limit, offset)
+      const data: IcebreakerCredentialsResponse = response
       
       await setKey(cacheKey, JSON.stringify(data), cacheEx)
       return data
@@ -201,10 +190,37 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
   }, {
     query: t.Object({
-      address: t.String(),
-      type: t.Optional(t.String()),
-      limit: t.Optional(t.String({ default: '25' })),
-      cursor: t.Optional(t.String())
+      credentialName: t.String(),
+      limit: t.Optional(t.String({ default: '100' })),
+      offset: t.Optional(t.String({ default: '0' }))
     }),
+    response: t.Any()
+  })
+
+  .get('/socials/:channelType/:username', async ({ params }: { params: SocialParams }) => {
+    const { channelType, username } = params
+    
+    if (!channelType || !username) {
+      throw new Error('Channel type and username parameters are required')
+    }
+    
+    const cacheKey = `icebreaker:socials:${channelType}:${username}`
+    const cacheEx = 3600
+    const cachedData = await checkKey(cacheKey)
+    
+    if (cachedData) {
+      return cachedData
+    }
+    
+    try {
+      const response = await icebreaker.getProfileBySocial(channelType, username)
+      const data: IcebreakerSocialResponse = response
+      
+      await setKey(cacheKey, JSON.stringify(data), cacheEx)
+      return data
+    } catch (error) {
+      throw new Error(`Failed to fetch social data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }, {
     response: t.Any()
   })
