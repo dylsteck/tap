@@ -9,7 +9,7 @@ class ClankerService {
 
     static getInstance(): ClankerService {
         if (!ClankerService.instance) {
-            const apiKey = process.env.CLANKER_API_KEY
+            const apiKey = Bun.env.CLANKER_API_KEY
             if (!apiKey) {
                 throw new Error('CLANKER_API_KEY environment variable is not set')
             }

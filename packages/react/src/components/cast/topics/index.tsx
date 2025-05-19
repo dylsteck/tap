@@ -14,7 +14,7 @@ import { VideoHeader } from '@/components/custom/video-header';
 import { NeynarCastV2 } from '@/components/farcasterkit/common/types/neynar';
 import { WarpcastTrendingTopicsResponse, WarpcastCast } from '@/components/farcasterkit/common/types/warpcast';
 import { Cast } from '@/components/farcasterkit/react/cast';
-import { tapSDK } from '@/lib/api';
+import { tapSDK } from '@tap/common';
 import { cn, USER_FALLBACK_IMG_URL, fetcher } from '@/lib/utils';
 
 type Topic = WarpcastTrendingTopicsResponse['result']['topics'][0];

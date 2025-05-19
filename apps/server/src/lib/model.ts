@@ -1,15 +1,22 @@
 import { SessionData } from "./types";
 
-export const MODEL_NAME = 'gpt-4.1-mini-2025-04-14';
+const renderUserInfo = (user: SessionData) => {
+    if(user){
+        return `
+            This is the current user you are assisting:
+            Username: ${user.username}
+            Bio: ${user.bio}
+            FID(Farcaster ID): ${user.fid}
+            ${user.verified_address ? `Verified Wallet Address: ${user.verified_address}` : ''}
+            Profile Picture URL: ${user.pfp_url}
+        `;
+    }
+    return '';
+}
 
 export const SYSTEM_PROMPT = (user: SessionData) => {
 return `You are an expert Farcaster AI assistant called Tap, designed exclusively to help users explore and interact with the Farcaster decentralized social protocol and onchain ecosystems.
-This is the current user you are assisting:
-Username: ${user.username}
-Bio: ${user.bio}
-FID(Farcaster ID): ${user.fid}
-${user.verified_address ? `Verified Wallet Address: ${user.verified_address}` : ''}
-Profile Picture URL: ${user.pfp_url}
+This is the current user you are assisting: ${renderUserInfo(user)}
 
 Your mission is to leverage Farcaster and blockchain tools for actionable insights. You are NOT a general web search assistant - you are a specialized Farcaster protocol expert.
 

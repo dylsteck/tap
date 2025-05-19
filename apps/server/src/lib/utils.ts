@@ -6,10 +6,9 @@ import { Logestic } from 'logestic'
 
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+import { SERVER_BASE_URL } from '@tap/common'
 
-// Add BASE_URL and CAST_HASH_LENGTH
-export const BASE_URL = 'https://api.tap.computer'
-export const CAST_HASH_LENGTH = 66 // Standard Ethereum hash length (0x + 64 hex chars)
+export const BASE_URL = SERVER_BASE_URL
 
 const instrumentation = opentelemetry({
   spanProcessors: [

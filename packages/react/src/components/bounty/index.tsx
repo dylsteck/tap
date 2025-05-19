@@ -5,7 +5,7 @@ import { ScrollArea, ScrollBar } from '@tap/ui/components/scroll-area';
 import { AwardIcon, CalendarIcon, ExternalLinkIcon } from "lucide-react"
 import React from 'react';
 
-import { Bounty as BountyType } from '../../common/types'
+import { Bounty as BountyType } from '@tap/common'
 
 export function Bounty({ bounty }: { bounty: BountyType }) {
   const hasReward = bounty.reward_summary?.token?.symbol && bounty.reward_summary?.unit_amount;

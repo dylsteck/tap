@@ -22,7 +22,8 @@
     "paths": {
       "@/*": ["./*"],
       "@tap/ui/*": ["../../packages/ui/src/*"]
-    }
+    },
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",

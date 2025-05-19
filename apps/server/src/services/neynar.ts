@@ -9,7 +9,7 @@ class NeynarService {
 
     static getInstance(): NeynarService {
         if (!NeynarService.instance) {
-            const apiKey = process.env.NEYNAR_API_KEY
+            const apiKey = Bun.env.NEYNAR_API_KEY
             if (!apiKey) {
                 throw new Error('NEYNAR_API_KEY environment variable is not set')
             }

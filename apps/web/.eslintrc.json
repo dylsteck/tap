@@ -45,7 +45,7 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": "apps/tap/tsconfig.json"
+        "project": "apps/web/tsconfig.json"
       },
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]

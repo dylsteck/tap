@@ -1,6 +1,6 @@
 import { ApplicationError, SERVER_BASE_URL, WarpcastCast, WarpcastTrendingTopicsResponse } from "@tap/common"
 
-class TapSDK {
+export class TapSDK {
   private BASE_URL: string
   private static instance: TapSDK
 
@@ -100,4 +100,67 @@ class TapSDK {
     return await this.request(`${this.BASE_URL}/api/ethereum/ens/${ensName}`);
   }
   
+  async getEvents(): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/farcaster/events`);
+  }
+
+  async getFarcasterUser(username: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/farcaster/user/${username}`);
+  }
+
+  async getFarcasterUserCasts(fid: number): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/farcaster/user/${fid}/casts`);
+  }
+
+  async getTrendingCasts(): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/farcaster/trending/casts`);
+  }
+
+  async getEthToken(address: string, network: string, timeframe: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/ethereum/token/${address}?network=${network}&timeframe=${timeframe}`);
+  }
+
+  getIcebreakerCredentials(): any {
+    // Return a list of credentials
+    return []; // Replace with actual implementation
+  }
+
+  async getIcebreakerCredentialProfiles(credentialName: string, limit?: number, offset?: number): Promise<any> {
+    const url = new URL(`${this.BASE_URL}/api/icebreaker/credential/profiles`);
+    url.searchParams.append("credentialName", credentialName);
+    if (limit) url.searchParams.append("limit", limit.toString());
+    if (offset) url.searchParams.append("offset", offset.toString());
+    return await this.request(url.toString());
+  }
+
+  async getIcebreakerEnsProfile(ensName: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/profile/ens/${ensName}`);
+  }
+
+  async getIcebreakerEthAddressProfile(walletAddress: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/profile/eth/${walletAddress}`);
+  }
+
+  async getIcebreakerEthProfile(identifier: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/profile/eth/${identifier}`);
+  }
+
+  async getIcebreakerFCUser(fname: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/user/${fname}`);
+  }
+
+  async getIcebreakerFidProfile(fid: number): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/profile/fid/${fid}`);
+  }
+
+  async getIcebreakerFnameProfile(fname: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/icebreaker/profile/fname/${fname}`);
+  }
+
+  async getIcebreakerProfile(fname?: string, fid?: string): Promise<any> {
+    const url = new URL(`${this.BASE_URL}/api/icebreaker/profile`);
+    if (fname) url.searchParams.append("fname", fname);
+    if (fid) url.searchParams.append("fid", fid);
+    return await this.request(url.toString());
+  }
 }

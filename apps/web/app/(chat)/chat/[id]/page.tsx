@@ -5,7 +5,7 @@ import { auth } from '@/app/(auth)/auth';
 import { Chat } from '@/components/custom/chat';
 import { getChatById } from '@/db/queries';
 import { Chat as ChatSchema } from '@/db/schema';
-import { MODEL_NAME } from '@/lib/model';
+import { MODEL_NAME } from '@tap/common';
 import { ChatProfileId } from '@/lib/types';
 import { convertToUIMessages } from '@/lib/utils';
 

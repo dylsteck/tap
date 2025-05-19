@@ -22,8 +22,6 @@ import { Label } from '@tap/ui/components/label';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { MODEL_NAME } from '@/lib/model';
-
 export function SidebarSettingsDialog({
   username,
   isOpen,
@@ -80,14 +78,6 @@ export function SidebarSettingsDialog({
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Username cannot be edited at this time</p>
             </div>
-            {/* <div className="flex flex-col gap-2 items-start">
-              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Model</Label>
-              <ModelSelector
-                selectedModelName={localModelName}
-                className="mt-1 w-auto bg-white dark:bg-gray-800 text-black dark:text-gray-300"
-                onModelChange={(model) => setLocalModelName(model)}
-              />
-            </div> */}
             <div className="flex flex-col gap-2 items-start">
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">History</Label>
               <Button 

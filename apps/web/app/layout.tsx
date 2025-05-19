@@ -8,6 +8,10 @@ import Providers from '@/components/custom/providers';
 import { ThemeProvider } from '@/components/custom/theme-provider';
 import { BASE_URL } from '@/lib/utils';
 
+export const viewport = {
+  maximumScale: 1, // Disable auto-zoom on mobile Safari
+};
+
 export function generateMetadata() {
   const frame = createFrame()
   return {
@@ -27,10 +31,6 @@ export function generateMetadata() {
       "fc:frame": JSON.stringify(frame)
     }
   }
-};
-
-export const viewport = {
-  maximumScale: 1, // Disable auto-zoom on mobile Safari
 };
 
 const LIGHT_THEME_COLOR = 'hsl(0 0% 100%)';

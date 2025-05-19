@@ -1,1 +1,2 @@
-export * from '@tap/common'
+export * from '@tap/common';
+export * from './components';

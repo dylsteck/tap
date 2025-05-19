@@ -1,8 +1,7 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
-
-import { tapSDK } from "./api"
-import { BASE_URL, CAST_HASH_LENGTH } from "./utils"
+import { tapSDK } from "@tap/common"
+import { BASE_URL } from "./utils"
 
 export const tools: ToolSet = {
   analyzeCast: tool({

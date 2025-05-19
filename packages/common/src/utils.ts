@@ -1,5 +1,11 @@
+import { TapSDK } from "@tap/sdk";
+
 export const CACHE_EX_SECONDS = 3600; // 1 hour
 export const CAST_HASH_LENGTH = 42;
+
+export const MODEL_NAME = 'gpt-4.1-mini-2025-04-14';
+
+export const tapSDK = TapSDK.getInstance(); 
 
 export const WEB_BASE_URL = 'https://tap.computer';
 export const SERVER_BASE_URL = 'https://api.tap.computer';
