@@ -1,0 +1,12 @@
+{
+  "extends": "@tap/typescript-config/base.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "composite": true,
+    "incremental": true,
+    "resolveJsonModule": true
+  },
+  "references": []
+}

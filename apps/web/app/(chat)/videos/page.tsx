@@ -1,7 +1,7 @@
+import { createFrame, VIDEOS_BANNER_IMG_URL } from '@tap/common';
+
 import { auth } from '@/app/(auth)/auth';
-import { CastVideosPageWrapper } from '@/components/farcasterkit/react/cast/videos';
-import { createFrame } from '@/lib/frame';
-import { BASE_URL, VIDEOS_BANNER_IMG_URL } from '@/lib/utils';
+import { BASE_URL } from '@/lib/utils';
 
 export function generateMetadata() {
   const frame = createFrame("watch videos", VIDEOS_BANNER_IMG_URL, "/videos")

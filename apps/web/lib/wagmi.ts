@@ -1,4 +1,5 @@
 'use client';
+
 import { farcasterFrame } from "@farcaster/frame-wagmi-connector";
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';

@@ -1,8 +1,6 @@
 import { tool, ToolSet } from "ai"
 import { z } from "zod"
 
-import { BaseIcon, BountycasterIcon, ClankerIcon, FarcasterIcon, IcebreakerIcon } from "@/components/custom/icons";
-
 import { tapSDK } from "./api"
 import { BASE_URL, CAST_HASH_LENGTH } from "./utils"
 
@@ -157,7 +155,7 @@ export const tools: ToolSet = {
       if (!searchItem) {
         throw new Error('No Clanker found for the given text');
       }
-      const tokenData = await tapSDK.getEthToken(searchItem.contract_address, 'BASE_MAINNET', 'WEEK');
+      const tokenData = await tapSDK.getEthToken((searchItem as any).contract_address, 'BASE_MAINNET', 'WEEK');
       return tokenData.data.fungibleToken;
     },
   }),

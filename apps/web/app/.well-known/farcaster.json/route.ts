@@ -1,4 +1,5 @@
-import { BASE_URL, ICON_IMG_URL } from "../../../lib/utils";
+import { BASE_URL } from "../../../lib/utils";
+import { ICON_IMG_URL } from "@tap/common";
 
 export async function GET() {
   const config = {

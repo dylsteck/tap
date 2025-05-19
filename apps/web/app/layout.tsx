@@ -1,12 +1,12 @@
 import './globals.css';
+import { BANNER_IMG_URL, createFrame } from '@tap/common';
 import { Metadata } from 'next';
 import Script from 'next/script';
 import { Toaster } from 'sonner';
 
 import Providers from '@/components/custom/providers';
 import { ThemeProvider } from '@/components/custom/theme-provider';
-import { createFrame } from '@/lib/frame';
-import { BANNER_IMG_URL, BASE_URL } from '@/lib/utils';
+import { BASE_URL } from '@/lib/utils';
 
 export function generateMetadata() {
   const frame = createFrame()
