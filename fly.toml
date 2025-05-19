@@ -7,6 +7,7 @@ app = 'tap-server'
 primary_region = 'ewr'
 
 [build]
+  dockerfile = "apps/server/Dockerfile"
 
 [http_service]
   internal_port = 3001
