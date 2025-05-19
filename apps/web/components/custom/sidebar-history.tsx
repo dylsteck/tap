@@ -41,7 +41,6 @@ import {
   TrashIcon,
   UserIcon,
 } from '@/components/custom/icons';
-import { Chat } from '@/db/schema';
 import { fetcher, getTitleFromChat } from '@/lib/utils';
 
 export function SidebarHistory({ user }: { user: User | undefined }) {
@@ -52,7 +51,8 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     data: history,
     isLoading,
     mutate,
-  } = useSWR<Array<Chat>>(user ? '/api/history' : null, fetcher, {
+    // TODO: add Array<Chat> type back in
+  } = useSWR<Array<any>>(user ? '/api/history' : null, fetcher, {
     fallbackData: [],
   });
 

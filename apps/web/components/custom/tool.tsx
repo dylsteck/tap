@@ -1,15 +1,12 @@
+import { Cast, Token } from '@tap/react';
 import { SidebarProvider } from '@tap/ui/components/sidebar';
 import { Skeleton } from '@tap/ui/components/skeleton';
 import { motion } from 'framer-motion';
-
-import { Cast } from '@/components/farcasterkit/react/cast';
-import { Token } from '@/components/farcasterkit/react/ethereum/token';
 
 import BountiesTool from './tools/bounties';
 import CastsTool from './tools/casts';
 import ClankerTrendingTool from './tools/clanker-trending';
 import EventsTool from './tools/events';
-
 
 export const Tool = ({ result, toolName }: {result: any, toolName: string}) => {
 

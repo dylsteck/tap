@@ -1,5 +1,5 @@
-import { ClankerTrendingTokensResponse, MergedClanker } from "@/components/farcasterkit/common/types";
-import { Clanker } from "@/components/farcasterkit/react/clanker";
+import { ClankerTrendingTokensResponse, MergedClanker } from "@tap/common";
+import { Clanker } from "@tap/react";
 
 import { ToolResponse } from "../tool-response";
 

@@ -1,11 +1,11 @@
-import { ApplicationError, SERVER_BASE_URL, WarpcastCast, WarpcastTrendingTopicsResponse } from "@tap/common"
+import { ApplicationError, WarpcastCast, WarpcastTrendingTopicsResponse } from "@tap/common"
 
 export class TapSDK {
   private BASE_URL: string
   private static instance: TapSDK
 
   constructor(baseUrl?: string) {
-    this.BASE_URL = baseUrl || SERVER_BASE_URL
+    this.BASE_URL = baseUrl || "https://api.tap.computer"
   }
 
   static getInstance(): TapSDK {

@@ -1,5 +1,4 @@
-import { Cast } from "@/components/farcasterkit/react/cast";
-import { Event } from '@/components/farcasterkit/react/event';
+import { Event } from "@tap/react";
 
 import { ToolResponse } from "../tool-response";
 

@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { Heart, Repeat } from 'lucide-react';
 import React from 'react';
 
-import { formatPrice } from '@/lib/utils';
-
-import { MergedClanker } from '../../common/types/clanker';
+import { formatPrice, MergedClanker } from '@tap/common';
 
 export const Clanker = ({ clanker }: { 
   clanker: MergedClanker

@@ -1,4 +1,4 @@
-import { WEB_BASE_URL } from "@tap/common";
+import { ApplicationError, WEB_BASE_URL } from "@tap/common";
 import { CoreMessage, CoreToolMessage, generateId, Message, ToolInvocation } from "ai";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -87,6 +87,22 @@ export function convertToUIMessages(
     return chatMessages;
   }, []);
 }
+
+export const fetcher = async (url: string, options?: RequestInit) => {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    const error = new Error(
+      "An error occurred while fetching the data."
+    ) as ApplicationError;
+
+    error.info = await res.json();
+    error.status = res.status;
+
+    throw error;
+  }
+  const json = await res.json();
+  return json;
+};
 
 // TODO: add Chat type back to input
 export function getTitleFromChat(chat: any) {

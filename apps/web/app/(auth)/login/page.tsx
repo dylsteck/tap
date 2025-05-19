@@ -2,9 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-import SignInWithFarcaster from "@/components/farcasterkit/react/auth/sign-in-with-farcaster";
-
-
 export default function Page() {
   const router = useRouter();
 
