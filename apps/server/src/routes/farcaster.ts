@@ -74,6 +74,19 @@ type LocationQuery = {
   cursor?: string;
 }
 
+type TrendingVideosQuery = {
+  viewer_fid?: string;
+  limit?: string;
+  cursor?: string;
+}
+
+type UserVideosQuery = {
+  fid: string;
+  viewer_fid?: string;
+  limit?: string;
+  cursor?: string;
+}
+
 export const farcasterRoutes = createElysia({ prefix: '/farcaster' })  
   .get('/user', async ({ query }: { query: UserQuery }) => {
     const { username, fid } = query
@@ -487,6 +500,103 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
       longitude: t.String(),
       viewer_fid: t.Optional(t.String()),
       limit: t.Optional(t.String()),
+      cursor: t.Optional(t.String())
+    }),
+    response: t.Any()
+  })
+
+  .get('/v1/feed/videos', async ({ query }: { query: TrendingVideosQuery }) => {
+    const { viewer_fid, limit = '25', cursor } = query
+
+    const cacheKey = `feed:videos:trending:${viewer_fid || ''}:${limit}:${cursor || ''}`;
+    const cacheEx = 21600; // 6 hours
+    const cachedData = await checkKey(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const params: any = {
+        limit: parseInt(limit as string)
+      };
+      if (viewer_fid) {
+        params.viewer_fid = parseInt(viewer_fid as string);
+      }
+      if (cursor) {
+        params.cursor = String(cursor);
+      }
+
+      const data = await neynar.getTrendingVideos(params);
+      const finalResp = {
+        result: {
+          casts: data.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
+          next: data.result.next
+        }
+      };
+
+      await setKey(cacheKey, JSON.stringify(finalResp), cacheEx);
+      return finalResp;
+    } catch (error) {
+      throw new Error(`Failed to fetch trending videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }, {
+    query: t.Object({
+      viewer_fid: t.Optional(t.String()),
+      limit: t.Optional(t.String({ default: '25' })),
+      cursor: t.Optional(t.String())
+    }),
+    response: t.Any()
+  })
+
+  .get('/v1/feed/videos/:fid', async ({ params: routeParams, query }: { params: { fid: string }, query: UserVideosQuery }) => {
+    const { fid } = routeParams;
+    const { viewer_fid, limit = '25', cursor } = query;
+
+    if (!fid) {
+      throw new Error('FID parameter is required');
+    }
+
+    const cacheKey = `feed:videos:${fid}:${viewer_fid || ''}:${limit}:${cursor || ''}`;
+    const cacheEx = 21600; // 6 hours
+    const cachedData = await checkKey(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const queryParams: any = {
+        author_fid: parseInt(fid as string),
+        limit: parseInt(limit as string)
+      };
+      if (viewer_fid) {
+        queryParams.viewer_fid = parseInt(viewer_fid as string);
+      }
+      if (cursor) {
+        queryParams.cursor = String(cursor);
+      }
+
+      const data = await neynar.getUserVideos(queryParams);
+      const finalResp = {
+        result: {
+          casts: data.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
+          next: data.result.next
+        }
+      };
+
+      await setKey(cacheKey, JSON.stringify(finalResp), cacheEx);
+      return finalResp;
+    } catch (error) {
+      throw new Error(`Failed to fetch user videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }, {
+    params: t.Object({
+      fid: t.String()
+    }),
+    query: t.Object({
+      viewer_fid: t.Optional(t.String()),
+      limit: t.Optional(t.String({ default: '25' })),
       cursor: t.Optional(t.String())
     }),
     response: t.Any()

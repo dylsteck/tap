@@ -186,6 +186,48 @@ class NeynarService {
             next?: { cursor: string | null }
         }>(endpoint)
     }
+
+    async getTrendingVideos({
+        viewer_fid,
+        limit = 25,
+        cursor,
+    }: {
+        viewer_fid?: number
+        limit?: number
+        cursor?: string
+    }) {
+        let endpoint = `/farcaster/cast/search?q=${encodeURIComponent('stream.warpcast.com')}&priority_mode=true&limit=${limit}`
+        if (viewer_fid) endpoint += `&viewer_fid=${viewer_fid}`
+        if (cursor) endpoint += `&cursor=${cursor}`
+        return this.fetcher<{
+            result: {
+                casts: Array<any>
+                next?: { cursor: string | null }
+            }
+        }>(endpoint)
+    }
+
+    async getUserVideos({
+        author_fid,
+        viewer_fid,
+        limit = 25,
+        cursor,
+    }: {
+        author_fid: number
+        viewer_fid?: number
+        limit?: number
+        cursor?: string
+    }) {
+        let endpoint = `/farcaster/cast/search?q=${encodeURIComponent('stream.warpcast.com')}&priority_mode=true&limit=${limit}&author_fid=${author_fid}`
+        if (viewer_fid) endpoint += `&viewer_fid=${viewer_fid}`
+        if (cursor) endpoint += `&cursor=${cursor}`
+        return this.fetcher<{
+            result: {
+                casts: Array<any>
+                next?: { cursor: string | null }
+            }
+        }>(endpoint)
+    }
 }
 
 export const neynar = NeynarService.getInstance()
