@@ -9,6 +9,8 @@
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=@tap/web",
     "dev:server": "turbo dev --filter=@tap/server",
+    "deploy:web": "vercel deploy --prod",
+    "deploy:server": "fly deploy",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
