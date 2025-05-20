@@ -3,6 +3,7 @@ import { farcasterRoutes } from './routes/farcaster'
 import { createElysia } from './lib/utils'
 import { clankerRoutes } from './routes/clanker';
 import { icebreakerRoutes } from './routes/icebreaker';
+import { userRoutes } from './routes/user';
 
 const PORT = 3001;
 
@@ -12,6 +13,7 @@ const app = createElysia()
     .use(clankerRoutes)
     .use(farcasterRoutes)
     .use(icebreakerRoutes)
+    .use(userRoutes)
   )
 
 app.listen(PORT)

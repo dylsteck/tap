@@ -163,4 +163,95 @@ export class TapSDK {
     if (fid) url.searchParams.append("fid", fid);
     return await this.request(url.toString());
   }
+
+  // User API
+  async getUserById(id: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user/${id}`);
+  }
+
+  async getUserByFid(fid: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user/fid/${fid}`);
+  }
+
+  async getUserByUsername(username: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user/username/${username}`);
+  }
+
+  async createUser(user: {
+    id: string,
+    fid: string,
+    username: string,
+    name?: string,
+    bio?: string,
+    verified_address?: string,
+    pfp_url?: string
+  }): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    });
+  }
+
+  async updateUser(id: string, user: {
+    fid?: string,
+    username?: string,
+    name?: string,
+    bio?: string,
+    verified_address?: string,
+    pfp_url?: string
+  }): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    });
+  }
+
+  async deleteUser(id: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/user/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // Chat API
+  async getChatById(id: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/chat/${id}`);
+  }
+
+  async getChatsByUserId(userId: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/chat/user/${userId}`);
+  }
+
+  async createOrUpdateChat(chat: {
+    id: string,
+    messages: any[],
+    model: string,
+    profile: string,
+    userId: string
+  }): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(chat)
+    });
+  }
+
+  async deleteChat(id: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/chat/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async deleteChatsByUserId(userId: string): Promise<any> {
+    return await this.request(`${this.BASE_URL}/api/chat/user/${userId}`, {
+      method: 'DELETE'
+    });
+  }
 }

@@ -2,10 +2,10 @@
 
 import { z } from "zod";
 
-import { createUser, getUserByFid } from "@/db/queries";
 import { AuthData } from "@/lib/types";
 
 import { signIn } from "./auth";
+import { tapSDK } from "@tap/common";
 
 export interface ActionState {
   status:
@@ -19,9 +19,17 @@ export interface ActionState {
 
 export const login = async (authData: AuthData): Promise<ActionState> => {
   try {
-    let [user] = await getUserByFid(parseInt(authData.fid));
+    const userResponse = await tapSDK.getUserByFid(authData.fid.toString());
+    const user = userResponse.success ? userResponse.data : null;
+    
     if (!user) {
-      await createUser(authData);
+      await tapSDK.createUser({
+        id: authData.fid.toString(),
+        fid: authData.fid.toString(),
+        username: authData.username,
+        name: authData.name,
+        pfp_url: authData.pfp_url
+      });
     }
 
     const signInResult = await signIn("credentials", {

@@ -41,7 +41,7 @@ import {
   TrashIcon,
   UserIcon,
 } from '@/components/custom/icons';
-import { fetcher, getTitleFromChat } from '@/lib/utils';
+import { fetcher, getTitleFromChat, SERVER_BASE_URL } from '@/lib/utils';
 
 export function SidebarHistory({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
@@ -52,7 +52,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     isLoading,
     mutate,
     // TODO: add Array<Chat> type back in
-  } = useSWR<Array<any>>(user ? '/api/history' : null, fetcher, {
+  } = useSWR<Array<any>>(user ? `${SERVER_BASE_URL}/api/history` : null, fetcher, {
     fallbackData: [],
   });
 

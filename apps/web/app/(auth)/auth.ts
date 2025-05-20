@@ -2,7 +2,7 @@ import { compare } from "bcrypt-ts";
 import NextAuth, { User, Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-import { getUserByFid } from "@/db/queries";
+import { tapSDK } from "@tap/common";
 
 import { authConfig } from "./auth.config";
 
@@ -38,7 +38,8 @@ export const {
       },
       async authorize(credentials: any) {
         if (!credentials) return null;
-        let users = await getUserByFid(credentials.fid);
+        const userResponse = await tapSDK.getUserByFid(credentials.fid.toString());
+        const users = userResponse.success ? [userResponse.data] : [];
         // Return credentials for new users since they're already validated
         if (users.length === 0) return credentials;
         return users[0] as any;
