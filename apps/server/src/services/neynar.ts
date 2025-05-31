@@ -35,6 +35,90 @@ class NeynarService {
         return response.json()
     }
 
+    async getEmbeddedUrlMetadata({ url }: { url: string }) {
+        const endpoint = `/farcaster/cast/embed/crawl?url=${encodeURIComponent(url)}`
+        return this.fetcher<{
+            metadata: {
+                content_type?: string;
+                content_length?: number | null;
+                farcaster_domain_updated_at?: string;
+                _status?: string;
+                html?: {
+                    ogUrl?: string;
+                    ogType?: string;
+                    favicon?: string;
+                    ogImage?: Array<{ url: string; type?: string }>;
+                    ogTitle?: string;
+                    ogLocale?: string;
+                    ogSiteName?: string;
+                    ogDescription?: string;
+                    fcFrame?: any;
+                };
+                frame?: {
+                    version?: string;
+                    title?: string;
+                    image?: string;
+                    frames_url?: string;
+                    author?: any;
+                    manifest?: any;
+                };
+            }
+        }>(endpoint)
+    }
+
+    async getFrameCatalog({
+        limit = 100,
+        cursor,
+        time_window = '7d',
+        categories,
+    }: {
+        limit?: number;
+        cursor?: string;
+        time_window?: '1h' | '6h' | '12h' | '24h' | '7d';
+        categories?: string[];
+    } = {}) {
+        let endpoint = `/farcaster/frame/catalog?limit=${limit}&time_window=${time_window}`
+        if (cursor) endpoint += `&cursor=${cursor}`
+        if (categories && categories.length > 0) endpoint += `&categories=${categories.join(',')}`
+        return this.fetcher<{
+            frames: Array<{
+                version?: string;
+                image?: string;
+                frames_url?: string;
+                title?: string;
+                manifest?: any;
+                author?: any;
+                metadata?: any;
+            }>;
+            next?: { cursor: string | null };
+        }>(endpoint)
+    }
+
+    async searchFrames({
+        q,
+        limit = 25,
+        cursor,
+    }: {
+        q: string;
+        limit?: number;
+        cursor?: string;
+    }) {
+        let endpoint = `/farcaster/frame/search?q=${encodeURIComponent(q)}&limit=${limit}`
+        if (cursor) endpoint += `&cursor=${cursor}`
+        return this.fetcher<{
+            frames: Array<{
+                version?: string;
+                image?: string;
+                frames_url?: string;
+                title?: string;
+                manifest?: any;
+                author?: any;
+                metadata?: any;
+            }>;
+            next?: { cursor: string | null };
+        }>(endpoint)
+    }
+
     async castSearch({
         q,
         author_fid,

@@ -87,6 +87,23 @@ type UserVideosQuery = {
   cursor?: string;
 }
 
+type EmbedQuery = {
+  url: string;
+}
+
+type FrameCatalogQuery = {
+  limit?: string;
+  cursor?: string;
+  time_window?: '1h' | '6h' | '12h' | '24h' | '7d';
+  categories?: string;
+}
+
+type FrameSearchQuery = {
+  q: string;
+  limit?: string;
+  cursor?: string;
+}
+
 export const farcasterRoutes = createElysia({ prefix: '/farcaster' })  
   .get('/user', async ({ query }: { query: UserQuery }) => {
     const { username, fid } = query
@@ -632,6 +649,134 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }),
     query: t.Object({
       viewer_fid: t.Optional(t.String()),
+      limit: t.Optional(t.String({ default: '25' })),
+      cursor: t.Optional(t.String())
+    }),
+    response: t.Any()
+  })
+
+  .get('/v1/cast/embed', async ({ query }: { query: EmbedQuery }) => {
+    const { url } = query
+    
+    if (!url) {
+      throw new Error('URL parameter is required')
+    }
+    
+    const cacheKey = `embed:${url}`
+    let data = await redis.get(cacheKey)
+    
+    if (data === null) {
+      try {
+        data = await neynar.getEmbeddedUrlMetadata({ url })
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 7200 })
+      } catch (error) {
+        throw new Error(`Failed to fetch embedded URL metadata: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
+    }
+    
+    return data
+  }, {
+    query: t.Object({
+      url: t.String()
+    }),
+    response: t.Any()
+  })
+
+  .get('/v1/frame/catalog', async ({ query }: { query: FrameCatalogQuery }) => {
+    const { limit = '100', cursor, time_window = '7d', categories } = query
+    
+    const cacheKey = `frame_catalog:${limit}:${time_window}:${categories || ''}:${cursor || ''}`
+    let data = await redis.get(cacheKey)
+    
+    if (data === null) {
+      try {
+        const params: any = {
+          limit: parseInt(limit as string),
+          time_window: time_window as '1h' | '6h' | '12h' | '24h' | '7d'
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        if (categories) {
+          params.categories = categories.split(',')
+        }
+        
+        data = await neynar.getFrameCatalog(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch frame catalog: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
+    }
+    
+    return data
+  }, {
+    query: t.Object({
+      limit: t.Optional(t.String({ default: '100' })),
+      cursor: t.Optional(t.String()),
+      time_window: t.Optional(t.Union([
+        t.Literal('1h'),
+        t.Literal('6h'),
+        t.Literal('12h'),
+        t.Literal('24h'),
+        t.Literal('7d')
+      ], { default: '7d' })),
+      categories: t.Optional(t.String())
+    }),
+    response: t.Any()
+  })
+
+  .get('/v1/frame/search', async ({ query }: { query: FrameSearchQuery }) => {
+    const { q, limit = '25', cursor } = query
+    
+    if (!q) {
+      throw new Error('Search query (q) parameter is required')
+    }
+    
+    const cacheKey = `frame_search:${q}:${limit}:${cursor || ''}`
+    let data = await redis.get(cacheKey)
+    
+    if (data === null) {
+      try {
+        const params: any = {
+          q,
+          limit: parseInt(limit as string)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        data = await neynar.searchFrames(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 1800 })
+      } catch (error) {
+        throw new Error(`Failed to search frames: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
+    }
+    
+    return data
+  }, {
+    query: t.Object({
+      q: t.String(),
       limit: t.Optional(t.String({ default: '25' })),
       cursor: t.Optional(t.String())
     }),
