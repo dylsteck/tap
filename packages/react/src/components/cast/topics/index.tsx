@@ -5,17 +5,21 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@tap/ui/components/button';
 import { Skeleton } from '@tap/ui/components/skeleton';
 import { useIsMobile } from '@tap/ui/hooks/use-mobile';
+import { cn } from '@tap/ui/lib/utils';
+import { NeynarCastV2, WarpcastTrendingTopicsResponse, WarpcastCast, USER_FALLBACK_IMG_URL } from '@tap/common';
 import { AlertCircle, ArrowLeft, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Session } from "next-auth";
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+import { Cast } from '../index';
 
-import { VideoHeader } from '@/components/custom/video-header';
-import { NeynarCastV2 } from '@/components/farcasterkit/common/types/neynar';
-import { WarpcastTrendingTopicsResponse, WarpcastCast } from '@/components/farcasterkit/common/types/warpcast';
-import { Cast } from '@/components/farcasterkit/react/cast';
-import { tapSDK } from '@tap/common';
-import { cn, USER_FALLBACK_IMG_URL, fetcher } from '@/lib/utils';
+const fetcher = async (url: string, options?: RequestInit) => {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    throw new Error("An error occurred while fetching the data.");
+  }
+  return res.json();
+};
 
 type Topic = WarpcastTrendingTopicsResponse['result']['topics'][0];
 
@@ -90,7 +94,14 @@ function convertWarpcastToNeynarCast(cast: WarpcastCast): NeynarCastV2 {
   };
 }
 
-function TopicStoryViewer({ topicId, topicName, onClose }: { topicId: string; topicName: string; onClose: () => void }) {
+interface TopicStoryViewerProps {
+  topicId: string
+  topicName: string
+  onClose: () => void
+  header?: React.ReactNode
+}
+
+function TopicStoryViewer({ topicId, topicName, onClose, header }: TopicStoryViewerProps) {
   const { data: topicCastsData, error, isLoading } = useSWR(
     `/api/farcaster/feed/topics/${topicId}`,
     fetcher,
@@ -152,7 +163,7 @@ function TopicStoryViewer({ topicId, topicName, onClose }: { topicId: string; to
     if (isLoading) {
       return (
         <>
-            <VideoHeader />
+            {header}
             <div className="flex items-center justify-center h-full">
                 <Loader2 className="size-8 animate-spin text-primary" />
             </div>
@@ -163,7 +174,7 @@ function TopicStoryViewer({ topicId, topicName, onClose }: { topicId: string; to
     if (error) {
       return (
         <>
-            <VideoHeader />
+            {header}
             <div className="flex flex-col items-center justify-center h-full text-red-600 p-4 bg-red-50 rounded-lg mx-4">
                 <AlertCircle className="mr-2 size-6 mb-2" />
                 <p className="font-semibold">Error loading casts:</p>
@@ -176,7 +187,7 @@ function TopicStoryViewer({ topicId, topicName, onClose }: { topicId: string; to
     if (!neynarCasts || neynarCasts.length === 0) {
       return (
       <>
-        <VideoHeader />
+        {header}
         <p className="text-center text-muted-foreground mt-4 px-4 flex items-center justify-center h-full">No casts found for this topic.</p>
       </>);
     }
@@ -247,7 +258,13 @@ function getGradientStyle(seed: string) {
   return `bg-gradient-to-br ${GRADIENT_CLASSES[index]}`;
 }
 
-function TopicItem({ topic, session }: { topic: Topic; session: Session | null }) {
+interface TopicItemProps {
+  topic: Topic
+  session: Session | null
+  header?: React.ReactNode
+}
+
+function TopicItem({ topic, session, header }: TopicItemProps) {
   const [showCasts, setShowCasts] = useState(false);
   const gradientClass = getGradientStyle(topic.id);
   const isMobile = useIsMobile();
@@ -258,6 +275,7 @@ function TopicItem({ topic, session }: { topic: Topic; session: Session | null }
          topicId={topic.id}
          topicName={topic.displayName}
          onClose={() => setShowCasts(false)}
+         header={header}
        />
     );
   }
@@ -277,7 +295,12 @@ function TopicItem({ topic, session }: { topic: Topic; session: Session | null }
   );
 }
 
-export function TrendingTopicsStories({ session }: { session: Session | null }){
+interface TrendingTopicsStoriesProps {
+  session: Session | null
+  header?: React.ReactNode
+}
+
+export function TrendingTopicsStories({ session, header }: TrendingTopicsStoriesProps){
     const { data: topicsResponse, isLoading: isLoadingTopics, error: topicsError } = useSWR<WarpcastTrendingTopicsResponse, Error>(
       session ? '/api/farcaster/feed/topics' : null,
       fetcher
@@ -314,10 +337,10 @@ export function TrendingTopicsStories({ session }: { session: Session | null }){
 
     return (
       <div className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-none">
-         <VideoHeader />
-        {topics.map((topic) => (
+         {header}
+        {topics.map((topic: Topic) => (
           <div key={topic.id} className="h-screen w-full snap-center snap-always flex items-center justify-center relative">
-            <TopicItem topic={topic} session={session} />
+            <TopicItem topic={topic} session={session} header={header} />
           </div>
         ))}
       </div>

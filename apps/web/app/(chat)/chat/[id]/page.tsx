@@ -1,25 +1,26 @@
 import { MODEL_NAME } from '@tap/common';
+import { TapSDK } from '@tap/sdk';
 import { CoreMessage } from 'ai';
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
 import { Chat } from '@/components/chat';
-import { getChatById } from '@/db/queries';
-import { Chat as ChatSchema } from '@/db/schema';
 import { ChatProfileId } from '@/lib/types';
 import { convertToUIMessages } from '@/lib/utils';
 
 export default async function Page(props: { params: Promise<any> }) {
   const params = await props.params;
   const { id } = params;
-  const chatFromDb = await getChatById({ id });
+  
+  const sdk = TapSDK.getInstance();
+  const chatFromDb = await sdk.getChatById(id);
 
   if (!chatFromDb) {
     notFound();
   }
 
   // type casting
-  const chat: ChatSchema = {
+  const chat = {
     ...chatFromDb,
     messages: convertToUIMessages(chatFromDb.messages as Array<CoreMessage>)
   };

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
-
-import { WarpcastUser } from '../../common/types/warpcast';
+import { WarpcastUser } from '@tap/common';
 
 export const Profile = ({ profile }: { profile: WarpcastUser }) => {
 

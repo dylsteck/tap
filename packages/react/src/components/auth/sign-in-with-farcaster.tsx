@@ -8,7 +8,18 @@ import { useCallback, useState } from "react";
 
 import "@farcaster/auth-kit/styles.css";
 
-import { useFrameContext } from "@/components/frame-provider";
+interface FrameContext {
+  user?: {
+    fid: number;
+    username?: string;
+    displayName?: string;
+    pfpUrl?: string;
+  };
+}
+
+interface SignInWithFarcasterProps {
+  frameContext?: FrameContext | null;
+}
 
 const config = {
   relay: "https://relay.farcaster.xyz",
@@ -17,18 +28,21 @@ const config = {
   domain: "tap.computer",
 };
 
-export default function SignInWithFarcaster() {
+export default function SignInWithFarcaster({ frameContext }: SignInWithFarcasterProps = {}) {
   return (
     <AuthKitProvider config={config}>
-      <Content />
+      <Content frameContext={frameContext} />
     </AuthKitProvider>
   );
 }
 
-function Content(){
+interface ContentProps {
+  frameContext?: FrameContext | null;
+}
+
+function Content({ frameContext }: ContentProps){
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const frameContext = useFrameContext();
   const [isFrameSigningIn, setIsFrameSigningIn] = useState<boolean>(false);
 
   const getNonce = useCallback(async () => {

@@ -7,6 +7,8 @@ import { useVirtualizer } from "@tanstack/react-virtual"
 import { Button } from "@tap/ui/components/button"
 import { Skeleton } from "@tap/ui/components/skeleton"
 import { useIsMobile } from "@tap/ui/hooks/use-mobile"
+import { cn } from "@tap/ui/lib/utils"
+import { USER_FALLBACK_IMG_URL, WEB_BASE_URL, NeynarCastV2 } from "@tap/common"
 import { motion } from "framer-motion"
 import Hls from "hls.js"
 import { MoreVertical, Volume2, VolumeX, ExternalLink, Maximize2, Play, Pause, Share2 } from "lucide-react"
@@ -16,10 +18,13 @@ import { Session } from "next-auth"
 import { memo, useState, useEffect, useRef, useMemo, useCallback } from "react"
 import useSWR from "swr"
 
-import { cn, fetcher, USER_FALLBACK_IMG_URL, BASE_URL } from "../../../../../lib/utils"
-import { VideoHeader } from "../../../../custom/video-header"
-import { NeynarCastV2 } from "../../../common/types/neynar"
-
+const fetcher = async (url: string, options?: RequestInit) => {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    throw new Error("An error occurred while fetching the data.");
+  }
+  return res.json();
+};
 
 interface VideoPlayerProps {
   cast: NeynarCastV2
@@ -35,7 +40,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
   const [showControl, setShowControl] = useState(false)
   const controlTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isMobile = useIsMobile()
-  const videoEmbed = cast.embeds?.find((embed) => 
+  const videoEmbed = cast.embeds?.find((embed: any) => 
     embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
   )
   const handleViewProfile = async(fid: number) => {
@@ -52,7 +57,7 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
         text: "I just found this video on /tap!",
         embeds: [
           `https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 10)}`,
-          `${BASE_URL}/videos`
+          `${WEB_BASE_URL}/videos`
         ]
       });
     } catch(error: any){
@@ -82,7 +87,6 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
     if (!videoRef.current || !videoEmbed) return
     const observer = new IntersectionObserver(
       (entries) => {
-        // const entry = entries[0]
         const entry: any = entries[0]
         setIsVisible(entry.isIntersecting)
         if (entry.isIntersecting) {
@@ -97,7 +101,6 @@ const VideoPlayer = memo(({ cast, isMuted, toggleMute, handleExpand }: VideoPlay
               video.src = videoUrl
             }
             
-            // Set additional properties to prevent fullscreen
             video.setAttribute('webkit-playsinline', 'true');
             video.setAttribute('playsinline', 'true');
             video.setAttribute('x5-playsinline', 'true');
@@ -263,7 +266,7 @@ export function CastVideos({ session }: { session: Session | null }) {
   const filteredCasts = useMemo(() => {
     if (!data?.result?.casts) return []
     const filtered = data.result.casts.filter((cast) => 
-      cast.embeds?.some((embed) => 
+      cast.embeds?.some((embed: any) => 
         embed.metadata?.content_type?.startsWith("video/") || embed.url.endsWith(".m3u8")
       )
     ).map(cast => ({
@@ -355,7 +358,6 @@ export function CastVideos({ session }: { session: Session | null }) {
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
-          // const cast = filteredCasts[virtualRow.index]
           const cast: any = filteredCasts[virtualRow.index]
           return (
             <div
@@ -369,7 +371,6 @@ export function CastVideos({ session }: { session: Session | null }) {
             >
               <VideoPlayer
                 cast={cast}
-                // isMuted={mutedStates[cast.hash]}
                 isMuted={(mutedStates as any)[cast.hash]}
                 toggleMute={toggleMute}
                 handleExpand={handleExpand}
@@ -399,11 +400,16 @@ export function CastVideos({ session }: { session: Session | null }) {
   )
 }
 
-export function CastVideosPageWrapper({ session }: { session: Session | null }){
+interface CastVideosPageWrapperProps {
+  session: Session | null
+  header?: React.ReactNode
+}
+
+export function CastVideosPageWrapper({ session, header }: CastVideosPageWrapperProps){
   const isMobile = useIsMobile()
   return(
-    <div className={`relative flex justify-center items-center size-full ${isMobile ? 'p-0 m-0' : 'mt-12 md:mt-0'} message-container`}>
-      <VideoHeader />
+    <div className={cn(`relative flex justify-center items-center size-full ${isMobile ? 'p-0 m-0' : 'mt-12 md:mt-0'} message-container`)}>
+      {header}
       <CastVideos session={session} />
     </div>
   )

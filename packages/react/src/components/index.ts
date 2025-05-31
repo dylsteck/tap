@@ -4,6 +4,8 @@ export * from './event';
 export * from './ethereum/token';
 export * from './clanker';
 export * from './cast';
+export * from './cast/videos';
+export * from './cast/topics';
 export * from './auth/sign-in-with-farcaster';
 export { Bounty as ComponentBounty } from './bounty';
 export { default } from './auth/sign-in-with-farcaster'; 

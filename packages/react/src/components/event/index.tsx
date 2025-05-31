@@ -2,9 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@tap/ui/components/avatar";
 import { CalendarIcon, MapPinIcon, UserIcon, UsersIcon } from "lucide-react";
 import React from "react";
-
-
-import { EventcasterEvent } from "../../common/types/events";
+import { EventcasterEvent } from "@tap/common";
 
 function formatDate(
   startTimestamp: number,

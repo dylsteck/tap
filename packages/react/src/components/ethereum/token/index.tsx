@@ -1,6 +1,6 @@
 "use client"
 
-import { ZapperFungibleToken } from "../../../common/types/ethereum"
+import { ZapperFungibleToken } from "@tap/common"
 
 export function Token({ token }: { token: ZapperFungibleToken }) {
     return (

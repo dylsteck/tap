@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { Repeat } from 'lucide-react';
+import { Repeat, Heart, MessageCircle } from 'lucide-react';
 import React from 'react';
-
-import { HeartIcon, MessageIcon } from '@/components/icons';
-
-import { NeynarCastV2 } from '../../common/types/neynar';
+import { NeynarCastV2 } from '@tap/common';
 import FrameLink from '../utils/frame-link';
 
 export const Cast = ({ cast }: { cast: NeynarCastV2 }) => {
@@ -34,7 +31,7 @@ export const Cast = ({ cast }: { cast: NeynarCastV2 }) => {
         {cast.replies.count > 0 ?
         <div className="flex items-center space-x-1.5">
           <div className="text-[#9FA3AF]">
-            <MessageIcon size={14} />
+            <MessageCircle size={14} />
           </div>
           <p className={`text-xs text-black dark:text-white`}>
             {cast.replies.count}
@@ -43,7 +40,7 @@ export const Cast = ({ cast }: { cast: NeynarCastV2 }) => {
         : null}
         {cast.reactions.likes_count > 0 ?
         <div className="flex items-center space-x-1.5">
-          <HeartIcon size={14} />
+          <Heart size={14} className="text-red-500" />
           <p className={`text-xs text-black dark:text-white`}>
             {cast.reactions.likes_count}
           </p>
@@ -63,3 +60,6 @@ export const Cast = ({ cast }: { cast: NeynarCastV2 }) => {
   </div>
   );
 };
+
+export * from './videos';
+export * from './topics';
