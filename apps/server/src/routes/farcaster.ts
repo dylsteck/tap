@@ -1,7 +1,7 @@
 import { createElysia } from '../lib/utils'
 import { neynar } from '../services/neynar'
 import { warpcast } from '../services/warpcast'
-import { redis, checkKey, setKey } from '../lib/redis'
+import { redis } from '../lib/redis'
 import { t } from 'elysia'
 import { 
   NeynarCastV2, 
@@ -146,29 +146,33 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `user_casts:${fid}:${viewer_fid || ''}:${limit}:${cursor || ''}:${include_replies}:${parent_url || ''}:${channel_id || ''}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        data = await neynar.getUserCasts({
+          fid: parseInt(fid as string),
+          viewer_fid: viewer_fid ? parseInt(viewer_fid as string) : undefined,
+          limit: parseInt(limit as string),
+          cursor: cursor ? String(cursor) : undefined,
+          include_replies: include_replies !== 'false',
+          parent_url: parent_url ? String(parent_url) : undefined,
+          channel_id: channel_id ? String(channel_id) : undefined
+        })
+        
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch user casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const data = await neynar.getUserCasts({
-        fid: parseInt(fid as string),
-        viewer_fid: viewer_fid ? parseInt(viewer_fid as string) : undefined,
-        limit: parseInt(limit as string),
-        cursor: cursor ? String(cursor) : undefined,
-        include_replies: include_replies !== 'false',
-        parent_url: parent_url ? String(parent_url) : undefined,
-        channel_id: channel_id ? String(channel_id) : undefined
-      })
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch user casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       fid: t.String(),
@@ -190,34 +194,38 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `search:${q}:${author_fid || ''}:${limit || ''}:${cursor || ''}`
-    const cacheEx = 600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const params: any = { q }
+        
+        if (author_fid) {
+          params.author_fid = Number(author_fid)
+        }
+        
+        if (limit) {
+          params.limit = Number(limit)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        data = await neynar.castSearch(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 600 })
+      } catch (error) {
+        throw new Error(`Failed to search casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const params: any = { q }
-      
-      if (author_fid) {
-        params.author_fid = Number(author_fid)
-      }
-      
-      if (limit) {
-        params.limit = Number(limit)
-      }
-      
-      if (cursor) {
-        params.cursor = cursor
-      }
-      
-      const data = await neynar.castSearch(params)
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to search casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       q: t.String(),
@@ -232,38 +240,42 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     const { limit, cursor, time_window, channel_id } = query
     
     const cacheKey = `trending:${limit || ''}:${time_window || ''}:${channel_id || ''}:${cursor || ''}`
-    const cacheEx = 1800
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const params: any = {}
+        
+        if (limit) {
+          params.limit = Number(limit)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        if (time_window) {
+          params.time_window = time_window
+        }
+        
+        if (channel_id) {
+          params.channel_id = channel_id
+        }
+        
+        data = await neynar.getTrendingCasts(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 1800 })
+      } catch (error) {
+        throw new Error(`Failed to fetch trending casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const params: any = {}
-      
-      if (limit) {
-        params.limit = Number(limit)
-      }
-      
-      if (cursor) {
-        params.cursor = cursor
-      }
-      
-      if (time_window) {
-        params.time_window = time_window
-      }
-      
-      if (channel_id) {
-        params.channel_id = channel_id
-      }
-      
-      const data = await neynar.getTrendingCasts(params)
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch trending casts: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       limit: t.Optional(t.String()),
@@ -287,52 +299,56 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `channels:${channel_ids}:${with_recasts || ''}:${with_replies || ''}:${members_only || ''}:${fids || ''}:${limit || ''}:${cursor || ''}`
-    const cacheEx = 1800
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const params: any = { 
+          channel_ids: String(channel_ids)
+        }
+        
+        if (with_recasts !== undefined) {
+          params.with_recasts = with_recasts === 'true'
+        }
+        
+        if (viewer_fid) {
+          params.viewer_fid = Number(viewer_fid)
+        }
+        
+        if (with_replies !== undefined) {
+          params.with_replies = with_replies === 'true'
+        }
+        
+        if (members_only !== undefined) {
+          params.members_only = members_only === 'true'
+        }
+        
+        if (fids) {
+          params.fids = String(fids)
+        }
+        
+        if (limit) {
+          params.limit = Number(limit)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        data = await neynar.getChannelsFeed(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 1800 })
+      } catch (error) {
+        throw new Error(`Failed to fetch channel feed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const params: any = { 
-        channel_ids: String(channel_ids)
-      }
-      
-      if (with_recasts !== undefined) {
-        params.with_recasts = with_recasts === 'true'
-      }
-      
-      if (viewer_fid) {
-        params.viewer_fid = Number(viewer_fid)
-      }
-      
-      if (with_replies !== undefined) {
-        params.with_replies = with_replies === 'true'
-      }
-      
-      if (members_only !== undefined) {
-        params.members_only = members_only === 'true'
-      }
-      
-      if (fids) {
-        params.fids = String(fids)
-      }
-      
-      if (limit) {
-        params.limit = Number(limit)
-      }
-      
-      if (cursor) {
-        params.cursor = cursor
-      }
-      
-      const data = await neynar.getChannelsFeed(params)
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch channel feed: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       channel_ids: t.String(),
@@ -360,42 +376,46 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `user_feed:${fid}:${include_replies || ''}:${parent_url || ''}:${channel_id || ''}:${limit || ''}:${cursor || ''}`
-    const cacheEx = 1800
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const params: any = { fid: numericFid }
+        
+        if (include_replies !== undefined) {
+          params.include_replies = include_replies === 'true'
+        }
+        
+        if (parent_url) {
+          params.parent_url = String(parent_url)
+        }
+        
+        if (channel_id) {
+          params.channel_id = String(channel_id)
+        }
+        
+        if (limit) {
+          params.limit = Number(limit)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        data = await neynar.getUserCasts(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 1800 })
+      } catch (error) {
+        throw new Error(`Failed to fetch user feed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const params: any = { fid: numericFid }
-      
-      if (include_replies !== undefined) {
-        params.include_replies = include_replies === 'true'
-      }
-      
-      if (parent_url) {
-        params.parent_url = String(parent_url)
-      }
-      
-      if (channel_id) {
-        params.channel_id = String(channel_id)
-      }
-      
-      if (limit) {
-        params.limit = Number(limit)
-      }
-      
-      if (cursor) {
-        params.cursor = cursor
-      }
-      
-      const data = await neynar.getUserCasts(params)
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch user feed: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       fid: t.String(),
@@ -420,23 +440,27 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `cast:${identifier}:${type}`
-    const cacheEx = 43200
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        data = await neynar.getCast({ 
+          identifier: String(identifier), 
+          type: type as 'hash' | 'url'
+        })
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 43200 })
+      } catch (error) {
+        throw new Error(`Failed to fetch cast: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const data = await neynar.getCast({ 
-        identifier: String(identifier), 
-        type: type as 'hash' | 'url'
-      })
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch cast: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       identifier: t.String(),
@@ -463,37 +487,41 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
     
     const cacheKey = `users_by_location:${latitude}:${longitude}:${limit || ''}:${cursor || ''}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const params: any = { 
+          latitude: numericLat,
+          longitude: numericLong
+        }
+        
+        if (viewer_fid) {
+          params.viewer_fid = Number(viewer_fid)
+        }
+        
+        if (limit) {
+          params.limit = Number(limit)
+        }
+        
+        if (cursor) {
+          params.cursor = cursor
+        }
+        
+        data = await neynar.getUserByLocation(params)
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch users by location: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const params: any = { 
-        latitude: numericLat,
-        longitude: numericLong
-      }
-      
-      if (viewer_fid) {
-        params.viewer_fid = Number(viewer_fid)
-      }
-      
-      if (limit) {
-        params.limit = Number(limit)
-      }
-      
-      if (cursor) {
-        params.cursor = cursor
-      }
-      
-      const data = await neynar.getUserByLocation(params)
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch users by location: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       latitude: t.String(),
@@ -509,37 +537,41 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     const { viewer_fid, limit = '25', cursor } = query
 
     const cacheKey = `feed:videos:trending:${viewer_fid || ''}:${limit}:${cursor || ''}`;
-    const cacheEx = 21600; // 6 hours
-    const cachedData = await checkKey(cacheKey);
+    let data = await redis.get(cacheKey);
 
-    if (cachedData) {
-      return cachedData;
-    }
-
-    try {
-      const params: any = {
-        limit: parseInt(limit as string)
-      };
-      if (viewer_fid) {
-        params.viewer_fid = parseInt(viewer_fid as string);
-      }
-      if (cursor) {
-        params.cursor = String(cursor);
-      }
-
-      const data = await neynar.getTrendingVideos(params);
-      const finalResp = {
-        result: {
-          casts: data.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
-          next: data.result.next
+    if (data === null) {
+      try {
+        const params: any = {
+          limit: parseInt(limit as string)
+        };
+        if (viewer_fid) {
+          params.viewer_fid = parseInt(viewer_fid as string);
         }
-      };
+        if (cursor) {
+          params.cursor = String(cursor);
+        }
 
-      await setKey(cacheKey, JSON.stringify(finalResp), cacheEx);
-      return finalResp;
-    } catch (error) {
-      throw new Error(`Failed to fetch trending videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        const response = await neynar.getTrendingVideos(params);
+        data = {
+          result: {
+            casts: response.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
+            next: response.result.next
+          }
+        };
+
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 21600 });
+      } catch (error) {
+        throw new Error(`Failed to fetch trending videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        throw new Error('Failed to parse cached data');
+      }
     }
+
+    return data;
   }, {
     query: t.Object({
       viewer_fid: t.Optional(t.String()),
@@ -558,38 +590,42 @@ export const farcasterRoutes = createElysia({ prefix: '/farcaster' })
     }
 
     const cacheKey = `feed:videos:${fid}:${viewer_fid || ''}:${limit}:${cursor || ''}`;
-    const cacheEx = 21600; // 6 hours
-    const cachedData = await checkKey(cacheKey);
+    let data = await redis.get(cacheKey);
 
-    if (cachedData) {
-      return cachedData;
-    }
-
-    try {
-      const queryParams: any = {
-        author_fid: parseInt(fid as string),
-        limit: parseInt(limit as string)
-      };
-      if (viewer_fid) {
-        queryParams.viewer_fid = parseInt(viewer_fid as string);
-      }
-      if (cursor) {
-        queryParams.cursor = String(cursor);
-      }
-
-      const data = await neynar.getUserVideos(queryParams);
-      const finalResp = {
-        result: {
-          casts: data.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
-          next: data.result.next
+    if (data === null) {
+      try {
+        const queryParams: any = {
+          author_fid: parseInt(fid as string),
+          limit: parseInt(limit as string)
+        };
+        if (viewer_fid) {
+          queryParams.viewer_fid = parseInt(viewer_fid as string);
         }
-      };
+        if (cursor) {
+          queryParams.cursor = String(cursor);
+        }
 
-      await setKey(cacheKey, JSON.stringify(finalResp), cacheEx);
-      return finalResp;
-    } catch (error) {
-      throw new Error(`Failed to fetch user videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        const response = await neynar.getUserVideos(queryParams);
+        data = {
+          result: {
+            casts: response.result.casts.sort((a: any, b: any) => b.reactions.likes_count - a.reactions.likes_count),
+            next: response.result.next
+          }
+        };
+
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 21600 });
+      } catch (error) {
+        throw new Error(`Failed to fetch user videos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        throw new Error('Failed to parse cached data');
+      }
     }
+
+    return data;
   }, {
     params: t.Object({
       fid: t.String()

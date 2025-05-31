@@ -1,5 +1,5 @@
 import { createElysia } from '../lib/utils'
-import { redis, checkKey, setKey } from '../lib/redis'
+import { redis } from '../lib/redis'
 import { t } from 'elysia'
 import {
   IcebreakerEnsResponse,
@@ -47,23 +47,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:ens:${name}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getProfileByENS(name)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch ENS data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getProfileByENS(name)
-      
-      const data: IcebreakerEnsResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch ENS data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       name: t.String()
@@ -79,22 +81,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:eth:${address}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getProfileByWallet(address)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch ETH data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getProfileByWallet(address)
-      const data: IcebreakerEthResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch ETH data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       address: t.String()
@@ -110,22 +115,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:fid:${fid}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getProfileByFID(fid)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch FID data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getProfileByFID(fid)
-      const data: IcebreakerFidResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch FID data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       fid: t.String()
@@ -141,22 +149,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:fname:${name}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getProfileByFName(name)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch fname data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getProfileByFName(name)
-      const data: IcebreakerFnameResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch fname data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       name: t.String()
@@ -172,22 +183,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:credentials:${credentialName}:${limit}:${offset}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getCredentialProfiles(credentialName, limit, offset)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch credentials data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getCredentialProfiles(credentialName, limit, offset)
-      const data: IcebreakerCredentialsResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch credentials data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     query: t.Object({
       credentialName: t.String(),
@@ -205,22 +219,25 @@ export const icebreakerRoutes = createElysia({ prefix: '/icebreaker' })
     }
     
     const cacheKey = `icebreaker:socials:${channelType}:${username}`
-    const cacheEx = 3600
-    const cachedData = await checkKey(cacheKey)
+    let data = await redis.get(cacheKey)
     
-    if (cachedData) {
-      return cachedData
+    if (data === null) {
+      try {
+        const response = await icebreaker.getProfileBySocial(channelType, username)
+        data = response
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 })
+      } catch (error) {
+        throw new Error(`Failed to fetch social data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    } else if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        throw new Error('Failed to parse cached data')
+      }
     }
     
-    try {
-      const response = await icebreaker.getProfileBySocial(channelType, username)
-      const data: IcebreakerSocialResponse = response
-      
-      await setKey(cacheKey, JSON.stringify(data), cacheEx)
-      return data
-    } catch (error) {
-      throw new Error(`Failed to fetch social data: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return data
   }, {
     response: t.Any()
   })
