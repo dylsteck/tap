@@ -2,8 +2,8 @@ import { MODEL_NAME } from '@tap/common';
 import { SidebarInset, SidebarProvider } from '@tap/ui/components/sidebar';
 import { cookies } from 'next/headers';
 
-import { AppSidebar } from '@/components/custom/app-sidebar';
-import Providers from '@/components/custom/providers';
+import { AppSidebar } from '@/components/app-sidebar';
+import Providers from '@/components/providers';
 
 import { auth } from '../(auth)/auth';
 

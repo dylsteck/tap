@@ -8,7 +8,7 @@ import { useCallback, useState } from "react";
 
 import "@farcaster/auth-kit/styles.css";
 
-import { useFrameContext } from "@/components/custom/frame-provider";
+import { useFrameContext } from "@/components/frame-provider";
 
 const config = {
   relay: "https://relay.farcaster.xyz",

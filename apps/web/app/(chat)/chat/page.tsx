@@ -1,7 +1,7 @@
 import { generateUUID, MODEL_NAME } from '@tap/common';
 
 import { auth } from '@/app/(auth)/auth';
-import { Chat } from '@/components/custom/chat';
+import { Chat } from '@/components/chat';
 
 export default async function Page() {
   const id = generateUUID();

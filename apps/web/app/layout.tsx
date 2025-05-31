@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 import Script from 'next/script';
 import { Toaster } from 'sonner';
 
-import Providers from '@/components/custom/providers';
-import { ThemeProvider } from '@/components/custom/theme-provider';
+import Providers from '@/components/providers';
+import { ThemeProvider } from '@/components/theme-provider';
 import { BASE_URL } from '@/lib/utils';
 
 export const viewport = {

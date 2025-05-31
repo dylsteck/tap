@@ -1,6 +1,6 @@
 import { generateUUID, MODEL_NAME } from '@tap/common';
 
-import { Chat } from '@/components/custom/chat';
+import { Chat } from '@/components/chat';
 
 import { auth } from '../(auth)/auth';
 

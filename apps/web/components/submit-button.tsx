@@ -3,7 +3,7 @@
 import { Button } from "@tap/ui/components/button";
 import { useFormStatus } from "react-dom";
 
-import { LoaderIcon } from "@/components/custom/icons";
+import { LoaderIcon } from "@/components/icons";
 
 
 export function SubmitButton({ children }: { children: React.ReactNode }) {

@@ -7,7 +7,7 @@ import { useChat } from 'ai/react';
 import { User } from 'next-auth';
 import { useState, useEffect, useRef } from 'react';
 
-import { Message as PreviewMessage } from '@/components/custom/message';
+import { Message as PreviewMessage } from '@/components/message';
 import { ChatProfileId } from '@/lib/types';
 
 import { ChatHeader } from './chat-header';

@@ -1,4 +1,4 @@
-import { SidebarToggle } from '@/components/custom/sidebar-toggle';
+import { SidebarToggle } from '@/components/sidebar-toggle';
 
 export function VideoHeader(){
   return (

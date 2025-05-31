@@ -2,7 +2,7 @@
 import { Repeat } from 'lucide-react';
 import React from 'react';
 
-import { HeartIcon, MessageIcon } from '@/components/custom/icons';
+import { HeartIcon, MessageIcon } from '@/components/icons';
 
 import { NeynarCastV2 } from '../../common/types/neynar';
 import FrameLink from '../utils/frame-link';

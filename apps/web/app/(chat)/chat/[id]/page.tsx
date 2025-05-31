@@ -3,7 +3,7 @@ import { CoreMessage } from 'ai';
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
-import { Chat } from '@/components/custom/chat';
+import { Chat } from '@/components/chat';
 import { getChatById } from '@/db/queries';
 import { Chat as ChatSchema } from '@/db/schema';
 import { ChatProfileId } from '@/lib/types';

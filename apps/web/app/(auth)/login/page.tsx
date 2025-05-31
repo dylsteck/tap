@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import SignInWithFarcaster from "@tap/react";
 
 export default function Page() {
   const router = useRouter();

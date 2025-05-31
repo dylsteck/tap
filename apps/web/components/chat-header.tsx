@@ -1,6 +1,6 @@
 import { Button } from '@tap/ui/components/button';
 
-import { SidebarToggle } from '@/components/custom/sidebar-toggle';
+import { SidebarToggle } from '@/components/sidebar-toggle';
 
 export function ChatHeader(){
   return (

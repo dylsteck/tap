@@ -40,7 +40,7 @@ import {
   MoreHorizontalIcon,
   TrashIcon,
   UserIcon,
-} from '@/components/custom/icons';
+} from '@/components/icons';
 import { fetcher, getTitleFromChat, SERVER_BASE_URL } from '@/lib/utils';
 
 export function SidebarHistory({ user }: { user: User | undefined }) {
