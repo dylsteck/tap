@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "ES2022",
     "moduleResolution": "bundler",
-    "types": ["bun-types"],
+    "types": ["bun-types", "node"],
     "resolveJsonModule": true
   },
   "include": ["src/**/*.ts"]

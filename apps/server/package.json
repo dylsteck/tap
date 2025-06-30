@@ -9,6 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
+    "mcp": "bun run src/mcp.ts",
+    "mcp:dev": "bun run --watch src/mcp.ts",
+    "dev:with-mcp": "MCP_MODE=true bun run --watch src/index.ts",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
@@ -28,13 +31,15 @@
     "https": "^1.0.0",
     "logestic": "^1.2.4",
     "ox": "0.6.0",
+    "pg": "^8.16.3",
     "postgres": "^3.4.5",
     "viem": "^2.21.48",
     "zod": "3.24.4"
   },
   "devDependencies": {
-    "bun-types": "latest",
+    "@types/node": "^24.0.7",
     "@types/pg": "^8.11.10",
+    "bun-types": "latest",
     "drizzle-kit": "0.27.2"
   },
   "module": "src/index.js"
