@@ -103,6 +103,8 @@ This runs both the HTTP API server with hosted MCP AND the local stdio MCP serve
 - **Arguments:** (leave empty)
 - **Environment Variables:** (not needed for hosted)
 
+**Tool Call Endpoint:** `https://api.tap.computer/mcp/call` (for POST requests)
+
 ### For Claude Desktop (hosted)
 
 Add to your `claude_desktop_config.json`:

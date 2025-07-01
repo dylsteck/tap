@@ -5,7 +5,7 @@ import { clanker } from '../services/clanker';
 import { icebreaker } from '../services/icebreaker';
 import { redis } from '../lib/redis';
 
-// MCP tool handlers (same logic as the MCP server but for HTTP/SSE)
+// MCP tool handlers
 async function handleFarcasterGetUser(args: any) {
   const { username, fid } = args;
   const cacheKey = username ? `user:${username}` : fid ? `user:${fid}` : null;
@@ -90,7 +90,7 @@ const TOOLS = {
   'farcaster_get_user': {
     handler: handleFarcasterGetUser,
     description: 'Get Farcaster user information by username or FID',
-    parameters: {
+    inputSchema: {
       type: 'object',
       properties: {
         username: { type: 'string', description: 'Username to lookup' },
@@ -105,7 +105,7 @@ const TOOLS = {
   'farcaster_get_user_casts': {
     handler: handleFarcasterGetUserCasts,
     description: 'Get casts from a specific Farcaster user',
-    parameters: {
+    inputSchema: {
       type: 'object',
       properties: {
         fid: { type: 'string', description: 'User FID' },
@@ -122,7 +122,7 @@ const TOOLS = {
   'clanker_search': {
     handler: handleClankerSearch,
     description: 'Search Clanker tokens',
-    parameters: {
+    inputSchema: {
       type: 'object',
       properties: {
         q: { type: 'string', description: 'Search query' },
@@ -132,7 +132,6 @@ const TOOLS = {
       required: ['q'],
     }
   }
-  // Add more tools as needed
 };
 
 export const mcpRoutes = createElysia({ prefix: '/mcp' })
@@ -150,105 +149,73 @@ export const mcpRoutes = createElysia({ prefix: '/mcp' })
       tools: Object.keys(TOOLS).map(name => ({
         name,
         description: TOOLS[name as keyof typeof TOOLS].description,
-        parameters: TOOLS[name as keyof typeof TOOLS].parameters
+        inputSchema: TOOLS[name as keyof typeof TOOLS].inputSchema
       })),
       total: Object.keys(TOOLS).length
     };
   })
 
-  .get('/sse', async ({ request, set }) => {
-    // Set SSE headers
+  // Minimal SSE endpoint - just keep connection alive
+  .get('/sse', async ({ set }) => {
     set.headers = {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control, Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
     };
 
-    // Create SSE stream
+    const encoder = new TextEncoder();
+    
     const stream = new ReadableStream({
       start(controller) {
-        // Send initial handshake
-        const initMessage = {
-          jsonrpc: '2.0',
-          method: 'initialize',
-          params: {
-            protocolVersion: '2024-11-05',
-            capabilities: {
-              tools: {}
-            },
-            serverInfo: {
-              name: 'tap-server',
-              version: '1.0.0'
-            }
-          }
-        };
-        
-        controller.enqueue(`data: ${JSON.stringify(initMessage)}\n\n`);
+        // Send a simple comment to establish connection
+        controller.enqueue(encoder.encode(': MCP server connected\n\n'));
 
-        // Send tools list
-        const toolsMessage = {
-          jsonrpc: '2.0',
-          method: 'tools/list',
-          result: {
-            tools: Object.keys(TOOLS).map(name => ({
-              name,
-              description: TOOLS[name as keyof typeof TOOLS].description,
-              inputSchema: TOOLS[name as keyof typeof TOOLS].parameters
-            }))
+        // Keep connection alive with minimal pings
+        const pingInterval = setInterval(() => {
+          try {
+            controller.enqueue(encoder.encode(': ping\n\n'));
+          } catch (e) {
+            clearInterval(pingInterval);
           }
-        };
-        
-        controller.enqueue(`data: ${JSON.stringify(toolsMessage)}\n\n`);
-
-        // Keep connection alive
-        const keepAlive = setInterval(() => {
-          controller.enqueue(`data: ${JSON.stringify({ type: 'ping', timestamp: Date.now() })}\n\n`);
         }, 30000);
 
-        // Handle cleanup
-        return () => {
-          clearInterval(keepAlive);
+        // Store cleanup function
+        (controller as any).cleanup = () => {
+          clearInterval(pingInterval);
         };
+      },
+
+      cancel() {
+        console.log('SSE connection cancelled');
       }
     });
 
-    return new Response(stream);
+    return new Response(stream, { headers: set.headers });
   })
 
+  // Handle POST requests for MCP protocol
   .post('/sse', async ({ body, set }) => {
+    set.headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    };
+
     try {
       const request = body as any;
       
-      if (request.method === 'tools/call') {
-        const { name, arguments: args } = request.params;
-        
-        if (!(name in TOOLS)) {
-          return {
-            jsonrpc: '2.0',
-            id: request.id,
-            error: {
-              code: -32601,
-              message: `Tool not found: ${name}`
-            }
-          };
-        }
-
-        const tool = TOOLS[name as keyof typeof TOOLS];
-        const result = await tool.handler(args);
-
+      if (request.method === 'initialize') {
         return {
           jsonrpc: '2.0',
           id: request.id,
           result: {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2)
-              }
-            ]
+            protocolVersion: '2024-11-05',
+            capabilities: { tools: {} },
+            serverInfo: { name: 'tap-server', version: '1.0.0' }
           }
         };
       }
@@ -261,29 +228,66 @@ export const mcpRoutes = createElysia({ prefix: '/mcp' })
             tools: Object.keys(TOOLS).map(name => ({
               name,
               description: TOOLS[name as keyof typeof TOOLS].description,
-              inputSchema: TOOLS[name as keyof typeof TOOLS].parameters
+              inputSchema: TOOLS[name as keyof typeof TOOLS].inputSchema
             }))
           }
         };
       }
 
+      if (request.method === 'tools/call') {
+        const { name, arguments: args } = request.params;
+        
+        if (!(name in TOOLS)) {
+          return {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: { code: -32601, message: `Tool not found: ${name}` }
+          };
+        }
+
+        try {
+          const tool = TOOLS[name as keyof typeof TOOLS];
+          const result = await tool.handler(args);
+
+          return {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+              content: [{ type: 'text', text: JSON.stringify(result, null, 2) }]
+            }
+          };
+        } catch (error) {
+          return {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+              code: -32603,
+              message: `Tool execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            }
+          };
+        }
+      }
+
       return {
         jsonrpc: '2.0',
         id: request.id,
-        error: {
-          code: -32601,
-          message: `Method not found: ${request.method}`
-        }
+        error: { code: -32601, message: `Method not found: ${request.method}` }
       };
 
     } catch (error) {
       return {
         jsonrpc: '2.0',
-        id: (body as any)?.id,
-        error: {
-          code: -32603,
-          message: `Internal error: ${error instanceof Error ? error.message : 'Unknown error'}`
-        }
+        id: (body as any)?.id || null,
+        error: { code: -32700, message: 'Parse error' }
       };
     }
+  })
+
+  .options('/sse', ({ set }) => {
+    set.headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+    };
+    return '';
   });
