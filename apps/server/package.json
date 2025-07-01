@@ -12,6 +12,8 @@
     "mcp": "bun run src/mcp.ts",
     "mcp:dev": "bun run --watch src/mcp.ts",
     "dev:with-mcp": "MCP_MODE=true bun run --watch src/index.ts",
+    "dev:hosted": "bun run --watch src/index.ts",
+    "start:hosted": "bun run src/index.ts",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {

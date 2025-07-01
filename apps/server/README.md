@@ -55,7 +55,7 @@ AUTH_SECRET=your_32_char_secret
 
 ## Running the Server
 
-### HTTP Server Only (Default)
+### HTTP Server with Hosted MCP (Default)
 
 ```bash
 bun run start
@@ -66,9 +66,11 @@ bun run dev
 The server will start at `http://localhost:3001` with:
 - API endpoints at `/v1/*`
 - Swagger documentation at `/docs`
+- **MCP SSE endpoint at `/mcp/sse`** (for hosted clients like Cursor, Claude)
 - MCP status endpoint at `/mcp/status`
+- MCP tools list at `/mcp/tools`
 
-### MCP Server Only
+### MCP Server Only (Local/SSH)
 
 ```bash
 bun run mcp
@@ -76,19 +78,57 @@ bun run mcp
 bun run mcp:dev
 ```
 
-This starts the MCP server on stdio for use with MCP clients.
+This starts the MCP server on stdio for use with local MCP clients.
 
-### Combined HTTP + MCP Server
+### Combined HTTP + Local MCP Server
 
 ```bash
 bun run dev:with-mcp
 # or
 MCP_MODE=true bun run start
-# or
-bun run start --mcp
 ```
 
-This runs both the HTTP API server and MCP server simultaneously.
+This runs both the HTTP API server with hosted MCP AND the local stdio MCP server simultaneously.
+
+## 🌐 Hosted MCP Usage
+
+### For ChatMCP, Cursor, Claude Desktop, etc.
+
+**Server URL:** `https://api.tap.computer/mcp/sse`
+
+**Configuration:**
+- **Server Name:** `Tap Server`
+- **Server Type:** `SSE`
+- **Command Or Server URL:** `https://api.tap.computer/mcp/sse`
+- **Arguments:** (leave empty)
+- **Environment Variables:** (not needed for hosted)
+
+### For Claude Desktop (hosted)
+
+Add to your `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "tap-server": {
+      "command": "curl",
+      "args": ["-N", "https://api.tap.computer/mcp/sse"]
+    }
+  }
+}
+```
+
+### Testing the Hosted MCP
+
+```bash
+# Check status
+curl https://api.tap.computer/mcp/status
+
+# List available tools
+curl https://api.tap.computer/mcp/tools
+
+# Connect to SSE stream
+curl -N https://api.tap.computer/mcp/sse
+```
 
 ## API Endpoints
 
