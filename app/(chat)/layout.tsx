@@ -5,7 +5,6 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { DataStreamProvider } from "@/components/data-stream-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { auth } from "../(auth)/auth";
-import { AuthModalProvider } from "@/components/auth-modal-provider";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,13 +13,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"
         strategy="beforeInteractive"
       />
-      <AuthModalProvider>
-        <DataStreamProvider>
-          <Suspense fallback={<div className="flex h-dvh" />}>
-            <SidebarWrapper>{children}</SidebarWrapper>
-          </Suspense>
-        </DataStreamProvider>
-      </AuthModalProvider>
+      <DataStreamProvider>
+        <Suspense fallback={<div className="flex h-dvh" />}>
+          <SidebarWrapper>{children}</SidebarWrapper>
+        </Suspense>
+      </DataStreamProvider>
     </>
   );
 }

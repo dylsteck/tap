@@ -1211,3 +1211,20 @@ export const WarningIcon = ({ size = 16 }: { size?: number }) => {
     </svg>
   );
 };
+
+export const RefreshIcon = ({ size = 16 }: { size?: number }) => (
+  <svg
+    height={size}
+    strokeLinejoin="round"
+    style={{ color: "currentcolor" }}
+    viewBox="0 0 16 16"
+    width={size}
+  >
+    <path
+      clipRule="evenodd"
+      d="M1 8c0-3.866 3.134-7 7-7s7 3.134 7 7-3.134 7-7 7c-1.332 0-2.582-.372-3.646-1.02L3.25 14.5V11h3.5l-1.32 1.32C6.264 12.793 7.093 13 8 13c2.761 0 5-2.239 5-5s-2.239-5-5-5c-2.42 0-4.444 1.718-4.912 4H1.588C2.071 3.543 4.743 1.5 8 1.5c3.59 0 6.5 2.91 6.5 6.5s-2.91 6.5-6.5 6.5a6.47 6.47 0 0 1-4.22-1.55l-1.63 1.63L1 13.5V8h.088c.026.046.054.09.082.134L1 8.01v-.01z"
+      fill="currentColor"
+      fillRule="evenodd"
+    />
+  </svg>
+);
