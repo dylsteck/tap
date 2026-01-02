@@ -4,7 +4,9 @@ import type { UseChatHelpers } from "@ai-sdk/react";
 import { motion } from "framer-motion";
 import { memo } from "react";
 import type { ChatMessage } from "@/lib/types";
+import { useSession } from "next-auth/react";
 import { Suggestion } from "./elements/suggestion";
+import { useAuthModal } from "./auth-modal-provider";
 import type { VisibilityType } from "./visibility-selector";
 
 type SuggestedActionsProps = {
@@ -14,6 +16,9 @@ type SuggestedActionsProps = {
 };
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
+  const { data: session } = useSession();
+  const { openAuthModal } = useAuthModal();
+
   const suggestedActions = [
     "What are the advantages of using Next.js?",
     "Write code to demonstrate Dijkstra's algorithm",
@@ -37,6 +42,11 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
           <Suggestion
             className="h-auto w-full whitespace-normal p-3 text-left"
             onClick={(suggestion) => {
+              if (!session) {
+                openAuthModal();
+                return;
+              }
+
               window.history.pushState({}, "", `/chat/${chatId}`);
               sendMessage({
                 role: "user",

@@ -14,8 +14,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useLocalStorage, useWindowSize } from "usehooks-ts";
+import { useAuthModal } from "./auth-modal-provider";
 import {
   ModelSelector,
   ModelSelectorContent,
@@ -86,6 +88,8 @@ function PureMultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const { openAuthModal } = useAuthModal();
+  const { data: session } = useSession();
 
   const adjustHeight = useCallback(() => {
     if (textareaRef.current) {
@@ -145,6 +149,11 @@ function PureMultimodalInput({
   const [uploadQueue, setUploadQueue] = useState<string[]>([]);
 
   const submitForm = useCallback(() => {
+    if (!session) {
+      openAuthModal();
+      return;
+    }
+
     window.history.pushState({}, "", `/chat/${chatId}`);
 
     sendMessage({

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
+import { useAuthModal } from "./auth-modal-provider";
 import { ChatHeader } from "@/components/chat-header";
 import {
   AlertDialog,
@@ -70,6 +71,7 @@ export function Chat({
 
   const [input, setInput] = useState<string>("");
   const [showCreditCardAlert, setShowCreditCardAlert] = useState(false);
+  const { openAuthModal } = useAuthModal();
   const [currentModelId, setCurrentModelId] = useState(initialChatModel);
   const currentModelIdRef = useRef(currentModelId);
 
@@ -153,6 +155,8 @@ export function Chat({
           error.message?.includes("AI Gateway requires a valid credit card")
         ) {
           setShowCreditCardAlert(true);
+        } else if (error.message?.includes("unauthorized")) {
+          openAuthModal();
         } else {
           toast({
             type: "error",

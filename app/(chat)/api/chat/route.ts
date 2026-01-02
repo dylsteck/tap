@@ -12,8 +12,8 @@ import {
   createResumableStreamContext,
   type ResumableStreamContext,
 } from "resumable-stream";
-import { auth, type UserType } from "@/app/(auth)/auth";
-import { entitlementsByUserType } from "@/lib/ai/entitlements";
+import { auth } from "@/app/(auth)/auth";
+import { entitlementsByThreshold } from "@/lib/ai/entitlements";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import { createDocument } from "@/lib/ai/tools/create-document";
@@ -83,14 +83,12 @@ export async function POST(request: Request) {
       return new ChatSDKError("unauthorized:chat").toResponse();
     }
 
-    const userType: UserType = session.user.type;
-
     const messageCount = await getMessageCountByUserId({
       id: session.user.id,
       differenceInHours: 24,
     });
 
-    if (messageCount > entitlementsByUserType[userType].maxMessagesPerDay) {
+    if (messageCount > entitlementsByThreshold.maxMessagesPerDay) {
       return new ChatSDKError("rate_limit:chat").toResponse();
     }
 
@@ -179,20 +177,20 @@ export async function POST(request: Request) {
           experimental_activeTools: isReasoningModel
             ? []
             : [
-                "getWeather",
-                "createDocument",
-                "updateDocument",
-                "requestSuggestions",
-              ],
+              "getWeather",
+              "createDocument",
+              "updateDocument",
+              "requestSuggestions",
+            ],
           experimental_transform: isReasoningModel
             ? undefined
             : smoothStream({ chunking: "word" }),
           providerOptions: isReasoningModel
             ? {
-                anthropic: {
-                  thinking: { type: "enabled", budgetTokens: 10_000 },
-                },
-              }
+              anthropic: {
+                thinking: { type: "enabled", budgetTokens: 10_000 },
+              },
+            }
             : undefined,
           tools: {
             getWeather,
