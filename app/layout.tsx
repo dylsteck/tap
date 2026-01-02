@@ -10,6 +10,23 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://tap.computer"),
   title: "tap",
   description: "it just takes one tap",
+  other: {
+    'fc:miniapp': JSON.stringify({
+      version: "next",
+      imageUrl: "https://i.imgur.com/IufIWER.png",
+      button: {
+        title: "tap",
+        action: {
+          type: "launch_frame",
+          name: "tap",
+          url: "https://tap.computer",
+          splashImageUrl: "https://i.imgur.com/8Knijje.png",
+          splashBackgroundColor: "#000000",
+        },
+      },
+    }),
+    'base:app_id': '689797da4e177e29024ef626',
+  }
 };
 
 export const viewport = {
