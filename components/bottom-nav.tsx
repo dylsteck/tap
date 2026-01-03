@@ -30,24 +30,24 @@ export function BottomNav() {
     };
 
     return (
-        <div className="fixed bottom-10 left-0 right-0 z-50 flex items-center justify-center gap-4 px-6 pointer-events-none">
+        <div className="fixed bottom-3 left-0 right-0 z-50 flex items-center justify-center gap-5 px-6 pointer-events-none">
             {/* Main Pill Nav */}
-            <div className="flex h-[60px] items-center justify-around bg-zinc-900/90 border border-white/10 rounded-full px-6 backdrop-blur-xl shadow-2xl w-[220px] pointer-events-auto">
+            <div className="flex h-[56px] items-center justify-around bg-[#1A1A1A]/90 border border-white/5 rounded-full px-8 backdrop-blur-2xl shadow-2xl w-[240px] pointer-events-auto">
                 <Link
                     href="/"
                     className={cn(
-                        "transition-colors",
-                        pathname === "/" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                        "transition-all duration-300",
+                        pathname === "/" ? "text-white scale-110" : "text-zinc-600 hover:text-zinc-400"
                     )}
                 >
-                    <HomeIcon size={26} />
+                    <HomeIcon size={24} />
                 </Link>
 
                 <Link
                     href="/apps"
                     className={cn(
-                        "transition-colors",
-                        pathname === "/apps" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                        "transition-all duration-300",
+                        pathname === "/apps" ? "text-white scale-110" : "text-zinc-600 hover:text-zinc-400"
                     )}
                 >
                     <PaletteIcon />
@@ -57,17 +57,17 @@ export function BottomNav() {
                     href="/profile"
                     onClick={handleProfileClick}
                     className={cn(
-                        "transition-colors",
-                        pathname === "/profile" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                        "transition-all duration-300",
+                        pathname === "/profile" ? "text-white scale-110" : "text-zinc-600 hover:text-zinc-400"
                     )}
                 >
-                    <UserIcon />
+                    <UserIcon size={22} />
                 </Link>
             </div>
 
             {/* Separate Plus Button */}
-            <button className="flex h-[60px] w-[60px] items-center justify-center bg-zinc-900/90 border border-white/10 rounded-full text-zinc-400 hover:text-white transition-colors backdrop-blur-xl shadow-2xl pointer-events-auto">
-                <PlusIcon size={28} />
+            <button className="flex h-[56px] w-[56px] items-center justify-center bg-[#1A1A1A]/90 border border-white/5 rounded-full text-zinc-500 hover:text-white transition-all active:scale-90 backdrop-blur-2xl shadow-2xl pointer-events-auto">
+                <PlusIcon size={24} />
             </button>
         </div>
     );

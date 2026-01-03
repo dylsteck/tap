@@ -2,7 +2,7 @@
 
 import { useAuthModal } from "./auth-modal-provider";
 import { useSession } from "next-auth/react";
-import { MessageIcon, MoreHorizontalIcon } from "./icons";
+import { MoreHorizontalIcon } from "./icons";
 
 interface AppCardProps {
     app: {
@@ -13,8 +13,6 @@ interface AppCardProps {
         author: string;
         authorAvatar: string;
         likes: number;
-        comments: number;
-        shares: number;
     };
 }
 
@@ -25,13 +23,6 @@ const HeartIcon = () => (
     </svg>
 );
 
-const ShareIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-        <polyline points="16 6 12 2 8 6" />
-        <line x1="12" y1="2" x2="12" y2="15" />
-    </svg>
-);
 
 const BookmarkIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -46,9 +37,13 @@ const CameraIcon = () => (
     </svg>
 );
 
+import { useEffect, useRef, useState } from "react";
+
 export function AppCard({ app }: AppCardProps) {
     const { openAuthModal } = useAuthModal();
     const { data: session } = useSession();
+    const [isVisible, setIsVisible] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
         if (!session) {
@@ -58,62 +53,94 @@ export function AppCard({ app }: AppCardProps) {
         }
     };
 
-    return (
-        <div className="flex flex-col items-center w-full min-h-screen snap-start bg-black pt-16 pb-32">
-            {/* Main App Card */}
-            <div
-                className="relative w-[92%] max-w-[400px] aspect-[4/5] rounded-[40px] overflow-hidden bg-[#1a1a1a] shadow-2xl border border-white/5"
-                onClickCapture={handleInteraction}
-            >
-                <iframe
-                    src={app.url}
-                    className="w-full h-full border-none"
-                    title={app.name}
-                    sandbox="allow-scripts allow-same-origin"
-                />
-            </div>
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.1, rootMargin: "200px" } // Load early
+        );
 
-            {/* Content Info below card */}
-            <div className="w-[92%] max-w-[400px] mt-4 flex flex-col gap-4">
-                {/* Social Actions Row */}
-                <div className="flex items-center justify-between px-2 text-white">
-                    <div className="flex items-center gap-6">
-                        <button className="flex items-center gap-2 hover:opacity-70 transition-opacity" onClick={handleInteraction}>
-                            <HeartIcon />
-                            <span className="text-sm font-medium">{app.likes}</span>
-                        </button>
-                        <button className="flex items-center gap-2 hover:opacity-70 transition-opacity" onClick={handleInteraction}>
-                            <MessageIcon size={24} />
-                            <span className="text-sm font-medium">{app.comments}</span>
-                        </button>
-                        <button className="flex items-center gap-2 hover:opacity-70 transition-opacity" onClick={handleInteraction}>
-                            <ShareIcon />
-                            <span className="text-sm font-medium">{app.shares}</span>
-                        </button>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <BookmarkIcon />
-                        <CameraIcon />
-                        <ShareIcon />
-                    </div>
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center w-full h-[100svh] snap-start bg-black pt-[64px] pb-[80px] overflow-hidden" ref={containerRef}>
+            {/* Main App Feed Item */}
+            <div className="flex-1 w-full max-w-[440px] px-3 flex flex-col min-h-0">
+                {/* Iframe Container - Premium Rounded */}
+                <div
+                    className="flex-1 w-full rounded-[24px] overflow-hidden bg-[#0A0A0A] border border-white/5 relative shadow-2xl"
+                    onClickCapture={handleInteraction}
+                >
+                    {isVisible ? (
+                        <iframe
+                            src={app.url}
+                            className="w-full h-full border-none"
+                            title={app.name}
+                            sandbox="allow-scripts allow-same-origin"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full border-2 border-white/5 border-t-white/30 animate-spin" />
+                        </div>
+                    )}
                 </div>
 
-                {/* User Info Row */}
-                <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-tr from-purple-500 to-pink-500 border border-white/10">
-                            {app.authorAvatar ? (
-                                <img src={app.authorAvatar} alt={app.author} className="w-full h-full object-cover" />
-                            ) : null}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-white font-semibold text-sm">{app.author}</span>
-                            <span className="text-zinc-400 text-xs">{app.description}</span>
+                {/* Meta Row - Gizmo Style */}
+                <div className="py-3 px-1 flex flex-col gap-3 shrink-0">
+                    {/* Actions Row */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-5">
+                            <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors" onClick={handleInteraction}>
+                                <HeartIcon />
+                                <span className="text-xs font-medium">{app.likes > 0 ? app.likes : 'Like'}</span>
+                            </button>
+                            <button className="text-white/60 hover:text-white transition-colors">
+                                <BookmarkIcon />
+                            </button>
+                            <button className="text-white/40 hover:text-white transition-colors">
+                                <MoreHorizontalIcon size={20} />
+                            </button>
                         </div>
                     </div>
-                    <button className="text-white">
-                        <MoreHorizontalIcon size={20} />
-                    </button>
+
+                    {/* Author & Description */}
+                    <div className="flex items-start justify-between min-h-[50px]">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                            <div className="relative shrink-0">
+                                <div className="w-11 h-11 rounded-full overflow-hidden border border-white/10 ring-2 ring-black">
+                                    {app.authorAvatar ? (
+                                        <img src={app.authorAvatar} alt={app.author} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full bg-zinc-800" />
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                                    <div className="w-2.5 h-0.5 bg-black rounded-full" />
+                                    <div className="absolute w-0.5 h-2.5 bg-black rounded-full" />
+                                </div>
+                            </div>
+                            <div className="flex flex-col min-w-0 leading-tight">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="text-white font-bold text-[15px] tracking-tight truncate">{app.name}</span>
+                                </div>
+                                <span className="text-white/50 text-sm line-clamp-1 font-normal mt-0.5">
+                                    {app.description || `by @${app.author}`}
+                                </span>
+                            </div>
+                        </div>
+                        <button className="px-5 py-2 rounded-full bg-white text-black text-[11px] font-bold uppercase tracking-wider hover:bg-zinc-200 transition-all active:scale-95 shrink-0">
+                            Launch
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

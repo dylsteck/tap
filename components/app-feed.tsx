@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { AppCard } from "./app-card";
-import { RefreshIcon } from "./icons";
+import { RefreshIcon, UserIcon } from "./icons";
 
 export function AppFeed() {
     const [apps, setApps] = useState<any[]>([]);
@@ -40,10 +40,16 @@ export function AppFeed() {
 
     if (isLoading && apps.length === 0) {
         return (
-            <div className="h-screen w-full flex items-center justify-center bg-black text-white">
-                <div className="animate-pulse flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 rounded-full border-4 border-t-white border-white/20 animate-spin" />
-                    <span className="text-zinc-500 font-medium">loading feed...</span>
+            <div className="h-screen w-full flex items-center justify-center bg-black">
+                <div className="flex flex-col items-center gap-6">
+                    <div className="relative">
+                        <div className="w-16 h-16 rounded-full border-[3px] border-white/5" />
+                        <div className="absolute top-0 w-16 h-16 rounded-full border-[3px] border-t-white border-transparent animate-spin" />
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-white font-bold tracking-widest uppercase text-[10px]">Tap</span>
+                        <span className="text-zinc-500 font-medium text-xs">Discovering frames...</span>
+                    </div>
                 </div>
             </div>
         );
@@ -52,18 +58,21 @@ export function AppFeed() {
     return (
         <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide bg-black">
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 pt-12 pb-4 bg-gradient-to-b from-black to-transparent text-white">
-                <h1 className="text-2xl font-bold tracking-tight">tap</h1>
+            <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 pt-6 pb-4 bg-black/20 backdrop-blur-md text-white">
                 <div className="flex items-center gap-5">
-                    <button
-                        onClick={() => fetchFeed()}
-                        className="hover:opacity-70 transition-opacity"
-                        title="Refresh"
-                    >
-                        <RefreshIcon size={24} />
+                    <button className="text-white/70 hover:text-white transition-colors">
+                        <SearchIcon size={22} />
                     </button>
-                    <SearchIcon />
-                    <BellIcon />
+                </div>
+
+                <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                    <span className="text-white font-black text-xl tracking-tight">tap</span>
+                </div>
+
+                <div className="flex items-center gap-5">
+                    <div className="w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center">
+                        <UserIcon size={18} />
+                    </div>
                 </div>
             </header>
 
@@ -104,15 +113,15 @@ export function AppFeed() {
     );
 }
 
-const SearchIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const SearchIcon = ({ size = 24 }: { size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.3-4.3" />
     </svg>
 );
 
-const BellIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const BellIcon = ({ size = 24 }: { size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
         <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
     </svg>
