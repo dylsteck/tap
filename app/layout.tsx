@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { AuthModalProvider } from "@/components/auth-modal-provider";
+import { WalletProvider } from "@/components/wallet-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tap.computer"),
@@ -92,14 +93,16 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           disableTransitionOnChange
           enableSystem
         >
           <Toaster position="top-center" />
-          <SessionProvider>
-            <AuthModalProvider>{children}</AuthModalProvider>
-          </SessionProvider>
+          <WalletProvider>
+            <SessionProvider>
+              <AuthModalProvider>{children}</AuthModalProvider>
+            </SessionProvider>
+          </WalletProvider>
         </ThemeProvider>
       </body>
     </html>

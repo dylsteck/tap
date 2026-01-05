@@ -1,71 +1,64 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Chat SDK</h1>
+<a href="https://tap.computer">
+  <h1 align="center">tap</h1>
 </a>
 
 <p align="center">
-    Chat SDK is a free, open-source template built with Next.js and the AI SDK that helps you quickly build powerful chatbot applications.
+ it just takes one tap
 </p>
 
-<p align="center">
-  <a href="https://chat-sdk.dev"><strong>Read Docs</strong></a> ·
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a>
-</p>
-<br/>
+Tap is an AI assistant built around Farcaster and onchain data to make it easier to find information and take actions. outputs are optimized to show widgets that the user can use to learn more or take an action directly from the chat (eg. RSVP to an event, take an onchain action, send a message etc).
 
-## Features
+built by [Dylan Steck](https://dylansteck.com)
 
-- [Next.js](https://nextjs.org) App Router
-  - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- [AI SDK](https://ai-sdk.dev/docs/introduction)
-  - Unified API for generating text, structured objects, and tool calls with LLMs
-  - Hooks for building dynamic chat and generative user interfaces
-  - Supports xAI (default), OpenAI, Fireworks, and other model providers
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
-- Data Persistence
-  - [Neon Serverless Postgres](https://vercel.com/marketplace/neon) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
-- [Auth.js](https://authjs.dev)
-  - Simple and secure authentication
+## Architecture
+The core foundation of Tap is built on top of:
+- [Next.js](https://nextjs.org)
+- [shadcn UI](https://ui.shadcn.com)
+- [Drizzle ORM](https://orm.drizzle.team)
+- [Postgres](https://www.postgresql.org)
+- [Vercel AI SDK](https://sdk.vercel.ai)
+- [Anthropic Claude](https://anthropic.com) (via AI SDK)
+- [Workflow DevKit](https://workflow.dev)
+- [NextAuth](https://next-auth.js.org)
 
-## Model Providers
+## Tools
+Tap leverages LLM tool calling to power the core of its functionality. The following tools are currently supported:
+- [Farcaster](https://farcaster.xyz) (using [Neynar APIs](https://neynar.com))
+- [ENS Data](https://ensdata.net)
+- [Events.xyz](https://events.xyz)
+- [Bountycaster](https://bountycaster.com)
+- [Icebreaker](https://icebreaker.xyz)
+- [Nouns Builder](https://nouns.build)
+- [Clanker](https://clanker.world)
+- [Zapper](https://zapper.xyz)
 
-This template uses the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) to access multiple AI models through a unified interface. The default configuration includes [xAI](https://x.ai) models (`grok-2-vision-1212`, `grok-3-mini`) routed through the gateway.
+For a further understanding of how the assistant tools are defined / to learn how to add your own tool, check out [lib/ai/miniapp-system-prompt.ts](/lib/ai/miniapp-system-prompt.ts) and the API catalog in [lib/apis/catalog.ts](/lib/apis/catalog.ts).
 
-### AI Gateway Authentication
+## Contributing
 
-**For Vercel deployments**: Authentication is handled automatically via OIDC tokens.
+We welcome contributions of all kinds, especially those that introduce new tools/widgets! Here are the main guidelines for contributing:
 
-**For non-Vercel deployments**: You need to provide an AI Gateway API key by setting the `AI_GATEWAY_API_KEY` environment variable in your `.env.local` file.
+1. Follow the traditional conventions of the repo (eg: add a new environment variable to `.env.example` if you need to add one, follow the schema for adding other tools, don't add excessive comments, etc)
+2. Check out `AGENTS.md` for project conventions and style guidelines.
+3. Open a pull request that succinctly describes your changes.
+4. If you need help or have questions, feel free to [reach out to me on Farcaster](https://warpcast.com/dylsteck.eth) or tag me in a GitHub discussion.
 
-With the [AI SDK](https://ai-sdk.dev/docs/introduction), you can also switch to direct LLM providers like [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://ai-sdk.dev/providers/ai-sdk-providers) with just a few lines of code.
-
-## Deploy Your Own
-
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/templates/next.js/nextjs-ai-chatbot)
+Thanks for your support in making Tap better!
 
 ## Running locally
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run Tap.
 
 > Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
-
 ```bash
 pnpm install
-pnpm db:migrate # Setup database or apply latest database changes
+pnpm db:migrate
 pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000).
+Tap should now be running on [localhost:3000](http://localhost:3000/).
+
+
+---
+<p>Originally forked from the <a href="https://github.com/vercel/ai-chatbot">Next.js AI Chatbot Starter Template</a></p>

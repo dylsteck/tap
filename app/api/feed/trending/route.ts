@@ -1,6 +1,8 @@
 import { NeynarAPIClient, Configuration } from "@neynar/nodejs-sdk";
 import { type NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY || "NEYNAR_API_DOCS";
 
 export async function GET(request: NextRequest) {

@@ -2,6 +2,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,
   foreignKey,
+  integer,
   json,
   pgTable,
   primaryKey,
@@ -15,6 +16,10 @@ export const user = pgTable("User", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   email: varchar("email", { length: 64 }).notNull(),
   password: varchar("password", { length: 64 }),
+  walletAddress: varchar("walletAddress", { length: 42 }),
+  username: varchar("username", { length: 32 }),
+  avatarUrl: text("avatarUrl"),
+  createdAt: timestamp("createdAt").defaultNow(),
 });
 
 export type User = InferSelectModel<typeof user>;
@@ -168,3 +173,88 @@ export const stream = pgTable(
 );
 
 export type Stream = InferSelectModel<typeof stream>;
+
+// ============================================
+// PROJECT / MINIAPP TABLES
+// ============================================
+
+export const project = pgTable("Project", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  subdomain: varchar("subdomain", { length: 63 }).unique(),
+  status: varchar("status", {
+    enum: ["draft", "building", "deployed", "failed"],
+  })
+    .notNull()
+    .default("draft"),
+  deploymentUrl: text("deploymentUrl"),
+  thumbnailUrl: text("thumbnailUrl"),
+  isPublic: boolean("isPublic").notNull().default(true),
+  likesCount: integer("likesCount").notNull().default(0),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type Project = InferSelectModel<typeof project>;
+
+export const projectCode = pgTable("ProjectCode", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  projectId: uuid("projectId")
+    .notNull()
+    .references(() => project.id),
+  files: json("files").notNull(), // { "page.tsx": "...", "globals.css": "..." }
+  prompt: text("prompt"),
+  version: integer("version").notNull().default(1),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export type ProjectCode = InferSelectModel<typeof projectCode>;
+
+export const apiConnection = pgTable("ApiConnection", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  projectId: uuid("projectId")
+    .notNull()
+    .references(() => project.id),
+  apiName: varchar("apiName", {
+    enum: ["neynar", "zapper", "zora", "coingecko", "alchemy"],
+  }).notNull(),
+  enabled: boolean("enabled").notNull().default(false),
+  config: json("config"), // Encrypted user API keys if provided
+});
+
+export type ApiConnection = InferSelectModel<typeof apiConnection>;
+
+export const projectLike = pgTable(
+  "ProjectLike",
+  {
+    userId: uuid("userId")
+      .notNull()
+      .references(() => user.id),
+    projectId: uuid("projectId")
+      .notNull()
+      .references(() => project.id),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.userId, table.projectId] }),
+  })
+);
+
+export type ProjectLike = InferSelectModel<typeof projectLike>;
+
+export const projectChatMessage = pgTable("ProjectChatMessage", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  projectId: uuid("projectId")
+    .notNull()
+    .references(() => project.id),
+  role: varchar("role", { enum: ["user", "assistant"] }).notNull(),
+  content: text("content").notNull(),
+  metadata: json("metadata"), // { code?: string, attachments?: any[] }
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export type ProjectChatMessage = InferSelectModel<typeof projectChatMessage>;

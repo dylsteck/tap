@@ -10,6 +10,7 @@ import {
   gte,
   inArray,
   lt,
+  sql,
   type SQL,
 } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -30,6 +31,16 @@ import {
   type User,
   user,
   vote,
+  project,
+  type Project,
+  projectCode,
+  type ProjectCode,
+  apiConnection,
+  type ApiConnection,
+  projectLike,
+  type ProjectLike,
+  projectChatMessage,
+  type ProjectChatMessage,
 } from "./schema";
 import { generateHashedPassword } from "./utils";
 
@@ -581,6 +592,467 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get stream ids by chat id"
+    );
+  }
+}
+
+// ============================================
+// PROJECT / MINIAPP QUERIES
+// ============================================
+
+export async function createProject({
+  userId,
+  name,
+  description,
+}: {
+  userId: string;
+  name: string;
+  description?: string;
+}) {
+  try {
+    const [newProject] = await db
+      .insert(project)
+      .values({
+        userId,
+        name,
+        description,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return newProject;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to create project");
+  }
+}
+
+export async function getProjectById({ id }: { id: string }) {
+  try {
+    const [selectedProject] = await db
+      .select()
+      .from(project)
+      .where(eq(project.id, id));
+    return selectedProject || null;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get project by id"
+    );
+  }
+}
+
+export async function getProjectsByUserId({ userId }: { userId: string }) {
+  try {
+    return await db
+      .select()
+      .from(project)
+      .where(eq(project.userId, userId))
+      .orderBy(desc(project.createdAt));
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get projects by user id"
+    );
+  }
+}
+
+export async function getPublicProjects({
+  limit = 50,
+  offset = 0,
+}: {
+  limit?: number;
+  offset?: number;
+} = {}) {
+  try {
+    return await db
+      .select({
+        project: project,
+        user: {
+          id: user.id,
+          username: user.username,
+          avatarUrl: user.avatarUrl,
+        },
+      })
+      .from(project)
+      .leftJoin(user, eq(project.userId, user.id))
+      .where(and(eq(project.isPublic, true), eq(project.status, "deployed")))
+      .orderBy(desc(project.createdAt))
+      .limit(limit)
+      .offset(offset);
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get public projects"
+    );
+  }
+}
+
+export async function updateProject({
+  id,
+  ...updates
+}: {
+  id: string;
+  name?: string;
+  description?: string;
+  subdomain?: string;
+  status?: "draft" | "building" | "deployed" | "failed";
+  deploymentUrl?: string;
+  thumbnailUrl?: string;
+  isPublic?: boolean;
+}) {
+  try {
+    const [updated] = await db
+      .update(project)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(project.id, id))
+      .returning();
+    return updated;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to update project");
+  }
+}
+
+export async function deleteProject({ id }: { id: string }) {
+  try {
+    // Delete related data first
+    await db.delete(projectLike).where(eq(projectLike.projectId, id));
+    await db.delete(apiConnection).where(eq(apiConnection.projectId, id));
+    await db.delete(projectCode).where(eq(projectCode.projectId, id));
+    await db.delete(projectChatMessage).where(eq(projectChatMessage.projectId, id));
+    
+    const [deleted] = await db
+      .delete(project)
+      .where(eq(project.id, id))
+      .returning();
+    return deleted;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to delete project");
+  }
+}
+
+// Project Code queries
+
+export async function saveProjectCode({
+  projectId,
+  files,
+  prompt,
+}: {
+  projectId: string;
+  files: Record<string, string>;
+  prompt?: string;
+}) {
+  try {
+    // Get current max version
+    const existing = await db
+      .select({ version: projectCode.version })
+      .from(projectCode)
+      .where(eq(projectCode.projectId, projectId))
+      .orderBy(desc(projectCode.version))
+      .limit(1);
+
+    const nextVersion = existing.length > 0 ? existing[0].version + 1 : 1;
+
+    const [saved] = await db
+      .insert(projectCode)
+      .values({
+        projectId,
+        files,
+        prompt,
+        version: nextVersion,
+        createdAt: new Date(),
+      })
+      .returning();
+    return saved;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to save project code"
+    );
+  }
+}
+
+export async function getLatestProjectCode({ projectId }: { projectId: string }) {
+  try {
+    const [latest] = await db
+      .select()
+      .from(projectCode)
+      .where(eq(projectCode.projectId, projectId))
+      .orderBy(desc(projectCode.version))
+      .limit(1);
+    return latest || null;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get latest project code"
+    );
+  }
+}
+
+export async function getProjectCodeHistory({ projectId }: { projectId: string }) {
+  try {
+    return await db
+      .select()
+      .from(projectCode)
+      .where(eq(projectCode.projectId, projectId))
+      .orderBy(desc(projectCode.version));
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get project code history"
+    );
+  }
+}
+
+// API Connection queries
+
+export async function getApiConnections({ projectId }: { projectId: string }) {
+  try {
+    return await db
+      .select()
+      .from(apiConnection)
+      .where(eq(apiConnection.projectId, projectId));
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get API connections"
+    );
+  }
+}
+
+export async function toggleApiConnection({
+  projectId,
+  apiName,
+  enabled,
+}: {
+  projectId: string;
+  apiName: "neynar" | "zapper" | "zora" | "coingecko" | "alchemy";
+  enabled: boolean;
+}) {
+  try {
+    const [existing] = await db
+      .select()
+      .from(apiConnection)
+      .where(
+        and(
+          eq(apiConnection.projectId, projectId),
+          eq(apiConnection.apiName, apiName)
+        )
+      );
+
+    if (existing) {
+      const [updated] = await db
+        .update(apiConnection)
+        .set({ enabled })
+        .where(eq(apiConnection.id, existing.id))
+        .returning();
+      return updated;
+    }
+
+    const [created] = await db
+      .insert(apiConnection)
+      .values({ projectId, apiName, enabled })
+      .returning();
+    return created;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to toggle API connection"
+    );
+  }
+}
+
+// Like queries
+
+export async function toggleProjectLike({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) {
+  try {
+    const [existing] = await db
+      .select()
+      .from(projectLike)
+      .where(
+        and(
+          eq(projectLike.userId, userId),
+          eq(projectLike.projectId, projectId)
+        )
+      );
+
+    if (existing) {
+      // Unlike
+      await db
+        .delete(projectLike)
+        .where(
+          and(
+            eq(projectLike.userId, userId),
+            eq(projectLike.projectId, projectId)
+          )
+        );
+      
+      // Decrement likes count atomically (don't go below 0)
+      await db
+        .update(project)
+        .set({ likesCount: sql`GREATEST(${project.likesCount} - 1, 0)` })
+        .where(eq(project.id, projectId));
+      
+      return { liked: false };
+    }
+
+    // Like
+    await db.insert(projectLike).values({
+      userId,
+      projectId,
+      createdAt: new Date(),
+    });
+    
+    // Increment likes count atomically
+    await db
+      .update(project)
+      .set({ likesCount: sql`${project.likesCount} + 1` })
+      .where(eq(project.id, projectId));
+    
+    return { liked: true };
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to toggle project like"
+    );
+  }
+}
+
+export async function getUserLikedProjects({ userId }: { userId: string }) {
+  try {
+    const likes = await db
+      .select({ projectId: projectLike.projectId })
+      .from(projectLike)
+      .where(eq(projectLike.userId, userId));
+    
+    return likes.map((l) => l.projectId);
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get user liked projects"
+    );
+  }
+}
+
+export async function isProjectLikedByUser({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) {
+  try {
+    const [existing] = await db
+      .select()
+      .from(projectLike)
+      .where(
+        and(
+          eq(projectLike.userId, userId),
+          eq(projectLike.projectId, projectId)
+        )
+      );
+    return !!existing;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to check if project is liked"
+    );
+  }
+}
+
+// User profile queries
+
+export async function getUserById({ id }: { id: string }) {
+  try {
+    const [selectedUser] = await db.select().from(user).where(eq(user.id, id));
+    return selectedUser || null;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to get user by id");
+  }
+}
+
+export async function updateUserProfile({
+  id,
+  username,
+  avatarUrl,
+  walletAddress,
+}: {
+  id: string;
+  username?: string;
+  avatarUrl?: string;
+  walletAddress?: string;
+}) {
+  try {
+    const updates: Record<string, string | undefined> = {};
+    if (username !== undefined) updates.username = username;
+    if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl;
+    if (walletAddress !== undefined) updates.walletAddress = walletAddress;
+
+    const [updated] = await db
+      .update(user)
+      .set(updates)
+      .where(eq(user.id, id))
+      .returning();
+    return updated;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to update user profile"
+    );
+  }
+}
+
+// ============================================
+// PROJECT CHAT MESSAGE QUERIES
+// ============================================
+
+export async function saveProjectChatMessage({
+  projectId,
+  role,
+  content,
+  metadata,
+}: {
+  projectId: string;
+  role: "user" | "assistant";
+  content: string;
+  metadata?: Record<string, unknown>;
+}) {
+  try {
+    const [message] = await db
+      .insert(projectChatMessage)
+      .values({
+        projectId,
+        role,
+        content,
+        metadata,
+        createdAt: new Date(),
+      })
+      .returning();
+    return message;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to save project chat message"
+    );
+  }
+}
+
+export async function getProjectChatMessages({ projectId }: { projectId: string }) {
+  try {
+    return await db
+      .select()
+      .from(projectChatMessage)
+      .where(eq(projectChatMessage.projectId, projectId))
+      .orderBy(asc(projectChatMessage.createdAt));
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get project chat messages"
     );
   }
 }

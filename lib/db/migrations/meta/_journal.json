@@ -57,6 +57,20 @@
       "when": 1757362773211,
       "tag": "0007_flowery_ben_parker",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1767584385840,
+      "tag": "0008_clumsy_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1767585190484,
+      "tag": "0009_tearful_microchip",
+      "breakpoints": true
     }
   ]
 }
